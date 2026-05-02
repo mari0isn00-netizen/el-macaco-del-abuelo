@@ -49,11 +49,11 @@ export default async function ChatPage({ params }: ChatPageProps) {
         <div className="border-b border-border bg-card">
           <div className="mx-auto max-w-4xl px-4 py-4">
             <Link
-              href="/"
+              href={reservation ? `/cliente/${reservation.id}` : "/"}
               className="mb-3 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               <ArrowLeft className="h-4 w-4" />
-              Volver al inicio
+              {reservation ? "Volver al área de cliente" : "Volver al inicio"}
             </Link>
 
             {reservation ? (

@@ -52,14 +52,16 @@ export function ReservationForm({ dateRange, guests, onGuestsChange }: Reservati
       })
 
       if (response.success && response.reservation) {
+        window.localStorage.setItem("macaco_client_reservation_id", response.reservation.id)
+        window.dispatchEvent(new Event("macaco-client-area"))
         setResult({
           success: true,
-          message: "Solicitud creada. La conversación queda abierta para revisar disponibilidad, precio y contrato.",
+          message: "Solicitud creada. Se ha desbloqueado tu área de cliente para seguir la estancia.",
           reservationId: response.reservation.id,
         })
         setTimeout(() => {
-          router.push(`/chat/${response.reservation?.id}`)
-        }, 1400)
+          router.push(`/cliente/${response.reservation?.id}`)
+        }, 1200)
       } else {
         setResult({
           success: false,

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -16,6 +16,22 @@ const navLinks = [
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [clientReservationId, setClientReservationId] = useState<string | null>(null)
+
+  useEffect(() => {
+    const syncClientArea = () => {
+      setClientReservationId(window.localStorage.getItem("macaco_client_reservation_id"))
+    }
+
+    syncClientArea()
+    window.addEventListener("storage", syncClientArea)
+    window.addEventListener("macaco-client-area", syncClientArea)
+
+    return () => {
+      window.removeEventListener("storage", syncClientArea)
+      window.removeEventListener("macaco-client-area", syncClientArea)
+    }
+  }, [])
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
@@ -37,6 +53,14 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
+            {clientReservationId ? (
+              <Link
+                href={`/cliente/${clientReservationId}`}
+                className="text-sm font-medium text-primary transition-colors hover:text-primary/80"
+              >
+                Mi estancia
+              </Link>
+            ) : null}
           </nav>
 
           <div className="hidden items-center gap-4 md:flex">
@@ -69,6 +93,15 @@ export function Header() {
                   {link.label}
                 </Link>
               ))}
+              {clientReservationId ? (
+                <Link
+                  href={`/cliente/${clientReservationId}`}
+                  className="text-base font-medium text-primary transition-colors hover:text-primary/80"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Mi estancia
+                </Link>
+              ) : null}
               <Link href="/reservar" onClick={() => setIsMenuOpen(false)}>
                 <Button className="mt-2 w-full bg-primary text-primary-foreground hover:bg-primary/90">
                   Pedir estancia
