@@ -295,7 +295,7 @@ Puedes escribir por aquí sobre fechas, normas o cualquier detalle de la estanci
         </div>
       )}
 
-      <OfferPanel reservationId={reservationId} senderType={senderType} senderName={senderName} />
+      <OfferPanel reservationId={reservationId} senderType={senderType} senderName={senderName} messages={messages} />
 
       <div className="safe-area-bottom border-t border-border bg-card p-3 sm:p-4">
         <form onSubmit={handleSend} className="flex items-center gap-2">

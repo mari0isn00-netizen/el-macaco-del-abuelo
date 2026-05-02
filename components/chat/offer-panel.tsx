@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { deleteReservation, registerOffer, requestContractAndPayment, sendReservationDecision } from "@/app/actions/reservations"
+import type { ChatMessage } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { CheckCircle2, FileSignature, HandCoins, Trash2, XCircle } from "lucide-react"
@@ -10,14 +11,35 @@ interface OfferPanelProps {
   reservationId: string
   senderType: "guest" | "admin"
   senderName: string
+  messages: ChatMessage[]
 }
 
-export function OfferPanel({ reservationId, senderType, senderName }: OfferPanelProps) {
+const actionMarkers = {
+  priceSet: "PRECIO ESTABLECIDO POR EL PROPIETARIO",
+  contractRequested: "CONTRATO Y SEÑAL DISPONIBLES",
+  accepted: "PRECIO ACEPTADO",
+  rejected: "PRECIO RECHAZADO",
+  cancelled: "SOLICITUD CANCELADA",
+  contractAccepted: "Contrato aceptado.",
+}
+
+export function OfferPanel({ reservationId, senderType, senderName, messages }: OfferPanelProps) {
   const [amount, setAmount] = useState("")
   const [paymentDate, setPaymentDate] = useState("")
   const [note, setNote] = useState("")
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState("")
+  const [localMarkers, setLocalMarkers] = useState<string[]>([])
+
+  const markers = useMemo(() => messages.map((message) => message.message).concat(localMarkers), [localMarkers, messages])
+  const hasMarker = (marker: string) => markers.some((message) => message.startsWith(marker))
+  const priceSet = hasMarker(actionMarkers.priceSet)
+  const contractRequested = hasMarker(actionMarkers.contractRequested)
+  const accepted = hasMarker(actionMarkers.accepted)
+  const rejected = hasMarker(actionMarkers.rejected)
+  const cancelled = hasMarker(actionMarkers.cancelled)
+  const contractAccepted = hasMarker(actionMarkers.contractAccepted)
+  const closed = accepted || rejected || cancelled || contractAccepted
 
   const submitOwnerPrice = async () => {
     if (senderType !== "admin") return
@@ -38,6 +60,7 @@ export function OfferPanel({ reservationId, senderType, senderName }: OfferPanel
       return
     }
 
+    setLocalMarkers((current) => [...current, actionMarkers.priceSet])
     setAmount("")
     setNote("")
   }
@@ -59,6 +82,7 @@ export function OfferPanel({ reservationId, senderType, senderName }: OfferPanel
       return
     }
 
+    setLocalMarkers((current) => [...current, actionMarkers.contractRequested])
     setNote("")
   }
 
@@ -75,7 +99,18 @@ export function OfferPanel({ reservationId, senderType, senderName }: OfferPanel
       note,
     })
     setBusy(false)
-    if (!result.success) setError(result.error || "No se pudo actualizar.")
+    if (!result.success) {
+      setError(result.error || "No se pudo actualizar.")
+      return
+    }
+
+    const marker =
+      decision === "accept_offer"
+        ? actionMarkers.accepted
+        : decision === "reject_offer"
+          ? actionMarkers.rejected
+          : actionMarkers.cancelled
+    setLocalMarkers((current) => [...current, marker])
   }
 
   const removeRequest = async () => {
@@ -93,34 +128,60 @@ export function OfferPanel({ reservationId, senderType, senderName }: OfferPanel
     }
   }
 
+  if (senderType === "guest" && !priceSet && !cancelled) {
+    return (
+      <div className="border-t border-border bg-muted/30 p-3 text-sm text-muted-foreground sm:p-4">
+        La casa revisará las fechas y dejará aquí el precio cuando esté listo.
+      </div>
+    )
+  }
+
+  if (closed) {
+    return (
+      <div className="border-t border-border bg-muted/30 p-3 text-sm text-muted-foreground sm:p-4">
+        {accepted
+          ? "Precio aceptado. El siguiente paso quedará indicado en el chat."
+          : rejected
+            ? "Precio rechazado. Si queréis seguir hablando, escribid un mensaje normal."
+            : cancelled
+              ? "Solicitud cancelada."
+              : "Contrato registrado."}
+      </div>
+    )
+  }
+
   return (
     <div className="border-t border-border bg-muted/30 p-3 sm:p-4">
       {senderType === "admin" ? (
         <div className="space-y-3">
-          <div className="grid gap-2 sm:grid-cols-[120px_1fr_auto]">
-            <Input
-              inputMode="numeric"
-              value={amount}
-              onChange={(event) => setAmount(event.target.value)}
-              placeholder="Importe EUR"
-              className="bg-background"
-            />
-            <Input
-              value={note}
-              onChange={(event) => setNote(event.target.value)}
-              placeholder="Nota para el huésped: qué incluye el precio, condiciones o detalle relevante"
-              className="bg-background"
-            />
-            <Button type="button" onClick={submitOwnerPrice} disabled={busy || !amount}>
-              <HandCoins className="h-4 w-4" />
-              Fijar precio
-            </Button>
-          </div>
+          {!priceSet ? (
+            <div className="grid gap-2 sm:grid-cols-[120px_1fr_auto]">
+              <Input
+                inputMode="numeric"
+                value={amount}
+                onChange={(event) => setAmount(event.target.value)}
+                placeholder="Importe EUR"
+                className="bg-background"
+              />
+              <Input
+                value={note}
+                onChange={(event) => setNote(event.target.value)}
+                placeholder="Nota para el huésped: qué incluye el precio, condiciones o detalle relevante"
+                className="bg-background"
+              />
+              <Button type="button" onClick={submitOwnerPrice} disabled={busy || !amount}>
+                <HandCoins className="h-4 w-4" />
+                Fijar precio
+              </Button>
+            </div>
+          ) : null}
           <div className="flex flex-wrap gap-2">
-            <Button type="button" variant="secondary" size="sm" onClick={requestSignature} disabled={busy}>
-              <FileSignature className="h-4 w-4" />
-              Solicitar contrato y señal
-            </Button>
+            {priceSet && !contractRequested ? (
+              <Button type="button" variant="secondary" size="sm" onClick={requestSignature} disabled={busy}>
+                <FileSignature className="h-4 w-4" />
+                Solicitar contrato y señal
+              </Button>
+            ) : null}
             <Button type="button" variant="outline" size="sm" onClick={() => sendDecision("cancel_request")} disabled={busy}>
               <XCircle className="h-4 w-4" />
               Cancelar solicitud
@@ -130,11 +191,14 @@ export function OfferPanel({ reservationId, senderType, senderName }: OfferPanel
               Borrar solicitud
             </Button>
           </div>
+          {priceSet && contractRequested ? (
+            <p className="text-sm text-muted-foreground">Precio fijado y contrato solicitado. Esperando respuesta del huésped.</p>
+          ) : null}
         </div>
       ) : (
         <div className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            Cuando el propietario revise las fechas, dejará aquí el precio de la estancia. Podrás aceptarlo o rechazarlo.
+            El propietario ha dejado el precio de la estancia. Puedes aceptarlo, rechazarlo o cancelar la solicitud.
           </p>
           <div className="grid gap-2 sm:grid-cols-[150px_1fr]">
             <Input

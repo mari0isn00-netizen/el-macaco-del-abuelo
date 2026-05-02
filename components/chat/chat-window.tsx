@@ -242,7 +242,7 @@ export function ChatWindow({
       </div>
 
       {/* Input */}
-      {showOfferPanel ? <OfferPanel reservationId={reservationId} senderType={senderType} senderName={senderName} /> : null}
+      {showOfferPanel ? <OfferPanel reservationId={reservationId} senderType={senderType} senderName={senderName} messages={messages} /> : null}
       <div className="border-t border-border bg-card p-3 sm:p-4">
         <form onSubmit={handleSend} className="flex items-center gap-2">
           <Input
