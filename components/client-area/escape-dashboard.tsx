@@ -1,9 +1,11 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
+import type { ComponentType } from "react"
 import Link from "next/link"
 import type { ChatMessage, Reservation } from "@/lib/types"
 import { Button } from "@/components/ui/button"
+import { WelcomeConfigurator } from "@/components/client-area/welcome-configurator"
 import {
   Calendar,
   Clock,
@@ -149,9 +151,7 @@ export function EscapeDashboard({ reservation, messages }: EscapeDashboardProps)
               Tu escapada privada
             </p>
             <h1 className="max-w-3xl font-serif text-5xl font-bold leading-tight md:text-7xl">El refugio ya os está esperando.</h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-white/85">
-              {season.tone}
-            </p>
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-white/85">{season.tone}</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90">
                 <Link href={`/chat/${reservation.id}`}>
@@ -176,18 +176,9 @@ export function EscapeDashboard({ reservation, messages }: EscapeDashboardProps)
               <p className="mt-4 font-serif text-4xl font-bold">Hoy empieza la estancia</p>
             ) : (
               <div className="mt-5 grid grid-cols-3 gap-3">
-                <div className="rounded-xl bg-white/15 p-4 text-center">
-                  <p className="font-serif text-4xl font-bold">{timeLeft.days}</p>
-                  <p className="mt-1 text-xs uppercase tracking-wide text-white/70">días</p>
-                </div>
-                <div className="rounded-xl bg-white/15 p-4 text-center">
-                  <p className="font-serif text-4xl font-bold">{timeLeft.hours}</p>
-                  <p className="mt-1 text-xs uppercase tracking-wide text-white/70">horas</p>
-                </div>
-                <div className="rounded-xl bg-white/15 p-4 text-center">
-                  <p className="font-serif text-4xl font-bold">{timeLeft.minutes}</p>
-                  <p className="mt-1 text-xs uppercase tracking-wide text-white/70">min</p>
-                </div>
+                <CountdownBox value={timeLeft.days} label="días" />
+                <CountdownBox value={timeLeft.hours} label="horas" />
+                <CountdownBox value={timeLeft.minutes} label="min" />
               </div>
             )}
             <div className="mt-5 rounded-xl bg-black/20 p-4 text-sm leading-6 text-white/80">
@@ -217,7 +208,9 @@ export function EscapeDashboard({ reservation, messages }: EscapeDashboardProps)
               <InfoCard icon={Clock} label="Atardecer aprox." value={season.sunset} />
               <InfoCard icon={Moon} label="Noche" value={season.moon} />
             </div>
-            <p className="mt-5 rounded-xl bg-muted p-4 text-sm leading-7 text-muted-foreground">{season.light}. {season.tone}</p>
+            <p className="mt-5 rounded-xl bg-muted p-4 text-sm leading-7 text-muted-foreground">
+              {season.light}. {season.tone}
+            </p>
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6">
@@ -238,6 +231,8 @@ export function EscapeDashboard({ reservation, messages }: EscapeDashboardProps)
               ))}
             </div>
           </div>
+
+          <WelcomeConfigurator reservation={reservation} messages={messages} />
 
           <div className="rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6">
             <h2 className="font-serif text-3xl font-bold text-foreground">Último movimiento</h2>
@@ -301,12 +296,21 @@ export function EscapeDashboard({ reservation, messages }: EscapeDashboardProps)
   )
 }
 
+function CountdownBox({ value, label }: { value: number; label: string }) {
+  return (
+    <div className="rounded-xl bg-white/15 p-4 text-center">
+      <p className="font-serif text-4xl font-bold">{value}</p>
+      <p className="mt-1 text-xs uppercase tracking-wide text-white/70">{label}</p>
+    </div>
+  )
+}
+
 function InfoCard({
   icon: Icon,
   label,
   value,
 }: {
-  icon: React.ComponentType<{ className?: string }>
+  icon: ComponentType<{ className?: string }>
   label: string
   value: string
 }) {
@@ -324,7 +328,7 @@ function SummaryRow({
   label,
   value,
 }: {
-  icon: React.ComponentType<{ className?: string }>
+  icon: ComponentType<{ className?: string }>
   label: string
   value: string
 }) {
