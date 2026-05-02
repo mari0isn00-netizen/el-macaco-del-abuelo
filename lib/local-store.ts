@@ -1,13 +1,8 @@
 import { promises as fs } from "fs"
 import os from "os"
 import path from "path"
+import { isFirebaseStoreConfigured, readFirebaseStore, writeFirebaseStore, type StoreData } from "@/lib/firebase-store"
 import type { ChatMessage, ConversationThread, Pricing, Reservation } from "@/lib/types"
-
-type StoreData = {
-  reservations: Reservation[]
-  chat_messages: ChatMessage[]
-  pricing: Pricing[]
-}
 
 const storeDir = process.env.VERCEL ? path.join(os.tmpdir(), "el-macaco-del-abuelo") : path.join(process.cwd(), ".data")
 const storePath = path.join(storeDir, "local-store.json")
@@ -23,6 +18,18 @@ const emptyStore = (): StoreData => ({
 let memoryStore: StoreData = emptyStore()
 
 async function readStore(): Promise<StoreData> {
+  if (isFirebaseStoreConfigured()) {
+    try {
+      const firebaseStore = await readFirebaseStore()
+      if (firebaseStore) {
+        memoryStore = firebaseStore
+        return firebaseStore
+      }
+    } catch (error) {
+      console.error("Firebase store read failed; using local fallback:", error)
+    }
+  }
+
   try {
     const raw = await fs.readFile(storePath, "utf8")
     const parsed = JSON.parse(raw) as Partial<StoreData>
@@ -39,6 +46,15 @@ async function readStore(): Promise<StoreData> {
 
 async function writeStore(data: StoreData): Promise<void> {
   memoryStore = data
+
+  if (isFirebaseStoreConfigured()) {
+    try {
+      await writeFirebaseStore(data)
+      return
+    } catch (error) {
+      console.error("Firebase store write failed; using local fallback:", error)
+    }
+  }
 
   try {
     await fs.mkdir(storeDir, { recursive: true })
