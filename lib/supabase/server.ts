@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { createDisabledServerClient, hasSupabaseConfig } from "@/lib/supabase/disabled-client"
 
 /**
  * Especially important if using Fluid compute: Don't put this client in a
@@ -8,6 +9,10 @@ import { cookies } from 'next/headers'
  */
 export async function createClient() {
   const cookieStore = await cookies()
+
+  if (!hasSupabaseConfig()) {
+    return createDisabledServerClient() as never
+  }
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
