@@ -6,6 +6,7 @@ import { sendTelegramAdminNotification } from "@/lib/admin-notifications"
 import {
   createLocalChatMessage,
   createLocalReservation,
+  confirmLocalDepositPayment,
   deleteLocalReservation,
   getLocalBlockedDates,
   getLocalPricing,
@@ -276,6 +277,60 @@ export async function acceptContractAndSubmitDeposit(input: {
   })
 
   return { success: true, reservation: data }
+}
+
+export async function confirmDepositPayment(input: {
+  reservationId: string
+  senderName: string
+}): Promise<{ success: boolean; error?: string }> {
+  const now = new Date().toISOString()
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from("reservations")
+    .update({
+      deposit_status: "paid",
+      deposit_paid_at: now,
+      status: "confirmed",
+      updated_at: now,
+    })
+    .eq("id", input.reservationId)
+
+  if (error) {
+    console.error("Error confirming deposit:", error)
+    const reservation = await confirmLocalDepositPayment(input.reservationId)
+    if (!reservation) {
+      return { success: false, error: "No hemos encontrado esta reserva." }
+    }
+  } else {
+    await confirmLocalDepositPayment(input.reservationId)
+  }
+
+  const text = [
+    "SEÑAL CONFIRMADA POR LA CASA",
+    "La casa ha comprobado el Bizum de 100 EUR y deja la reserva confirmada en la web.",
+    "Siguiente paso: usad este mismo chat para coordinar llegada, acceso y cualquier detalle previo.",
+  ].join("\n")
+
+  const { error: messageError } = await supabase.from("chat_messages").insert({
+    reservation_id: input.reservationId,
+    sender_type: "admin",
+    sender_name: input.senderName,
+    message: text,
+    read: false,
+  })
+
+  if (messageError) {
+    await createLocalChatMessage({
+      reservation_id: input.reservationId,
+      sender_type: "admin",
+      sender_name: input.senderName,
+      message: text,
+      read: false,
+    })
+  }
+
+  return { success: true }
 }
 
 export async function registerOffer(input: {

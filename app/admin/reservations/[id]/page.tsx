@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { checkAdminAuth, getReservationWithMessages, updateReservationStatus } from "@/app/actions/admin"
+import { confirmDepositPayment } from "@/app/actions/reservations"
 import { ChatWindow } from "@/components/chat/chat-window"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Calendar, Users, Euro, CheckCircle, XCircle, MessageCircle, FileText } from "lucide-react"
@@ -54,6 +55,15 @@ export default async function AdminReservationPage({ params }: AdminReservationP
     redirect(`/admin/reservations/${id}`)
   }
 
+  async function handleDepositConfirmation() {
+    "use server"
+    await confirmDepositPayment({
+      reservationId: id,
+      senderName: "El Macaco del Abuelo",
+    })
+    redirect(`/admin/reservations/${id}`)
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
@@ -82,24 +92,11 @@ export default async function AdminReservationPage({ params }: AdminReservationP
               <form action={handleStatusChange} className="flex flex-wrap gap-2">
                 {reservation.status === "pending" && (
                   <>
-                    <Button
-                      type="submit"
-                      name="status"
-                      value="confirmed"
-                      size="sm"
-                      className="bg-green-600 text-white hover:bg-green-700"
-                    >
+                    <Button type="submit" name="status" value="confirmed" size="sm" className="bg-green-600 text-white hover:bg-green-700">
                       <CheckCircle className="mr-1 h-4 w-4" />
                       Confirmar
                     </Button>
-                    <Button
-                      type="submit"
-                      name="status"
-                      value="cancelled"
-                      size="sm"
-                      variant="outline"
-                      className="border-red-300 text-red-600 hover:bg-red-50"
-                    >
+                    <Button type="submit" name="status" value="cancelled" size="sm" variant="outline" className="border-red-300 text-red-600 hover:bg-red-50">
                       <XCircle className="mr-1 h-4 w-4" />
                       Cancelar
                     </Button>
@@ -107,24 +104,11 @@ export default async function AdminReservationPage({ params }: AdminReservationP
                 )}
                 {reservation.status === "confirmed" && (
                   <>
-                    <Button
-                      type="submit"
-                      name="status"
-                      value="completed"
-                      size="sm"
-                      className="bg-blue-600 text-white hover:bg-blue-700"
-                    >
+                    <Button type="submit" name="status" value="completed" size="sm" className="bg-blue-600 text-white hover:bg-blue-700">
                       <CheckCircle className="mr-1 h-4 w-4" />
                       Completar
                     </Button>
-                    <Button
-                      type="submit"
-                      name="status"
-                      value="cancelled"
-                      size="sm"
-                      variant="outline"
-                      className="border-red-300 text-red-600 hover:bg-red-50"
-                    >
+                    <Button type="submit" name="status" value="cancelled" size="sm" variant="outline" className="border-red-300 text-red-600 hover:bg-red-50">
                       <XCircle className="mr-1 h-4 w-4" />
                       Cancelar
                     </Button>
@@ -136,14 +120,10 @@ export default async function AdminReservationPage({ params }: AdminReservationP
             <div className="rounded-xl border border-border bg-card p-6">
               <h2 className="mb-4 font-semibold text-foreground">Huésped</h2>
               <div className="space-y-3">
-                <div>
-                  <p className="text-lg font-medium text-foreground">{reservation.guest_name}</p>
-                </div>
+                <p className="text-lg font-medium text-foreground">{reservation.guest_name}</p>
                 <div className="flex items-start gap-3 text-sm text-muted-foreground">
                   <MessageCircle className="mt-0.5 h-4 w-4 text-primary" />
-                  <p>
-                    El contacto con esta reserva se gestiona por el chat web. No dependemos de teléfono ni correo para seguir la conversación.
-                  </p>
+                  <p>El contacto con esta reserva se gestiona por el chat web. Así queda todo escrito y supervisado.</p>
                 </div>
               </div>
             </div>
@@ -151,39 +131,21 @@ export default async function AdminReservationPage({ params }: AdminReservationP
             <div className="rounded-xl border border-border bg-card p-6">
               <h2 className="mb-4 font-semibold text-foreground">Fechas</h2>
               <div className="space-y-3">
-                <div className="flex items-start gap-3">
-                  <Calendar className="mt-0.5 h-5 w-5 text-primary" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Entrada</p>
-                    <p className="font-medium text-foreground">{formatDate(reservation.check_in)}</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Calendar className="mt-0.5 h-5 w-5 text-primary" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Salida</p>
-                    <p className="font-medium text-foreground">{formatDate(reservation.check_out)}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Users className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Huéspedes</p>
-                    <p className="font-medium text-foreground">{reservation.guests} personas</p>
-                  </div>
-                </div>
+                <InfoLine icon={Calendar} label="Entrada" value={formatDate(reservation.check_in)} />
+                <InfoLine icon={Calendar} label="Salida" value={formatDate(reservation.check_out)} />
+                <InfoLine icon={Users} label="Huéspedes" value={`${reservation.guests} personas`} />
               </div>
             </div>
 
             <div className="rounded-xl border border-border bg-card p-6">
-              <h2 className="mb-4 font-semibold text-foreground">Precio</h2>
+              <h2 className="mb-4 font-semibold text-foreground">Precio y señal</h2>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <Euro className="h-6 w-6 text-secondary" />
                   <p className="text-2xl font-bold text-foreground">{reservation.total_price} EUR</p>
                 </div>
                 <div className="rounded-lg border border-border bg-background p-3 text-sm">
-                  <p className="text-muted-foreground">Senal de reserva</p>
+                  <p className="text-muted-foreground">Señal de reserva</p>
                   <p className="mt-1 font-medium text-foreground">
                     {reservation.deposit_status === "paid"
                       ? "100 EUR confirmada"
@@ -197,6 +159,23 @@ export default async function AdminReservationPage({ params }: AdminReservationP
                       {reservation.contract_acceptance_dni ? ` · DNI ${reservation.contract_acceptance_dni}` : ""}
                     </p>
                   ) : null}
+                  {reservation.deposit_status === "submitted" ? (
+                    <form action={handleDepositConfirmation} className="mt-3">
+                      <Button type="submit" size="sm" className="w-full bg-green-700 text-white hover:bg-green-800">
+                        <CheckCircle className="mr-1 h-4 w-4" />
+                        Confirmar Bizum recibido
+                      </Button>
+                    </form>
+                  ) : null}
+                  {reservation.deposit_status === "paid" ? (
+                    <p className="mt-2 rounded-md bg-green-50 p-2 text-xs text-green-800">
+                      Pago revisado por la casa. La reserva queda lista para coordinar llegada.
+                    </p>
+                  ) : (
+                    <p className="mt-2 rounded-md bg-amber-50 p-2 text-xs text-amber-800">
+                      El Bizum personal requiere comprobación manual antes de dar la señal por confirmada.
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -214,12 +193,9 @@ export default async function AdminReservationPage({ params }: AdminReservationP
                 <div>
                   <h2 className="font-semibold text-foreground">Contrato</h2>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    Borrador imprimible con fechas, importe, normas y condiciones de la estancia.
+                    Borrador imprimible con importe, normas, pago y condiciones de la estancia.
                   </p>
-                  <Link
-                    href={`/contrato/${reservation.id}`}
-                    className="mt-3 inline-flex text-sm font-medium text-primary hover:text-primary/80"
-                  >
+                  <Link href={`/contrato/${reservation.id}`} className="mt-3 inline-flex text-sm font-medium text-primary hover:text-primary/80">
                     Abrir contrato
                   </Link>
                 </div>
@@ -237,6 +213,26 @@ export default async function AdminReservationPage({ params }: AdminReservationP
           </div>
         </div>
       </main>
+    </div>
+  )
+}
+
+function InfoLine({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: typeof Calendar
+  label: string
+  value: string
+}) {
+  return (
+    <div className="flex items-start gap-3">
+      <Icon className="mt-0.5 h-5 w-5 text-primary" />
+      <div>
+        <p className="text-sm text-muted-foreground">{label}</p>
+        <p className="font-medium text-foreground">{value}</p>
+      </div>
     </div>
   )
 }

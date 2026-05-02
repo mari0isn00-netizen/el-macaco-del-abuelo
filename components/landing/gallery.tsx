@@ -5,8 +5,8 @@ import Image from "next/image"
 import { X, ChevronLeft, ChevronRight } from "lucide-react"
 
 const images = [
-  { src: "/images/emda-piscina-atardecer.webp", alt: "Piscina privada al atardecer", category: "Piscina" },
-  { src: "/images/emda-piscina-jardin.webp", alt: "Piscina y jardín privado", category: "Exterior" },
+  { src: "/images/emda-piscina-atardecer.webp", alt: "Piscina al atardecer", category: "Piscina" },
+  { src: "/images/emda-piscina-jardin.webp", alt: "Piscina y jardín", category: "Exterior" },
   { src: "/images/emda-piscina-jacuzzi.webp", alt: "Jacuzzi junto a la piscina", category: "Piscina" },
   { src: "/images/emda-tumbonas-piscina.webp", alt: "Tumbonas junto al agua", category: "Descanso" },
   { src: "/images/emda-rincon-jardin.webp", alt: "Zona de descanso junto a la piscina", category: "Piscina" },

@@ -159,6 +159,20 @@ export async function submitLocalContractAndDeposit(input: {
   return reservation
 }
 
+export async function confirmLocalDepositPayment(id: string): Promise<Reservation | null> {
+  const store = await readStore()
+  const reservation = store.reservations.find((item) => item.id === id)
+  if (!reservation) return null
+
+  const now = new Date().toISOString()
+  reservation.deposit_status = "paid"
+  reservation.deposit_paid_at = now
+  reservation.status = "confirmed"
+  reservation.updated_at = now
+  await writeStore(store)
+  return reservation
+}
+
 export async function setLocalAgreedPrice(id: string, amount: number): Promise<Reservation | null> {
   const store = await readStore()
   const reservation = store.reservations.find((item) => item.id === id)

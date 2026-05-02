@@ -1,22 +1,11 @@
 import Link from "next/link"
-import {
-  Waves,
-  TreePine,
-  Flame,
-  Wifi,
-  Wind,
-  UtensilsCrossed,
-  Car,
-  Sun,
-  Shirt,
-  Coffee,
-} from "lucide-react"
+import { Waves, TreePine, Flame, Wifi, Wind, UtensilsCrossed, Car, Sun, Shirt, Coffee } from "lucide-react"
 
 const amenities = [
   {
     icon: Waves,
-    title: "Piscina privada",
-    description: "Agua tranquila para ir despacio, sin compartir el baño con otras reservas.",
+    title: "Piscina y agua",
+    description: "Agua tranquila para ir despacio, dentro de una estancia cuidada y sin otras reservas en paralelo.",
   },
   {
     icon: TreePine,
@@ -56,7 +45,7 @@ const amenities = [
   {
     icon: Sun,
     title: "Parcela familiar",
-    description: "Estamos cerca si necesitáis algo, sin invadir vuestra estancia.",
+    description: "Los dueños viven en la casa principal y están cerca si necesitáis algo.",
   },
   {
     icon: Shirt,
@@ -81,10 +70,7 @@ export function Amenities() {
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
           {amenities.map((amenity, index) => (
-            <div
-              key={index}
-              className="group rounded-xl border border-border bg-card p-6 transition-all duration-300 hover:border-primary/30 hover:shadow-lg"
-            >
+            <div key={index} className="group rounded-xl border border-border bg-card p-6 transition-all duration-300 hover:border-primary/30 hover:shadow-lg">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/20">
                 <amenity.icon className="h-6 w-6 text-primary" />
               </div>
@@ -101,14 +87,11 @@ export function Amenities() {
               <div>
                 <h3 className="font-semibold text-foreground">Si queréis preguntar algo antes</h3>
                 <p className="text-sm text-muted-foreground">
-                  Abrid conversación por web y os respondemos con las fechas, normas o detalles de la estancia.
+                  Abrid conversación por web y os respondemos con disponibilidad, normas o detalles de la estancia.
                 </p>
               </div>
             </div>
-            <Link
-              href="/contactar"
-              className="whitespace-nowrap font-medium text-secondary transition-colors hover:text-secondary/80"
-            >
+            <Link href="/contactar" className="whitespace-nowrap font-medium text-secondary transition-colors hover:text-secondary/80">
               Hablar por chat
             </Link>
           </div>

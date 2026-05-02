@@ -1,24 +1,12 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect } from "react"
 import type { ComponentType } from "react"
 import Link from "next/link"
 import type { ChatMessage, Reservation } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { WelcomeConfigurator } from "@/components/client-area/welcome-configurator"
-import {
-  Calendar,
-  Clock,
-  CloudSun,
-  Compass,
-  FileSignature,
-  MapPin,
-  MessageCircle,
-  Moon,
-  Sparkles,
-  Sunrise,
-  ThermometerSun,
-} from "lucide-react"
+import { CheckCircle2, FileSignature, Handshake, Home, MapPin, MessageCircle, ShieldCheck, Sparkles, WalletCards } from "lucide-react"
 
 type EscapeDashboardProps = {
   reservation: Reservation
@@ -27,103 +15,20 @@ type EscapeDashboardProps = {
 
 const mapsUrl = "https://maps.app.goo.gl/4mM3XHJwqo9bBHNC9"
 
-const seasonalData = [
-  {
-    months: [2, 3, 4],
-    title: "Primavera de olivar",
-    image: "/images/emda-piscina-jardin.webp",
-    tone: "Mañanas suaves, jardín despierto y tardes largas para abrir la casa sin prisa.",
-    temperature: "20-27 °C",
-    sunrise: "07:25",
-    sunset: "21:05",
-    light: "Luz dorada y limpia",
-    moon: "Noches templadas",
-    ideas: ["Paseo por el casco histórico de Carmona", "Tarde de piscina sin calor extremo", "Cena tranquila al aire libre"],
-  },
-  {
-    months: [5, 6, 7],
-    title: "Verano de piscina",
-    image: "/images/emda-piscina-atardecer.webp",
-    tone: "Días intensos de agua, sombra y siesta. La escapada se vive alrededor de la piscina.",
-    temperature: "30-38 °C",
-    sunrise: "07:05",
-    sunset: "21:35",
-    light: "Tardes muy largas",
-    moon: "Noches abiertas",
-    ideas: ["Piscina al caer la tarde", "Visita temprana a Carmona", "Plan lento de jardín y jacuzzi"],
-  },
-  {
-    months: [8, 9, 10],
-    title: "Otoño tranquilo",
-    image: "/images/emda-rincon-jardin.webp",
-    tone: "El campo baja el ritmo: tardes serenas, luz cálida y descanso sin el ruido del verano.",
-    temperature: "18-28 °C",
-    sunrise: "08:00",
-    sunset: "19:45",
-    light: "Luz baja y cálida",
-    moon: "Noches frescas",
-    ideas: ["Ruta por Carmona sin prisas", "Desayuno exterior", "Jacuzzi y manta al anochecer"],
-  },
-  {
-    months: [11, 0, 1],
-    title: "Invierno de refugio",
-    image: "/images/emda-entrada-apartamento.webp",
-    tone: "Mañanas frescas, calma de parcela y una estancia más íntima, de conversación y descanso.",
-    temperature: "10-18 °C",
-    sunrise: "08:25",
-    sunset: "18:20",
-    light: "Sol bajo de campo",
-    moon: "Noches frías y claras",
-    ideas: ["Carmona monumental", "Comida larga en la zona", "Atardecer en la parcela"],
-  },
-]
-
-function getSeason(dateString: string) {
-  const month = new Date(dateString).getMonth()
-  return seasonalData.find((season) => season.months.includes(month)) || seasonalData[0]
-}
-
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString("es-ES", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  })
-}
-
-function getTimeLeft(checkIn: string) {
-  const target = new Date(`${checkIn}T12:00:00`).getTime()
-  const now = Date.now()
-  const diff = Math.max(0, target - now)
-
-  return {
-    days: Math.floor(diff / 86_400_000),
-    hours: Math.floor((diff % 86_400_000) / 3_600_000),
-    minutes: Math.floor((diff % 3_600_000) / 60_000),
-    arrived: diff === 0,
-  }
-}
-
 function statusText(reservation: Reservation, hasPrice: boolean, hasContract: boolean) {
   if (reservation.status === "cancelled") return "Solicitud cancelada"
-  if (hasContract) return "Contrato firmado"
-  if (reservation.deposit_status === "submitted") return "Señal avisada"
+  if (reservation.deposit_status === "paid") return "Señal confirmada"
+  if (hasContract || reservation.deposit_status === "submitted") return "Señal en revisión"
   if (hasPrice) return "Precio listo para revisar"
   return "Solicitud en revisión"
 }
 
 export function EscapeDashboard({ reservation, messages }: EscapeDashboardProps) {
-  const [timeLeft, setTimeLeft] = useState(() => getTimeLeft(reservation.check_in))
-  const season = useMemo(() => getSeason(reservation.check_in), [reservation.check_in])
   const total = reservation.agreed_price || reservation.total_price
   const hasPrice = total > 0
   const hasContract = Boolean(reservation.contract_accepted_at)
+  const depositConfirmed = reservation.deposit_status === "paid"
   const lastMessage = [...messages].sort((a, b) => b.created_at.localeCompare(a.created_at))[0]
-
-  useEffect(() => {
-    const interval = window.setInterval(() => setTimeLeft(getTimeLeft(reservation.check_in)), 30_000)
-    return () => window.clearInterval(interval)
-  }, [reservation.check_in])
 
   useEffect(() => {
     window.localStorage.setItem("macaco_client_reservation_id", reservation.id)
@@ -131,27 +36,30 @@ export function EscapeDashboard({ reservation, messages }: EscapeDashboardProps)
   }, [reservation.id])
 
   const steps = [
-    { label: "Solicitud enviada", done: true },
-    { label: "Precio fijado", done: hasPrice },
-    { label: "Precio aceptado", done: messages.some((message) => message.message.startsWith("PRECIO ACEPTADO")) },
-    { label: "Contrato enviado", done: messages.some((message) => message.message.startsWith("CONTRATO Y SEÑAL DISPONIBLES")) },
-    { label: "Contrato firmado", done: hasContract },
+    { label: "Solicitud recibida por la casa", done: true },
+    { label: "Precio fijado en el chat", done: hasPrice },
+    { label: "Precio aceptado por el huésped", done: messages.some((message) => message.message.startsWith("PRECIO ACEPTADO")) },
+    { label: "Contrato y firma registrados", done: hasContract },
+    { label: "Señal comprobada por la casa", done: depositConfirmed },
   ]
 
   return (
     <main className="min-h-screen bg-background pt-20 md:pt-24">
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
-          <img src={season.image} alt="" className="h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(35,25,16,.82),rgba(35,25,16,.52),rgba(35,25,16,.12))]" />
+          <img src="/images/emda-entrada-apartamento.webp" alt="" className="h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(35,25,16,.86),rgba(35,25,16,.56),rgba(35,25,16,.18))]" />
         </div>
-        <div className="relative mx-auto grid min-h-[520px] max-w-7xl items-end gap-8 px-4 py-10 text-white sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
+        <div className="relative mx-auto grid min-h-[430px] max-w-7xl items-end gap-8 px-4 py-10 text-white sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
           <div className="pb-4">
             <p className="mb-4 inline-flex rounded-full bg-white/15 px-4 py-2 text-xs uppercase tracking-[0.22em] backdrop-blur">
-              Tu escapada privada
+              Área de cliente
             </p>
-            <h1 className="max-w-3xl font-serif text-5xl font-bold leading-tight md:text-7xl">El refugio ya os está esperando.</h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-white/85">{season.tone}</p>
+            <h1 className="max-w-3xl font-serif text-5xl font-bold leading-tight md:text-7xl">Seguimiento directo con la casa.</h1>
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-white/85">
+              La parcela se comparte con los dueños, que viven en la casa principal. La estancia busca una sensación cercana,
+              cuidada y de comunidad, con respeto total y ayuda disponible si la necesitáis.
+            </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90">
                 <Link href={`/chat/${reservation.id}`}>
@@ -171,21 +79,18 @@ export function EscapeDashboard({ reservation, messages }: EscapeDashboardProps)
           </div>
 
           <div className="rounded-2xl border border-white/20 bg-white/15 p-5 shadow-2xl backdrop-blur-md sm:p-6">
-            <p className="text-sm uppercase tracking-[0.22em] text-white/70">Cuenta atrás</p>
-            {timeLeft.arrived ? (
-              <p className="mt-4 font-serif text-4xl font-bold">Hoy empieza la estancia</p>
-            ) : (
-              <div className="mt-5 grid grid-cols-3 gap-3">
-                <CountdownBox value={timeLeft.days} label="días" />
-                <CountdownBox value={timeLeft.hours} label="horas" />
-                <CountdownBox value={timeLeft.minutes} label="min" />
-              </div>
-            )}
+            <p className="text-sm uppercase tracking-[0.22em] text-white/70">Estado de la reserva</p>
+            <p className="mt-4 font-serif text-4xl font-bold">{statusText(reservation, hasPrice, hasContract)}</p>
             <div className="mt-5 rounded-xl bg-black/20 p-4 text-sm leading-6 text-white/80">
-              Entrada prevista: <strong>{formatDate(reservation.check_in)}</strong>
+              Importe: <strong>{hasPrice ? `${total} EUR` : "pendiente de revisión"}</strong>
               <br />
-              Estado: <strong>{statusText(reservation, hasPrice, hasContract)}</strong>
+              Señal: <strong>{depositConfirmed ? "confirmada" : reservation.deposit_status === "submitted" ? "en comprobación" : "pendiente"}</strong>
             </div>
+            {depositConfirmed ? (
+              <p className="mt-4 rounded-xl bg-green-500/20 p-4 text-sm leading-6 text-white">
+                La casa ha comprobado el Bizum. Ahora el hilo queda para coordinar llegada, acceso y detalles finales.
+              </p>
+            ) : null}
           </div>
         </div>
       </section>
@@ -193,50 +98,28 @@ export function EscapeDashboard({ reservation, messages }: EscapeDashboardProps)
       <section className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
         <div className="space-y-6">
           <div className="rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6">
-            <div className="flex items-center gap-3">
+            <div className="flex items-start gap-3">
               <div className="rounded-xl bg-primary/10 p-3 text-primary">
-                <CloudSun className="h-5 w-5" />
+                <Home className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-sm uppercase tracking-[0.2em] text-primary">Cómo estará el refugio</p>
-                <h2 className="mt-1 font-serif text-3xl font-bold text-foreground">{season.title}</h2>
+                <p className="text-sm uppercase tracking-[0.2em] text-primary">Parcela compartida</p>
+                <h2 className="mt-1 font-serif text-3xl font-bold text-foreground">Una casa con presencia cercana</h2>
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                  Los dueños viven en la casa principal de la misma parcela. No es un hotel aislado ni una entrega anónima:
+                  hay una convivencia tranquila, supervisión discreta y trato directo si necesitáis cualquier cosa.
+                </p>
               </div>
             </div>
-            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <InfoCard icon={ThermometerSun} label="Temperatura media" value={season.temperature} />
-              <InfoCard icon={Sunrise} label="Amanecer aprox." value={season.sunrise} />
-              <InfoCard icon={Clock} label="Atardecer aprox." value={season.sunset} />
-              <InfoCard icon={Moon} label="Noche" value={season.moon} />
-            </div>
-            <p className="mt-5 rounded-xl bg-muted p-4 text-sm leading-7 text-muted-foreground">
-              {season.light}. {season.tone}
-            </p>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6">
-            <div className="flex items-center gap-3">
-              <div className="rounded-xl bg-secondary/10 p-3 text-secondary">
-                <Sparkles className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-sm uppercase tracking-[0.2em] text-secondary">Plan sugerido</p>
-                <h2 className="mt-1 font-serif text-3xl font-bold text-foreground">Ideas para esas fechas</h2>
-              </div>
-            </div>
-            <div className="mt-5 grid gap-3">
-              {season.ideas.map((idea) => (
-                <div key={idea} className="rounded-xl border border-border bg-background p-4 text-sm text-foreground">
-                  {idea}
-                </div>
-              ))}
-            </div>
-          </div>
+          <PaymentSupervision confirmed={depositConfirmed} submitted={reservation.deposit_status === "submitted"} />
 
           <WelcomeConfigurator reservation={reservation} messages={messages} />
 
           <div className="rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6">
             <h2 className="font-serif text-3xl font-bold text-foreground">Último movimiento</h2>
-            <p className="mt-3 text-sm leading-7 text-muted-foreground">
+            <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-muted-foreground">
               {lastMessage ? lastMessage.message : "Todavía no hay mensajes en el hilo."}
             </p>
             <Button asChild className="mt-5">
@@ -250,13 +133,13 @@ export function EscapeDashboard({ reservation, messages }: EscapeDashboardProps)
 
         <aside className="space-y-6">
           <div className="rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6">
-            <p className="text-sm uppercase tracking-[0.2em] text-primary">Reserva</p>
-            <h2 className="mt-1 font-serif text-3xl font-bold text-foreground">Resumen</h2>
+            <p className="text-sm uppercase tracking-[0.2em] text-primary">Resumen</p>
+            <h2 className="mt-1 font-serif text-3xl font-bold text-foreground">Estado</h2>
             <div className="mt-5 grid gap-3">
-              <SummaryRow icon={Calendar} label="Entrada" value={formatDate(reservation.check_in)} />
-              <SummaryRow icon={Calendar} label="Salida" value={formatDate(reservation.check_out)} />
-              <SummaryRow icon={Compass} label="Huéspedes" value={`${reservation.guests}`} />
-              <SummaryRow icon={FileSignature} label="Importe" value={hasPrice ? `${total} EUR` : "Pendiente"} />
+              <SummaryRow icon={Handshake} label="Solicitud" value={reservation.status === "cancelled" ? "Cancelada" : "Activa"} />
+              <SummaryRow icon={WalletCards} label="Importe" value={hasPrice ? `${total} EUR` : "Pendiente"} />
+              <SummaryRow icon={ShieldCheck} label="Señal" value={depositConfirmed ? "Confirmada" : "Pendiente de comprobación"} />
+              <SummaryRow icon={FileSignature} label="Contrato" value={hasContract ? "Firmado" : "Pendiente"} />
             </div>
           </div>
 
@@ -296,29 +179,27 @@ export function EscapeDashboard({ reservation, messages }: EscapeDashboardProps)
   )
 }
 
-function CountdownBox({ value, label }: { value: number; label: string }) {
+function PaymentSupervision({ confirmed, submitted }: { confirmed: boolean; submitted: boolean }) {
   return (
-    <div className="rounded-xl bg-white/15 p-4 text-center">
-      <p className="font-serif text-4xl font-bold">{value}</p>
-      <p className="mt-1 text-xs uppercase tracking-wide text-white/70">{label}</p>
-    </div>
-  )
-}
-
-function InfoCard({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: ComponentType<{ className?: string }>
-  label: string
-  value: string
-}) {
-  return (
-    <div className="rounded-xl border border-border bg-background p-4">
-      <Icon className="h-5 w-5 text-primary" />
-      <p className="mt-3 text-xs uppercase tracking-[0.16em] text-muted-foreground">{label}</p>
-      <p className="mt-1 font-semibold text-foreground">{value}</p>
+    <div className="rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6">
+      <div className="flex items-start gap-3">
+        <div className="rounded-xl bg-secondary/10 p-3 text-secondary">
+          {confirmed ? <CheckCircle2 className="h-5 w-5" /> : <WalletCards className="h-5 w-5" />}
+        </div>
+        <div>
+          <p className="text-sm uppercase tracking-[0.2em] text-secondary">Supervisión del pago</p>
+          <h2 className="mt-1 font-serif text-3xl font-bold text-foreground">
+            {confirmed ? "Señal confirmada por la casa" : submitted ? "Señal en comprobación" : "Señal pendiente"}
+          </h2>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">
+            {confirmed
+              ? "La casa ha revisado el Bizum y ha dejado constancia en el hilo. A partir de aquí, el chat sirve para coordinar llegada, acceso y cualquier detalle final."
+              : submitted
+                ? "El contrato y el aviso de Bizum ya están registrados. Los dueños revisan manualmente el movimiento bancario antes de marcarlo como confirmado."
+                : "Cuando el contrato esté disponible y el precio esté aceptado, la señal se registrará desde la propia página y quedará pendiente de comprobación manual."}
+          </p>
+        </div>
+      </div>
     </div>
   )
 }

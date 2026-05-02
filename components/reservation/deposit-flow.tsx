@@ -118,10 +118,13 @@ export function DepositFlow({ reservation }: DepositFlowProps) {
         {submitted ? (
           <div className="mx-auto max-w-xl text-center">
             <CheckCircle className="mx-auto mb-4 h-12 w-12 text-secondary" />
-            <h2 className="text-2xl font-semibold text-foreground">Contrato firmado</h2>
+            <h2 className="text-2xl font-semibold text-foreground">
+              {reservation.deposit_status === "paid" ? "Señal confirmada" : "Contrato firmado"}
+            </h2>
             <p className="mt-3 text-sm text-muted-foreground">
-              El contrato queda registrado y la señal de 100 EUR queda pendiente de confirmación bancaria.
-              Cuando tengamos Bizum comercio, esto se podrá confirmar automáticamente.
+              {reservation.deposit_status === "paid"
+                ? "La casa ha comprobado el Bizum de 100 EUR. A partir de aquí, el chat queda para coordinar llegada, acceso y cualquier detalle final."
+                : "El contrato queda registrado y la señal de 100 EUR queda pendiente de comprobación bancaria manual por parte de la casa."}
             </p>
             <Button asChild className="mt-6">
               <Link href={`/chat/${reservation.id}`}>

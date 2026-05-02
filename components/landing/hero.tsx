@@ -9,7 +9,7 @@ export function Hero() {
       <div className="absolute inset-0 z-0">
         <Image
           src="/images/emda-piscina-atardecer.webp"
-          alt="Piscina privada al atardecer en El Macaco del Abuelo"
+          alt="Piscina al atardecer en El Macaco del Abuelo"
           fill
           className="object-cover"
           priority
@@ -29,8 +29,8 @@ export function Hero() {
           </h1>
 
           <p className="mb-8 max-w-xl text-lg leading-relaxed text-muted-foreground md:text-xl">
-            Una parcela privada en Carmona convertida en refugio familiar: apartamento independiente,
-            piscina privada, jacuzzi, jardín y una historia que viene del campo de Arahal.
+            Una parcela familiar en Carmona, compartida con los dueños y convertida en refugio cercano:
+            apartamento independiente, piscina, jacuzzi, jardín y una historia que viene del campo de Arahal.
           </p>
 
           <div className="mb-10 flex flex-wrap gap-6">

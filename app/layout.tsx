@@ -5,12 +5,12 @@ import "./globals.css"
 export const metadata: Metadata = {
   title: "El Macaco del Abuelo | Refugio en Carmona",
   description:
-    "Apartamento independiente en una parcela familiar de Carmona, con piscina, jacuzzi y jardín. Reserva, seguimiento y conversación real desde la propia web.",
-  keywords: ["apartamento", "Carmona", "Sevilla", "reserva web", "piscina privada", "parcela familiar"],
+    "Apartamento independiente en una parcela familiar compartida con los dueños en Carmona, con piscina, jacuzzi y jardín. Reserva, seguimiento y conversación real desde la propia web.",
+  keywords: ["apartamento", "Carmona", "Sevilla", "reserva web", "piscina", "parcela familiar"],
   openGraph: {
     title: "El Macaco del Abuelo | Refugio en Carmona",
     description:
-      "Apartamento independiente en una parcela familiar de Carmona, con piscina, jacuzzi y jardín. Reserva y seguimiento desde la propia web.",
+      "Apartamento independiente en una parcela familiar compartida con los dueños en Carmona, con piscina, jacuzzi y jardín. Reserva y seguimiento desde la propia web.",
     type: "website",
   },
 }

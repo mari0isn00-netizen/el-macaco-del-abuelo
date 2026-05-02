@@ -23,7 +23,8 @@ export function Location() {
             </h2>
             <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
               El alojamiento está en Las Monjas, parcela 121, Carmona, Sevilla. El origen emocional
-              del nombre viene de Arahal, pero la estancia se vive aquí: una parcela privada, tranquila y bien comunicada.
+              del nombre viene de Arahal, pero la estancia se vive aquí: una parcela familiar compartida con los dueños,
+              tranquila y bien comunicada.
             </p>
 
             <div className="mt-8 flex items-start gap-4 rounded-lg bg-muted p-4">

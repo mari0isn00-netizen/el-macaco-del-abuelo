@@ -52,7 +52,6 @@ export function WelcomeConfigurator({ reservation, messages }: WelcomeConfigurat
     const message = [
       marker,
       `Huésped: ${reservation.guest_name}`,
-      `Fechas: ${new Date(reservation.check_in).toLocaleDateString("es-ES")} - ${new Date(reservation.check_out).toLocaleDateString("es-ES")}`,
       `Motivo de la estancia: ${occasion}`,
       `Primera vez en Carmona: ${firstVisit}`,
       `Vienen niños: ${children}`,

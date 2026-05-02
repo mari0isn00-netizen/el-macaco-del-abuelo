@@ -11,7 +11,7 @@ export function About() {
                 <Image src="/images/emda-salon-dormitorio.webp" alt="Salón dormitorio del apartamento independiente" fill className="object-cover" />
               </div>
               <div className="relative aspect-square overflow-hidden rounded-lg">
-                <Image src="/images/emda-piscina-jacuzzi.webp" alt="Piscina privada con jacuzzi" fill className="object-cover" />
+                <Image src="/images/emda-piscina-jacuzzi.webp" alt="Piscina con jacuzzi" fill className="object-cover" />
               </div>
             </div>
             <div className="pt-8">
@@ -32,14 +32,14 @@ export function About() {
                 su padre, a recoger aceitunas en Arahal. Campo, olivar, familia y trabajo quedaron unidos a ese recuerdo.
               </p>
               <p>
-                El alojamiento no está en Arahal. Está en Las Monjas, parcela 121, Carmona, Sevilla: una parcela
-                privada convertida en refugio con apartamento independiente, piscina privada, jacuzzi, jardín y
-                espacio exterior para descansar sin ruido.
+                El alojamiento no está en Arahal. Está en Las Monjas, parcela 121, Carmona, Sevilla: una parcela familiar
+                compartida con los dueños, con apartamento independiente, piscina, jacuzzi, jardín y espacio exterior para
+                descansar con calma.
               </p>
               <p>
-                Durante vuestra estancia, los dueños estarán en la casa principal de la parcela. La idea es que
-                tengáis privacidad: no saldrán ni intervendrán salvo que lo necesitéis, pidáis ayuda o queráis
-                cualquier detalle para estar más a gusto.
+                Durante vuestra estancia, los dueños vivirán en la casa principal de la parcela. La idea no es una entrega
+                fría ni anónima, sino una convivencia cercana y respetuosa: habrá comunidad, supervisión discreta y ayuda
+                si necesitáis algo.
               </p>
             </div>
 
