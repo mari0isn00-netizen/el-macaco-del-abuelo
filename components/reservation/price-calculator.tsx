@@ -70,9 +70,9 @@ export function PriceCalculator({ dateRange, guests }: PriceCalculatorProps) {
         </div>
 
         <div className="mt-3 border-t border-border pt-3">
-          <div className="flex justify-between font-semibold">
+          <div className="flex justify-between gap-4 font-semibold">
             <span className="text-foreground">Importe</span>
-            <span className="text-xl text-primary">Pendiente de revisión</span>
+            <span className="text-right text-xl text-primary">Pendiente de revisión</span>
           </div>
         </div>
       </div>

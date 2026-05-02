@@ -7,6 +7,7 @@ import { Footer } from "@/components/landing/footer"
 import { ReservationCalendar } from "@/components/reservation/reservation-calendar"
 import { ReservationForm } from "@/components/reservation/reservation-form"
 import { PriceCalculator } from "@/components/reservation/price-calculator"
+import { ArrivalPreview } from "@/components/reservation/arrival-preview"
 import { getBlockedDates } from "@/app/actions/reservations"
 import type { DateRange } from "@/lib/types"
 import { ArrowLeft, Calendar, Users, MessageCircle } from "lucide-react"
@@ -104,8 +105,9 @@ export default function ReservarPage() {
             </div>
           ) : (
             <div className="grid gap-8 lg:grid-cols-3">
-              <div className="lg:col-span-2">
+              <div className="space-y-6 lg:col-span-2">
                 <ReservationCalendar dateRange={dateRange} onDateChange={setDateRange} blockedDates={blockedDates} />
+                <ArrivalPreview dateRange={dateRange} />
               </div>
 
               <div className="space-y-6">
