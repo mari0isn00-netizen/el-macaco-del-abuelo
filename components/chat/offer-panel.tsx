@@ -39,7 +39,8 @@ export function OfferPanel({ reservationId, senderType, senderName, messages }: 
   const rejected = hasMarker(actionMarkers.rejected)
   const cancelled = hasMarker(actionMarkers.cancelled)
   const contractAccepted = hasMarker(actionMarkers.contractAccepted)
-  const closed = accepted || rejected || cancelled || contractAccepted
+  const guestClosed = accepted || rejected || cancelled || contractAccepted
+  const adminClosed = rejected || cancelled || contractAccepted
 
   const submitOwnerPrice = async () => {
     if (senderType !== "admin") return
@@ -136,16 +137,24 @@ export function OfferPanel({ reservationId, senderType, senderName, messages }: 
     )
   }
 
-  if (closed) {
+  if (senderType === "guest" && guestClosed) {
     return (
       <div className="border-t border-border bg-muted/30 p-3 text-sm text-muted-foreground sm:p-4">
         {accepted
-          ? "Precio aceptado. El siguiente paso quedará indicado en el chat."
+          ? "Precio aceptado. El propietario enviará el contrato cuando lo revise."
           : rejected
             ? "Precio rechazado. Si queréis seguir hablando, escribid un mensaje normal."
             : cancelled
               ? "Solicitud cancelada."
               : "Contrato registrado."}
+      </div>
+    )
+  }
+
+  if (senderType === "admin" && adminClosed) {
+    return (
+      <div className="border-t border-border bg-muted/30 p-3 text-sm text-muted-foreground sm:p-4">
+        {rejected ? "Precio rechazado por el huésped." : cancelled ? "Solicitud cancelada." : "Contrato registrado."}
       </div>
     )
   }
@@ -176,11 +185,17 @@ export function OfferPanel({ reservationId, senderType, senderName, messages }: 
             </div>
           ) : null}
           <div className="flex flex-wrap gap-2">
-            {priceSet && !contractRequested ? (
+            {accepted && !contractRequested ? (
               <Button type="button" variant="secondary" size="sm" onClick={requestSignature} disabled={busy}>
                 <FileSignature className="h-4 w-4" />
-                Solicitar contrato y señal
+                Enviar contrato y señal
               </Button>
+            ) : null}
+            {!accepted && priceSet ? (
+              <p className="text-sm text-muted-foreground">Precio enviado. Esperando a que el huésped lo acepte o rechace.</p>
+            ) : null}
+            {accepted && contractRequested ? (
+              <p className="text-sm text-muted-foreground">Contrato enviado. Esperando firma y aviso de señal.</p>
             ) : null}
             <Button type="button" variant="outline" size="sm" onClick={() => sendDecision("cancel_request")} disabled={busy}>
               <XCircle className="h-4 w-4" />
@@ -191,9 +206,6 @@ export function OfferPanel({ reservationId, senderType, senderName, messages }: 
               Borrar solicitud
             </Button>
           </div>
-          {priceSet && contractRequested ? (
-            <p className="text-sm text-muted-foreground">Precio fijado y contrato solicitado. Esperando respuesta del huésped.</p>
-          ) : null}
         </div>
       ) : (
         <div className="space-y-3">
