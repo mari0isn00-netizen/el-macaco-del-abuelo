@@ -33,12 +33,17 @@ export function MobileNav() {
   }, [])
 
   const visibleNavItems = clientReservationId
-    ? [...navItems, { href: `/cliente/${clientReservationId}`, icon: UserRound, label: "Mi estancia" }]
+    ? [
+        { href: "/", icon: Home, label: "Inicio" },
+        { href: "/reservar", icon: Calendar, label: "Reservar" },
+        { href: "/contactar", icon: MessageCircle, label: "Chat" },
+        { href: `/cliente/${clientReservationId}`, icon: UserRound, label: "Estancia" },
+      ]
     : navItems
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-card/95 backdrop-blur-lg border-t border-border safe-area-bottom">
-      <div className="flex items-center justify-around py-2 px-4">
+      <div className="grid grid-flow-col auto-cols-fr items-center px-1 py-1.5">
         {visibleNavItems.map((item) => {
           const isActive = pathname === item.href || 
             (item.href !== "/" && pathname.startsWith(item.href.replace("/#", "/")))
@@ -48,7 +53,7 @@ export function MobileNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col items-center gap-1 py-2 px-4 rounded-lg transition-all duration-200 active:scale-95",
+                "flex min-w-0 flex-col items-center gap-1 rounded-lg px-1 py-2 transition-all duration-200 active:scale-95",
                 isActive 
                   ? "text-primary" 
                   : "text-muted-foreground hover:text-foreground"
@@ -58,7 +63,7 @@ export function MobileNav() {
                 "h-5 w-5 transition-transform",
                 isActive && "scale-110"
               )} />
-              <span className="text-xs font-medium">{item.label}</span>
+              <span className="max-w-full truncate text-[11px] font-medium">{item.label}</span>
             </Link>
           )
         })}

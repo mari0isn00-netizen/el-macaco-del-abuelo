@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { Calendar } from "@/components/ui/calendar"
 import type { DateRange } from "@/lib/types"
 import { es } from "date-fns/locale"
@@ -15,6 +16,17 @@ export function ReservationCalendar({
   onDateChange,
   blockedDates,
 }: ReservationCalendarProps) {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 767px)")
+    const update = () => setIsMobile(mediaQuery.matches)
+
+    update()
+    mediaQuery.addEventListener("change", update)
+    return () => mediaQuery.removeEventListener("change", update)
+  }, [])
+
   // Generate array of all blocked dates
   const disabledDays: Date[] = []
   blockedDates.forEach(({ start, end }) => {
@@ -30,7 +42,7 @@ export function ReservationCalendar({
   today.setHours(0, 0, 0, 0)
 
   return (
-    <div className="bg-card rounded-xl border border-border p-4">
+    <div className="overflow-hidden rounded-xl border border-border bg-card p-3 sm:p-4">
       <h3 className="font-semibold text-foreground mb-4">
         Selecciona tus fechas
       </h3>
@@ -47,11 +59,11 @@ export function ReservationCalendar({
           { before: today },
           ...disabledDays.map((date) => date),
         ]}
-        numberOfMonths={2}
+        numberOfMonths={isMobile ? 1 : 2}
         locale={es}
-        className="w-full"
+        className="mx-auto w-full max-w-full"
       />
-      <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
+      <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 bg-primary rounded" />
           <span>Seleccionado</span>

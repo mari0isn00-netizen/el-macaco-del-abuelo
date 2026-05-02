@@ -144,6 +144,12 @@
   }
 }
 
+@media (max-width: 767px) {
+  body {
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 /* Custom scrollbar for chat */
 .chat-scrollbar::-webkit-scrollbar {
   width: 6px;
