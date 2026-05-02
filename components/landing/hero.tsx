@@ -1,4 +1,4 @@
-import Link from "next/link"
+﻿import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Bath, Bed, MapPin, Users } from "lucide-react"
@@ -8,7 +8,7 @@ export function Hero() {
     <section id="inicio" className="relative flex min-h-screen items-center pt-16 md:pt-20">
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/emda-piscina-atardecer.png"
+          src="/images/emda-piscina-atardecer.webp"
           alt="Piscina privada al atardecer en El Macaco del Abuelo"
           fill
           className="object-cover"
@@ -86,3 +86,6 @@ export function Hero() {
     </section>
   )
 }
+
+
+

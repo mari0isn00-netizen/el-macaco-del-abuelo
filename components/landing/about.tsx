@@ -8,15 +8,15 @@ export function About() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-4">
               <div className="relative aspect-[4/5] overflow-hidden rounded-lg">
-                <Image src="/images/emda-salon-dormitorio.png" alt="Salón dormitorio del apartamento independiente" fill className="object-cover" />
+                <Image src="/images/emda-salon-dormitorio.webp" alt="Salón dormitorio del apartamento independiente" fill className="object-cover" />
               </div>
               <div className="relative aspect-square overflow-hidden rounded-lg">
-                <Image src="/images/emda-piscina-jacuzzi.png" alt="Piscina privada con jacuzzi" fill className="object-cover" />
+                <Image src="/images/emda-piscina-jacuzzi.webp" alt="Piscina privada con jacuzzi" fill className="object-cover" />
               </div>
             </div>
             <div className="pt-8">
               <div className="relative aspect-[3/4] overflow-hidden rounded-lg">
-                <Image src="/images/emda-entrada-apartamento.png" alt="Entrada del apartamento bajo la pérgola" fill className="object-cover" />
+                <Image src="/images/emda-entrada-apartamento.webp" alt="Entrada del apartamento bajo la pérgola" fill className="object-cover" />
               </div>
             </div>
           </div>

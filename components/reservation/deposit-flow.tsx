@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
@@ -78,7 +78,7 @@ export function DepositFlow({ reservation }: DepositFlowProps) {
   return (
     <div className="space-y-6">
       <section className="overflow-hidden rounded-xl border border-border bg-card">
-        <div className="relative min-h-[260px] bg-[url('/images/emda-entrada-apartamento.png')] bg-cover bg-center">
+        <div className="relative min-h-[260px] bg-[url('/images/emda-entrada-apartamento.webp')] bg-cover bg-center">
           <div className="absolute inset-0 bg-black/35" />
           <div className="relative flex min-h-[260px] flex-col justify-end p-6 text-white sm:p-8">
             <p className="mb-3 inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs uppercase tracking-[0.18em] backdrop-blur">
@@ -230,3 +230,5 @@ export function DepositFlow({ reservation }: DepositFlowProps) {
     </div>
   )
 }
+
+

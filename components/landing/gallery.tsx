@@ -1,20 +1,20 @@
-"use client"
+﻿"use client"
 
 import { useState } from "react"
 import Image from "next/image"
 import { X, ChevronLeft, ChevronRight } from "lucide-react"
 
 const images = [
-  { src: "/images/emda-piscina-atardecer.png", alt: "Piscina privada al atardecer", category: "Piscina" },
-  { src: "/images/emda-piscina-jardin.png", alt: "Piscina y jardín privado", category: "Exterior" },
-  { src: "/images/emda-piscina-jacuzzi.png", alt: "Jacuzzi junto a la piscina", category: "Piscina" },
-  { src: "/images/emda-tumbonas-piscina.png", alt: "Tumbonas junto al agua", category: "Descanso" },
-  { src: "/images/emda-rincon-jardin.png", alt: "Zona de descanso junto a la piscina", category: "Piscina" },
-  { src: "/images/emda-entrada-apartamento.png", alt: "Entrada del apartamento bajo la pérgola", category: "Alojamiento" },
-  { src: "/images/emda-cocina.png", alt: "Cocina del apartamento", category: "Interior" },
-  { src: "/images/emda-salon-dormitorio.png", alt: "Salón dormitorio luminoso", category: "Interior" },
-  { src: "/images/emda-bano.png", alt: "Baño con ducha", category: "Interior" },
-  { src: "/images/emda-detalle-mesa.png", alt: "Detalle exterior con mesa preparada", category: "Detalles" },
+  { src: "/images/emda-piscina-atardecer.webp", alt: "Piscina privada al atardecer", category: "Piscina" },
+  { src: "/images/emda-piscina-jardin.webp", alt: "Piscina y jardín privado", category: "Exterior" },
+  { src: "/images/emda-piscina-jacuzzi.webp", alt: "Jacuzzi junto a la piscina", category: "Piscina" },
+  { src: "/images/emda-tumbonas-piscina.webp", alt: "Tumbonas junto al agua", category: "Descanso" },
+  { src: "/images/emda-rincon-jardin.webp", alt: "Zona de descanso junto a la piscina", category: "Piscina" },
+  { src: "/images/emda-entrada-apartamento.webp", alt: "Entrada del apartamento bajo la pérgola", category: "Alojamiento" },
+  { src: "/images/emda-cocina.webp", alt: "Cocina del apartamento", category: "Interior" },
+  { src: "/images/emda-salon-dormitorio.webp", alt: "Salón dormitorio luminoso", category: "Interior" },
+  { src: "/images/emda-bano.webp", alt: "Baño con ducha", category: "Interior" },
+  { src: "/images/emda-detalle-mesa.webp", alt: "Detalle exterior con mesa preparada", category: "Detalles" },
 ]
 
 export function Gallery() {
@@ -122,3 +122,5 @@ export function Gallery() {
     </section>
   )
 }
+
+

@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
@@ -38,7 +38,7 @@ export default function ReservarPage() {
     <>
       <Header />
       <main className="min-h-screen pt-20 md:pt-24">
-        <div className="relative overflow-hidden bg-[url('/images/emda-piscina-jardin.png')] bg-cover bg-center py-14 md:py-20">
+        <div className="relative overflow-hidden bg-[url('/images/emda-piscina-jardin.webp')] bg-cover bg-center py-14 md:py-20">
           <div className="absolute inset-0 bg-black/45" />
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <Link
@@ -145,3 +145,5 @@ export default function ReservarPage() {
     </>
   )
 }
+
+
