@@ -1,4 +1,5 @@
 import { promises as fs } from "fs"
+import os from "os"
 import path from "path"
 import type { ChatMessage, ConversationThread, Pricing, Reservation } from "@/lib/types"
 
@@ -8,7 +9,7 @@ type StoreData = {
   pricing: Pricing[]
 }
 
-const storeDir = path.join(process.cwd(), ".data")
+const storeDir = process.env.VERCEL ? path.join(os.tmpdir(), "el-macaco-del-abuelo") : path.join(process.cwd(), ".data")
 const storePath = path.join(storeDir, "local-store.json")
 
 const defaultPricing: Pricing[] = []
@@ -18,6 +19,8 @@ const emptyStore = (): StoreData => ({
   chat_messages: [],
   pricing: defaultPricing,
 })
+
+let memoryStore: StoreData = emptyStore()
 
 async function readStore(): Promise<StoreData> {
   try {
@@ -30,13 +33,19 @@ async function readStore(): Promise<StoreData> {
       pricing: parsed.pricing?.length ? parsed.pricing : defaultPricing,
     }
   } catch {
-    return emptyStore()
+    return memoryStore
   }
 }
 
 async function writeStore(data: StoreData): Promise<void> {
-  await fs.mkdir(storeDir, { recursive: true })
-  await fs.writeFile(storePath, JSON.stringify(data, null, 2), "utf8")
+  memoryStore = data
+
+  try {
+    await fs.mkdir(storeDir, { recursive: true })
+    await fs.writeFile(storePath, JSON.stringify(data, null, 2), "utf8")
+  } catch (error) {
+    console.error("Local fallback store is memory-only:", error)
+  }
 }
 
 export async function getLocalReservation(id: string): Promise<Reservation | null> {
