@@ -8,8 +8,9 @@ import {
   adminLogout,
   getAdminThreads,
 } from "@/app/actions/admin"
+import { confirmDepositPayment, deleteReservation } from "@/app/actions/reservations"
 import { Button } from "@/components/ui/button"
-import { Calendar, MessageCircle, Euro, Clock, CheckCircle, LogOut, ExternalLink, ArrowRight } from "lucide-react"
+import { Calendar, MessageCircle, Euro, Clock, CheckCircle, LogOut, ExternalLink, ArrowRight, Trash2 } from "lucide-react"
 
 export default async function AdminDashboardPage() {
   const isAuthenticated = await checkAdminAuth()
@@ -44,6 +45,27 @@ export default async function AdminDashboardPage() {
     confirmed: "bg-green-100 text-green-800",
     cancelled: "bg-red-100 text-red-800",
     completed: "bg-blue-100 text-blue-800",
+  }
+
+  async function confirmBizumFromList(formData: FormData) {
+    "use server"
+    const reservationId = String(formData.get("reservationId") || "")
+    if (reservationId) {
+      await confirmDepositPayment({
+        reservationId,
+        senderName: "El Macaco del Abuelo",
+      })
+    }
+    redirect("/admin")
+  }
+
+  async function deleteReservationFromList(formData: FormData) {
+    "use server"
+    const reservationId = String(formData.get("reservationId") || "")
+    if (reservationId) {
+      await deleteReservation(reservationId)
+    }
+    redirect("/admin")
   }
 
   return (
@@ -205,12 +227,30 @@ export default async function AdminDashboardPage() {
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <Link
-                            href={`/admin/reservations/${reservation.id}`}
-                            className="text-sm font-medium text-primary transition-colors hover:text-primary/80"
-                          >
-                            Ver ficha
-                          </Link>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <Link
+                              href={`/admin/reservations/${reservation.id}`}
+                              className="text-sm font-medium text-primary transition-colors hover:text-primary/80"
+                            >
+                              Ver ficha
+                            </Link>
+                            {reservation.deposit_status !== "paid" ? (
+                              <form action={confirmBizumFromList}>
+                                <input type="hidden" name="reservationId" value={reservation.id} />
+                                <Button type="submit" size="sm" className="bg-green-700 text-white hover:bg-green-800">
+                                  <CheckCircle className="h-4 w-4" />
+                                  Bizum recibido
+                                </Button>
+                              </form>
+                            ) : null}
+                            <form action={deleteReservationFromList}>
+                              <input type="hidden" name="reservationId" value={reservation.id} />
+                              <Button type="submit" size="sm" variant="destructive">
+                                <Trash2 className="h-4 w-4" />
+                                Borrar
+                              </Button>
+                            </form>
+                          </div>
                         </td>
                       </tr>
                     ))}

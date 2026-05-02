@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { deleteReservation, registerOffer, requestContractAndPayment, sendReservationDecision } from "@/app/actions/reservations"
+import { confirmDepositPayment, deleteReservation, registerOffer, requestContractAndPayment, sendReservationDecision } from "@/app/actions/reservations"
 import type { ChatMessage } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -21,6 +21,7 @@ const actionMarkers = {
   rejected: "PRECIO RECHAZADO",
   cancelled: "SOLICITUD CANCELADA",
   contractAccepted: "Contrato aceptado.",
+  depositConfirmed: "SEÑAL CONFIRMADA POR LA CASA",
 }
 
 export function OfferPanel({ reservationId, senderType, senderName, messages }: OfferPanelProps) {
@@ -39,8 +40,9 @@ export function OfferPanel({ reservationId, senderType, senderName, messages }: 
   const rejected = hasMarker(actionMarkers.rejected)
   const cancelled = hasMarker(actionMarkers.cancelled)
   const contractAccepted = hasMarker(actionMarkers.contractAccepted)
+  const depositConfirmed = hasMarker(actionMarkers.depositConfirmed)
   const guestClosed = accepted || rejected || cancelled || contractAccepted
-  const adminClosed = rejected || cancelled || contractAccepted
+  const adminClosed = rejected || cancelled || depositConfirmed
 
   const submitOwnerPrice = async () => {
     if (senderType !== "admin") return
@@ -87,6 +89,25 @@ export function OfferPanel({ reservationId, senderType, senderName, messages }: 
     setNote("")
   }
 
+  const confirmBizum = async () => {
+    if (senderType !== "admin") return
+
+    setBusy(true)
+    setError("")
+    const result = await confirmDepositPayment({
+      reservationId,
+      senderName,
+    })
+    setBusy(false)
+
+    if (!result.success) {
+      setError(result.error || "No se pudo confirmar el Bizum.")
+      return
+    }
+
+    setLocalMarkers((current) => [...current, actionMarkers.depositConfirmed])
+  }
+
   const sendDecision = async (decision: "reject_offer" | "cancel_request" | "accept_offer") => {
     setBusy(true)
     setError("")
@@ -116,7 +137,7 @@ export function OfferPanel({ reservationId, senderType, senderName, messages }: 
 
   const removeRequest = async () => {
     if (senderType !== "admin") return
-    const confirmed = window.confirm("¿Borrar esta solicitud de reserva?")
+    const confirmed = window.confirm("¿Borrar esta solicitud de reserva? Esta acción elimina también su chat.")
     if (!confirmed) return
 
     setBusy(true)
@@ -132,7 +153,7 @@ export function OfferPanel({ reservationId, senderType, senderName, messages }: 
   if (senderType === "guest" && !priceSet && !cancelled) {
     return (
       <div className="border-t border-border bg-muted/30 p-3 text-sm text-muted-foreground sm:p-4">
-        La casa revisará las fechas y dejará aquí el precio cuando esté listo.
+        La casa revisará la solicitud y dejará aquí el precio cuando esté listo.
       </div>
     )
   }
@@ -146,7 +167,7 @@ export function OfferPanel({ reservationId, senderType, senderName, messages }: 
             ? "Precio rechazado. Si queréis seguir hablando, escribid un mensaje normal."
             : cancelled
               ? "Solicitud cancelada."
-              : "Contrato registrado."}
+              : "Contrato registrado. La casa comprobará manualmente la señal."}
       </div>
     )
   }
@@ -154,7 +175,7 @@ export function OfferPanel({ reservationId, senderType, senderName, messages }: 
   if (senderType === "admin" && adminClosed) {
     return (
       <div className="border-t border-border bg-muted/30 p-3 text-sm text-muted-foreground sm:p-4">
-        {rejected ? "Precio rechazado por el huésped." : cancelled ? "Solicitud cancelada." : "Contrato registrado."}
+        {rejected ? "Precio rechazado por el huésped." : cancelled ? "Solicitud cancelada." : "Señal confirmada."}
       </div>
     )
   }
@@ -165,19 +186,8 @@ export function OfferPanel({ reservationId, senderType, senderName, messages }: 
         <div className="space-y-3">
           {!priceSet ? (
             <div className="grid gap-2 sm:grid-cols-[120px_1fr_auto]">
-              <Input
-                inputMode="numeric"
-                value={amount}
-                onChange={(event) => setAmount(event.target.value)}
-                placeholder="Importe EUR"
-                className="bg-background"
-              />
-              <Input
-                value={note}
-                onChange={(event) => setNote(event.target.value)}
-                placeholder="Nota para el huésped: qué incluye el precio, condiciones o detalle relevante"
-                className="bg-background"
-              />
+              <Input inputMode="numeric" value={amount} onChange={(event) => setAmount(event.target.value)} placeholder="Importe EUR" className="bg-background" />
+              <Input value={note} onChange={(event) => setNote(event.target.value)} placeholder="Nota para el huésped: qué incluye el precio, condiciones o detalle relevante" className="bg-background" />
               <Button type="button" onClick={submitOwnerPrice} disabled={busy || !amount}>
                 <HandCoins className="h-4 w-4" />
                 Fijar precio
@@ -194,8 +204,14 @@ export function OfferPanel({ reservationId, senderType, senderName, messages }: 
             {!accepted && priceSet ? (
               <p className="text-sm text-muted-foreground">Precio enviado. Esperando a que el huésped lo acepte o rechace.</p>
             ) : null}
-            {accepted && contractRequested ? (
+            {accepted && contractRequested && !contractAccepted ? (
               <p className="text-sm text-muted-foreground">Contrato enviado. Esperando firma y aviso de señal.</p>
+            ) : null}
+            {contractAccepted && !depositConfirmed ? (
+              <Button type="button" className="bg-green-700 text-white hover:bg-green-800" size="sm" onClick={confirmBizum} disabled={busy}>
+                <CheckCircle2 className="h-4 w-4" />
+                Confirmar Bizum recibido
+              </Button>
             ) : null}
             <Button type="button" variant="outline" size="sm" onClick={() => sendDecision("cancel_request")} disabled={busy}>
               <XCircle className="h-4 w-4" />
@@ -203,7 +219,7 @@ export function OfferPanel({ reservationId, senderType, senderName, messages }: 
             </Button>
             <Button type="button" variant="destructive" size="sm" onClick={removeRequest} disabled={busy}>
               <Trash2 className="h-4 w-4" />
-              Borrar solicitud
+              Borrar reserva
             </Button>
           </div>
         </div>
@@ -213,19 +229,8 @@ export function OfferPanel({ reservationId, senderType, senderName, messages }: 
             El propietario ha dejado el precio de la estancia. Puedes aceptarlo, rechazarlo o cancelar la solicitud.
           </p>
           <div className="grid gap-2 sm:grid-cols-[150px_1fr]">
-            <Input
-              type="date"
-              value={paymentDate}
-              onChange={(event) => setPaymentDate(event.target.value)}
-              className="bg-background"
-              title="Día de pago acordado"
-            />
-            <Input
-              value={note}
-              onChange={(event) => setNote(event.target.value)}
-              placeholder="Nota opcional"
-              className="bg-background"
-            />
+            <Input type="date" value={paymentDate} onChange={(event) => setPaymentDate(event.target.value)} className="bg-background" title="Día de pago acordado" />
+            <Input value={note} onChange={(event) => setNote(event.target.value)} placeholder="Nota opcional" className="bg-background" />
           </div>
           <div className="flex flex-wrap gap-2">
             <Button type="button" variant="secondary" size="sm" onClick={() => sendDecision("accept_offer")} disabled={busy}>
