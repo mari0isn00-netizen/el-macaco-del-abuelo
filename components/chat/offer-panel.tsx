@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { deleteReservation, registerOffer, sendReservationDecision } from "@/app/actions/reservations"
+import { deleteReservation, registerOffer, requestContractAndPayment, sendReservationDecision } from "@/app/actions/reservations"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { CheckCircle2, HandCoins, Trash2, XCircle } from "lucide-react"
+import { CheckCircle2, FileSignature, HandCoins, Trash2, XCircle } from "lucide-react"
 
 interface OfferPanelProps {
   reservationId: string
@@ -39,6 +39,26 @@ export function OfferPanel({ reservationId, senderType, senderName }: OfferPanel
     }
 
     setAmount("")
+    setNote("")
+  }
+
+  const requestSignature = async () => {
+    if (senderType !== "admin") return
+
+    setBusy(true)
+    setError("")
+    const result = await requestContractAndPayment({
+      reservationId,
+      senderName,
+      note,
+    })
+    setBusy(false)
+
+    if (!result.success) {
+      setError(result.error || "No se pudo solicitar la firma.")
+      return
+    }
+
     setNote("")
   }
 
@@ -97,6 +117,10 @@ export function OfferPanel({ reservationId, senderType, senderName }: OfferPanel
             </Button>
           </div>
           <div className="flex flex-wrap gap-2">
+            <Button type="button" variant="secondary" size="sm" onClick={requestSignature} disabled={busy}>
+              <FileSignature className="h-4 w-4" />
+              Solicitar contrato y señal
+            </Button>
             <Button type="button" variant="outline" size="sm" onClick={() => sendDecision("cancel_request")} disabled={busy}>
               <XCircle className="h-4 w-4" />
               Cancelar solicitud

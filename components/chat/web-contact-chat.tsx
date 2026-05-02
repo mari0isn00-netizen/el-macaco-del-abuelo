@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Bell, BellOff, MessageCircle, Send } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useChatUpdates } from "@/components/chat/use-chat-updates"
+import { MessageText } from "@/components/chat/message-text"
 
 const THREAD_STORAGE_KEY = "macaco_web_thread_id"
 const NAME_STORAGE_KEY = "macaco_web_guest_name"
@@ -235,7 +236,9 @@ export function WebContactChat() {
                 )}
               >
                 {!isOwn ? <div className="mb-1 text-xs font-semibold uppercase tracking-wide opacity-70">{message.sender_name}</div> : null}
-                <div className="whitespace-pre-wrap">{message.message}</div>
+                <div>
+                  <MessageText text={message.message} />
+                </div>
               </div>
             </div>
           )

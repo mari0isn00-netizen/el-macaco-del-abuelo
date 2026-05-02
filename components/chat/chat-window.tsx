@@ -10,6 +10,7 @@ import { Bell, BellOff, Send, User } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useChatUpdates } from "@/components/chat/use-chat-updates"
 import { OfferPanel } from "@/components/chat/offer-panel"
+import { MessageText } from "@/components/chat/message-text"
 
 interface ChatWindowProps {
   reservationId: string
@@ -218,8 +219,8 @@ export function ChatWindow({
                             {msg.sender_name}
                           </p>
                         )}
-                        <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                          {msg.message}
+                        <p className="text-sm leading-relaxed">
+                          <MessageText text={msg.message} />
                         </p>
                         <p
                           className={cn(

@@ -10,6 +10,7 @@ import { Send, User, MessageCircle, Calendar, HelpCircle, FileText, Waves, Bell,
 import { cn } from "@/lib/utils"
 import { useChatUpdates } from "@/components/chat/use-chat-updates"
 import { OfferPanel } from "@/components/chat/offer-panel"
+import { MessageText } from "@/components/chat/message-text"
 
 interface SmartChatProps {
   reservationId: string
@@ -258,7 +259,9 @@ Puedes escribir por aquí sobre fechas, normas o cualquier detalle de la estanci
                       )}
                     >
                       {!isOwn && <p className="mb-1 text-xs font-medium opacity-70">{message.sender_name}</p>}
-                      <p className="whitespace-pre-wrap text-sm leading-relaxed">{message.message}</p>
+                      <p className="text-sm leading-relaxed">
+                        <MessageText text={message.message} />
+                      </p>
                       <p className={cn("mt-2 text-xs", isOwn ? "text-primary-foreground/70" : "text-muted-foreground")}>
                         {formatTime(message.created_at)}
                       </p>

@@ -331,6 +331,44 @@ export async function registerOffer(input: {
   return { success: true, message: text }
 }
 
+export async function requestContractAndPayment(input: {
+  reservationId: string
+  senderName: string
+  note?: string
+}): Promise<{ success: boolean; error?: string }> {
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "")
+  const contractUrl = siteUrl ? `${siteUrl}/pago/${input.reservationId}` : `/pago/${input.reservationId}`
+  const text = [
+    "CONTRATO Y SEÑAL DISPONIBLES",
+    "Ya podéis revisar el contrato completo, indicar DNI/NIE, dibujar la firma y registrar la señal de reserva.",
+    `Enlace: ${contractUrl}`,
+    input.note ? `Nota: ${input.note}` : null,
+  ]
+    .filter(Boolean)
+    .join("\n")
+
+  const supabase = await createClient()
+  const { error } = await supabase.from("chat_messages").insert({
+    reservation_id: input.reservationId,
+    sender_type: "admin",
+    sender_name: input.senderName,
+    message: text,
+    read: false,
+  })
+
+  if (error) {
+    await createLocalChatMessage({
+      reservation_id: input.reservationId,
+      sender_type: "admin",
+      sender_name: input.senderName,
+      message: text,
+      read: false,
+    })
+  }
+
+  return { success: true }
+}
+
 export async function sendReservationDecision(input: {
   reservationId: string
   senderType: "guest" | "admin"
