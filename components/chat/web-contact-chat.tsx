@@ -94,6 +94,16 @@ export function WebContactChat() {
     if (threadId) markMessagesAsRead(threadId, "guest")
   }, [messages, threadId])
 
+  const resetClosedThread = () => {
+    window.localStorage.removeItem(THREAD_STORAGE_KEY)
+    setThreadId(null)
+    setMessages([])
+    setThreadClosed(false)
+    setNewMessage("")
+    setDraftMessage("")
+    setError("")
+  }
+
   const startConversation = async () => {
     setError("")
     setSending(true)
@@ -244,8 +254,11 @@ export function WebContactChat() {
 
       <div className="border-t border-border p-3 sm:p-4">
         {threadClosed ? (
-          <div className="rounded-[10px] bg-muted p-3 text-center text-sm text-muted-foreground">
-            Chat cerrado. Abre una conversación nueva para volver a escribir.
+          <div className="space-y-3 rounded-[10px] bg-muted p-3 text-center text-sm text-muted-foreground">
+            <p>Chat cerrado. Puedes abrir una conversación nueva para volver a escribir.</p>
+            <Button type="button" onClick={resetClosedThread} className="w-full sm:w-auto">
+              Crear conversación nueva
+            </Button>
           </div>
         ) : (
           <div className="flex items-center gap-2">

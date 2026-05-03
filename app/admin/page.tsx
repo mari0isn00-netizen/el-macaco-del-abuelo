@@ -11,7 +11,21 @@ import {
 import { confirmDepositPayment } from "@/app/actions/reservations"
 import { DeleteReservationButton } from "@/components/admin/delete-reservation-button"
 import { Button } from "@/components/ui/button"
-import { Calendar, MessageCircle, Euro, Clock, CheckCircle, LogOut, ExternalLink, ArrowRight } from "lucide-react"
+import {
+  AlertCircle,
+  ArrowRight,
+  Calendar,
+  CheckCircle,
+  ClipboardCheck,
+  Euro,
+  ExternalLink,
+  FileSignature,
+  Home,
+  LogOut,
+  MessageCircle,
+  WalletCards,
+  Clock,
+} from "lucide-react"
 
 export default async function AdminDashboardPage() {
   const isAuthenticated = await checkAdminAuth()
@@ -47,6 +61,18 @@ export default async function AdminDashboardPage() {
     cancelled: "bg-red-100 text-red-800",
     completed: "bg-blue-100 text-blue-800",
   }
+
+  const activeReservations = reservations.filter((reservation) => reservation.status !== "cancelled" && reservation.status !== "completed")
+  const upcomingReservations = [...activeReservations]
+    .filter((reservation) => new Date(reservation.check_in).getTime() >= Date.now() - 24 * 60 * 60 * 1000)
+    .sort((a, b) => new Date(a.check_in).getTime() - new Date(b.check_in).getTime())
+    .slice(0, 4)
+  const pendingContractOrDeposit = activeReservations
+    .filter((reservation) => !reservation.contract_accepted_at || reservation.deposit_status !== "paid")
+    .slice(0, 4)
+  const reservationsWithPrice = activeReservations
+    .filter((reservation) => Number(reservation.agreed_price || reservation.total_price) > 0)
+    .slice(0, 4)
 
   async function confirmBizumFromList(formData: FormData) {
     "use server"
@@ -135,6 +161,132 @@ export default async function AdminDashboardPage() {
             </div>
           </div>
         </div>
+
+        <section className="mb-8 grid gap-5 lg:grid-cols-3">
+          <div className="rounded-2xl border border-border bg-card p-5">
+            <div className="mb-4 flex items-start gap-3">
+              <div className="rounded-xl bg-primary/10 p-2 text-primary">
+                <Home className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="font-semibold text-foreground">Próximas estancias</h2>
+                <p className="mt-1 text-sm text-muted-foreground">Lo que entra antes en la casa compartida.</p>
+              </div>
+            </div>
+            <div className="space-y-3">
+              {upcomingReservations.map((reservation) => (
+                <Link
+                  key={reservation.id}
+                  href={`/admin/reservations/${reservation.id}`}
+                  className="block rounded-xl border border-border p-3 transition-colors hover:bg-muted/30"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-foreground">{reservation.guest_name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {formatDate(reservation.check_in)} - {formatDate(reservation.check_out)}
+                      </p>
+                    </div>
+                    <span className="rounded-full bg-muted px-2 py-1 text-xs text-muted-foreground">{reservation.guests} pers.</span>
+                  </div>
+                </Link>
+              ))}
+              {upcomingReservations.length === 0 ? <p className="text-sm text-muted-foreground">No hay entradas próximas.</p> : null}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-border bg-card p-5">
+            <div className="mb-4 flex items-start gap-3">
+              <div className="rounded-xl bg-amber-100 p-2 text-amber-700">
+                <FileSignature className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="font-semibold text-foreground">Contrato y señal</h2>
+                <p className="mt-1 text-sm text-muted-foreground">Reservas que aún necesitan revisión final.</p>
+              </div>
+            </div>
+            <div className="space-y-3">
+              {pendingContractOrDeposit.map((reservation) => (
+                <Link
+                  key={reservation.id}
+                  href={`/admin/reservations/${reservation.id}`}
+                  className="block rounded-xl border border-border p-3 transition-colors hover:bg-muted/30"
+                >
+                  <p className="truncate text-sm font-medium text-foreground">{reservation.guest_name}</p>
+                  <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                    {!reservation.contract_accepted_at ? (
+                      <span className="rounded-full bg-amber-100 px-2 py-1 text-amber-800">Contrato pendiente</span>
+                    ) : null}
+                    {reservation.deposit_status !== "paid" ? (
+                      <span className="rounded-full bg-red-100 px-2 py-1 text-red-800">Señal pendiente</span>
+                    ) : null}
+                  </div>
+                </Link>
+              ))}
+              {pendingContractOrDeposit.length === 0 ? <p className="text-sm text-muted-foreground">Todo lo activo tiene contrato y señal al día.</p> : null}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-border bg-card p-5">
+            <div className="mb-4 flex items-start gap-3">
+              <div className="rounded-xl bg-green-100 p-2 text-green-700">
+                <ClipboardCheck className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="font-semibold text-foreground">Operativa de propietarios</h2>
+                <p className="mt-1 text-sm text-muted-foreground">Atajos para no olvidar lo importante.</p>
+              </div>
+            </div>
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <div className="rounded-xl bg-muted/50 p-3">
+                <div className="flex gap-2 text-foreground">
+                  <AlertCircle className="mt-0.5 h-4 w-4 text-primary" />
+                  <p>Recordar que la parcela es compartida y que los dueños estarán en la casa principal.</p>
+                </div>
+              </div>
+              <div className="rounded-xl bg-muted/50 p-3">
+                <div className="flex gap-2 text-foreground">
+                  <WalletCards className="mt-0.5 h-4 w-4 text-primary" />
+                  <p>Confirmar manualmente cada Bizum antes de marcar la señal como recibida.</p>
+                </div>
+              </div>
+              <Link href="/admin/inbox" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80">
+                Gestionar conversaciones
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="mb-8 rounded-2xl border border-border bg-card p-5">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-sm uppercase tracking-[0.22em] text-primary">Precios acordados</p>
+              <h2 className="mt-2 text-xl font-semibold text-foreground">Control rápido de importes</h2>
+            </div>
+            <Link href="/admin" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80">
+              Ver tabla
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            {reservationsWithPrice.map((reservation) => (
+              <Link
+                key={reservation.id}
+                href={`/admin/reservations/${reservation.id}`}
+                className="rounded-xl border border-border p-4 transition-colors hover:bg-muted/30"
+              >
+                <p className="truncate font-medium text-foreground">{reservation.guest_name}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{formatDate(reservation.check_in)}</p>
+                <p className="mt-3 text-2xl font-semibold text-foreground">{Number(reservation.agreed_price || reservation.total_price)}€</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {reservation.deposit_status === "paid" ? "Señal recibida" : "Revisar señal"}
+                </p>
+              </Link>
+            ))}
+            {reservationsWithPrice.length === 0 ? <p className="text-sm text-muted-foreground">Aún no hay importes acordados activos.</p> : null}
+          </div>
+        </section>
 
         <div className="mb-8 grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
           <section className="rounded-2xl border border-border bg-card p-6">

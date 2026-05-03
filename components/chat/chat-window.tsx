@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 import { getChatMessages, sendChatMessage, markMessagesAsRead } from "@/app/actions/chat"
 import { CLOSED_THREAD_MARKER } from "@/lib/chat-state"
@@ -179,8 +180,13 @@ export function ChatWindow({
         <div>
           <p className="font-serif text-2xl font-bold text-foreground">Este chat ya está cerrado</p>
           <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">
-            La conversación del regalo se ha cerrado desde la casa. Si necesitáis volver a hablar, abrid un nuevo hilo desde contacto o modo regalo.
+            La conversación se ha cerrado desde la casa. Si necesitáis volver a hablar, abrid un nuevo hilo desde contacto.
           </p>
+          {senderType === "guest" ? (
+            <Button asChild className="mt-5">
+              <Link href="/contactar">Crear conversación nueva</Link>
+            </Button>
+          ) : null}
         </div>
       </div>
     )

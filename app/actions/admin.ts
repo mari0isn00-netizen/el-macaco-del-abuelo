@@ -11,6 +11,7 @@ import { createClient } from "@/lib/supabase/server"
 import type { Reservation, ChatMessage, ConversationThread } from "@/lib/types"
 import {
   createLocalChatMessage,
+  deleteLocalThread,
   getLocalChatMessages,
   getLocalReservation,
   getLocalReservations,
@@ -245,6 +246,20 @@ export async function closeWebThread(threadId: string): Promise<{ success: boole
     })
   }
 
+  return { success: true }
+}
+
+export async function deleteWebThread(threadId: string): Promise<{ success: boolean; error?: string }> {
+  const supabase = await createClient()
+  const { error } = await supabase.from("chat_messages").delete().eq("reservation_id", threadId)
+
+  if (error) {
+    console.error("Error deleting web thread:", error)
+    const deleted = await deleteLocalThread(threadId)
+    return deleted ? { success: true } : { success: false, error: error.message }
+  }
+
+  await deleteLocalThread(threadId)
   return { success: true }
 }
 

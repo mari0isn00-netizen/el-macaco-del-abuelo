@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
+import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 import { getChatMessages, sendChatMessage, markMessagesAsRead } from "@/app/actions/chat"
 import { CLOSED_THREAD_MARKER } from "@/lib/chat-state"
@@ -339,8 +340,13 @@ Puedes escribir por aquí sobre fechas, normas o cualquier detalle de la estanci
 
       <div className="safe-area-bottom border-t border-border bg-card p-3 sm:p-4">
         {threadClosed ? (
-          <div className="rounded-[10px] bg-muted p-3 text-center text-sm text-muted-foreground">
-            Chat cerrado. Para volver a escribir, abre una conversación nueva.
+          <div className="space-y-3 rounded-[10px] bg-muted p-3 text-center text-sm text-muted-foreground">
+            <p>Chat cerrado. Para volver a escribir, abre una conversación nueva.</p>
+            {senderType === "guest" ? (
+              <Button asChild className="w-full sm:w-auto">
+                <Link href="/contactar">Crear conversación nueva</Link>
+              </Button>
+            ) : null}
           </div>
         ) : (
           <form onSubmit={handleSend} className="flex items-center gap-2">
