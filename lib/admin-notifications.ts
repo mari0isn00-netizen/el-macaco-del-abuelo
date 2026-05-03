@@ -68,3 +68,40 @@ export async function sendTelegramAdminNotification(input: AdminNotificationInpu
   return { sent: true as const }
 }
 
+export async function sendTelegramClientNotification(input: {
+  chatId: string
+  title: string
+  preview: string
+  threadUrl: string
+}) {
+  const token = process.env.TELEGRAM_BOT_TOKEN || ""
+  if (!token || !input.chatId) {
+    return { sent: false, reason: "missing_config" as const }
+  }
+
+  const text = [
+    `El Macaco del Abuelo`,
+    input.title,
+    "",
+    input.preview,
+    "",
+    `Responder: ${input.threadUrl}`,
+  ].join("\n")
+
+  const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: input.chatId,
+      text,
+      disable_web_page_preview: true,
+    }),
+    cache: "no-store",
+  })
+
+  if (!response.ok) {
+    return { sent: false, reason: "provider_error" as const, detail: await response.text() }
+  }
+
+  return { sent: true as const }
+}

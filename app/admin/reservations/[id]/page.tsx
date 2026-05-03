@@ -5,6 +5,7 @@ import { confirmDepositPayment } from "@/app/actions/reservations"
 import { DeleteReservationButton } from "@/components/admin/delete-reservation-button"
 import { CloseThreadButton } from "@/components/admin/close-thread-button"
 import { ReservationEditForm } from "@/components/admin/reservation-edit-form"
+import { AdminReservationTools } from "@/components/admin/admin-reservation-tools"
 import { ChatWindow } from "@/components/chat/chat-window"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Calendar, Users, Euro, CheckCircle, XCircle, MessageCircle, FileText } from "lucide-react"
@@ -121,6 +122,7 @@ export default async function AdminReservationPage({ params }: AdminReservationP
             </div>
 
             <ReservationEditForm reservation={reservation} />
+            <AdminReservationTools reservationId={reservation.id} />
 
             <div className="rounded-xl border border-border bg-card p-6">
               <h2 className="mb-4 font-semibold text-foreground">Huésped</h2>

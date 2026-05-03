@@ -12,6 +12,7 @@ import { Bell, BellOff, MessageCircle, Send } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useChatUpdates } from "@/components/chat/use-chat-updates"
 import { MessageText } from "@/components/chat/message-text"
+import { TelegramOptIn } from "@/components/chat/telegram-opt-in"
 
 const THREAD_STORAGE_KEY = "macaco_web_thread_id"
 const NAME_STORAGE_KEY = "macaco_web_guest_name"
@@ -218,6 +219,8 @@ export function WebContactChat() {
           <strong>Activar avisos de respuesta.</strong> Te avisaremos en esta página cuando contesten los propietarios.
         </button>
       ) : null}
+
+      {!threadClosed ? <TelegramOptIn threadId={threadId} senderName={guestName || "Invitado"} messages={messages} /> : null}
 
       <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-3 sm:p-4">
         {messages.map((message) => {

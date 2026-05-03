@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils"
 import { useChatUpdates } from "@/components/chat/use-chat-updates"
 import { OfferPanel } from "@/components/chat/offer-panel"
 import { MessageText } from "@/components/chat/message-text"
+import { TelegramOptIn } from "@/components/chat/telegram-opt-in"
 
 interface ChatWindowProps {
   reservationId: string
@@ -203,6 +204,9 @@ export function ChatWindow({
           </Button>
         ) : null}
       </div>
+      {senderType === "guest" && !threadClosed ? (
+        <TelegramOptIn threadId={reservationId} senderName={senderName} messages={messages} />
+      ) : null}
       {/* Messages */}
       <div className="chat-scrollbar min-h-0 flex-1 space-y-6 overflow-y-auto p-3 sm:p-4">
         {groupedMessages.length === 0 ? (

@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils"
 import { useChatUpdates } from "@/components/chat/use-chat-updates"
 import { OfferPanel } from "@/components/chat/offer-panel"
 import { MessageText } from "@/components/chat/message-text"
+import { TelegramOptIn } from "@/components/chat/telegram-opt-in"
 
 interface SmartChatProps {
   reservationId: string
@@ -251,6 +252,10 @@ Puedes escribir por aquí sobre fechas, normas o cualquier detalle de la estanci
         >
           <strong>Activar avisos de respuesta.</strong> Así la página te avisa cuando contesten los propietarios.
         </button>
+      ) : null}
+
+      {senderType === "guest" && !threadClosed ? (
+        <TelegramOptIn threadId={reservationId} senderName={senderName} messages={messages} />
       ) : null}
 
       {attentionMessage ? (
