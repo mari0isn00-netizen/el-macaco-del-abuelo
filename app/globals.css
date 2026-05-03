@@ -202,6 +202,34 @@ html {
   }
 }
 
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  body {
+    background: #fff7ea !important;
+    color: #2f2114 !important;
+    padding: 0 !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-letter {
+    display: block !important;
+    box-shadow: none !important;
+    border: 1px solid #d8bb8d !important;
+    break-inside: avoid;
+  }
+
+  .print-page-break {
+    break-before: page;
+  }
+}
+
 /* Custom scrollbar for chat */
 .chat-scrollbar::-webkit-scrollbar {
   width: 6px;

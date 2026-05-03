@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { createClient } from "@/lib/supabase/client"
-import { sendChatMessage, markMessagesAsRead } from "@/app/actions/chat"
+import { getChatMessages, sendChatMessage, markMessagesAsRead } from "@/app/actions/chat"
 import type { ChatMessage } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,6 +18,7 @@ interface ChatWindowProps {
   senderType: "guest" | "admin"
   senderName: string
   showOfferPanel?: boolean
+  closeWhenDeleted?: boolean
 }
 
 export function ChatWindow({
@@ -26,11 +27,13 @@ export function ChatWindow({
   senderType,
   senderName,
   showOfferPanel = true,
+  closeWhenDeleted = false,
 }: ChatWindowProps) {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages)
   const [newMessage, setNewMessage] = useState("")
   const [isSending, setIsSending] = useState(false)
   const [error, setError] = useState("")
+  const [threadClosed, setThreadClosed] = useState(initialMessages.length === 0 && closeWhenDeleted)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const { disableNotifications, enableNotifications, notificationState } = useChatUpdates({
     threadId: reservationId,
@@ -43,6 +46,19 @@ export function ChatWindow({
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
+
+  useEffect(() => {
+    if (!closeWhenDeleted) return
+
+    const interval = window.setInterval(async () => {
+      const latest = await getChatMessages(reservationId).catch(() => null)
+      if (latest && latest.length === 0) {
+        setThreadClosed(true)
+      }
+    }, 4000)
+
+    return () => window.clearInterval(interval)
+  }, [closeWhenDeleted, reservationId])
 
   // Mark messages as read on mount and when new messages arrive
   useEffect(() => {
@@ -152,6 +168,19 @@ export function ChatWindow({
       groupedMessages.push({ date, messages: [msg] })
     }
   })
+
+  if (threadClosed) {
+    return (
+      <div className="flex h-full min-h-[320px] items-center justify-center p-6 text-center">
+        <div>
+          <p className="font-serif text-2xl font-bold text-foreground">Este chat ya está cerrado</p>
+          <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">
+            La conversación del regalo se ha cerrado desde la casa. Si necesitáis volver a hablar, abrid un nuevo hilo desde contacto o modo regalo.
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex h-full min-h-0 w-full flex-col">
