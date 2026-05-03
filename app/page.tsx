@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Header } from "@/components/landing/header"
 import { Hero } from "@/components/landing/hero"
+import { StoryScroll } from "@/components/landing/story-scroll"
 import { About } from "@/components/landing/about"
 import { Amenities } from "@/components/landing/amenities"
 import { Gallery } from "@/components/landing/gallery"
@@ -43,6 +44,7 @@ export default function HomePage() {
       <Header />
       <main className="pb-20 md:pb-0">
         <Hero />
+        <StoryScroll />
         <About />
         <Amenities />
         <Gallery />
