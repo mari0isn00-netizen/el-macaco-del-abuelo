@@ -10,7 +10,7 @@ import { PriceCalculator } from "@/components/reservation/price-calculator"
 import { ArrivalPreview } from "@/components/reservation/arrival-preview"
 import { getBlockedDates } from "@/app/actions/reservations"
 import type { DateRange } from "@/lib/types"
-import { ArrowLeft, Calendar, Users, MessageCircle } from "lucide-react"
+import { ArrowLeft, Calendar, FileSignature, WalletCards } from "lucide-react"
 
 export default function ReservarPage() {
   const [dateRange, setDateRange] = useState<DateRange>({
@@ -50,14 +50,14 @@ export default function ReservarPage() {
               Volver al inicio
             </Link>
             <div className="relative max-w-3xl text-white">
-              <p className="mb-4 text-xs uppercase tracking-[0.28em] text-white/75">Reserva con revisión personal</p>
-              <h1 className="text-4xl font-serif font-bold md:text-6xl">Una solicitud cuidada, clara y por escrito.</h1>
+              <p className="mb-4 text-xs uppercase tracking-[0.28em] text-white/75">Reserva directa</p>
+              <h1 className="text-4xl font-serif font-bold md:text-6xl">Elegir fechas debería sentirse como llegar.</h1>
               <p className="mt-5 max-w-2xl text-lg text-white/85">
-                Selecciona fechas y envía la solicitud. La casa revisará disponibilidad, fijará el importe y te mostrará el contrato completo antes de formalizar la reserva.
+                Selecciona la estancia, solicita la reserva y sigue el depósito, contrato y conversación desde tu página privada.
               </p>
             </div>
             <div className="relative mt-8 grid max-w-3xl gap-3 sm:grid-cols-3">
-              {["Revisión personalizada", "Contrato detallado", "Cancelación gratis 7 días antes"].map((item) => (
+              {["Calendario vivo", "Contrato con firma dibujada", "Señal supervisada por la casa"].map((item) => (
                 <div key={item} className="rounded-lg border border-white/20 bg-white/12 p-4 text-sm font-medium text-white backdrop-blur">
                   {item}
                 </div>
@@ -74,25 +74,25 @@ export default function ReservarPage() {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Paso 1</p>
-                <p className="font-medium text-foreground">Elegir fechas</p>
+                <p className="font-medium text-foreground">Fechas</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-                <Users className="h-5 w-5 text-primary" />
+                <WalletCards className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Paso 2</p>
-                <p className="font-medium text-foreground">Enviar solicitud</p>
+                <p className="font-medium text-foreground">Depósito</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-                <MessageCircle className="h-5 w-5 text-primary" />
+                <FileSignature className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Paso 3</p>
-                <p className="font-medium text-foreground">Precio y contrato por chat</p>
+                <p className="font-medium text-foreground">Contrato</p>
               </div>
             </div>
           </div>
@@ -104,13 +104,13 @@ export default function ReservarPage() {
               <p className="text-muted-foreground">Cargando disponibilidad...</p>
             </div>
           ) : (
-            <div className="grid gap-8 lg:grid-cols-3">
-              <div className="space-y-6 lg:col-span-2">
+            <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+              <div className="space-y-6">
                 <ReservationCalendar dateRange={dateRange} onDateChange={setDateRange} blockedDates={blockedDates} />
                 <ArrivalPreview dateRange={dateRange} />
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-6 lg:sticky lg:top-28 lg:self-start">
                 <PriceCalculator dateRange={dateRange} guests={guests} />
                 <ReservationForm dateRange={dateRange} guests={guests} onGuestsChange={setGuests} />
               </div>

@@ -9,7 +9,7 @@ import { SignaturePad } from "@/components/contract/signature-pad"
 import type { Reservation } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { CheckCircle, Copy, FileSignature, LockKeyhole, MessageCircle, ShieldCheck, Sparkles } from "lucide-react"
+import { Building2, CheckCircle, Copy, CreditCard, FileSignature, LockKeyhole, MessageCircle, ShieldCheck, Smartphone, Sparkles } from "lucide-react"
 
 interface DepositFlowProps {
   reservation: Reservation
@@ -25,6 +25,9 @@ export function DepositFlow({ reservation }: DepositFlowProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState("")
   const [submitted, setSubmitted] = useState(reservation.deposit_status === "submitted" || reservation.deposit_status === "paid")
+  const [paymentMethod, setPaymentMethod] = useState<"bizum" | "transfer" | "card">("bizum")
+  const [paymentReference, setPaymentReference] = useState("")
+  const [sealVisible, setSealVisible] = useState(false)
 
   const contractPreview = useMemo(
     () => ({
@@ -47,7 +50,11 @@ export function DepositFlow({ reservation }: DepositFlowProps) {
       return
     }
     if (!bizumSent) {
-      setError("Marca que has enviado el Bizum antes de dejar el contrato registrado.")
+      setError("Registra el envío del depósito antes de dejar el contrato firmado.")
+      return
+    }
+    if (paymentReference.trim().length < 3) {
+      setError("Añade una referencia, número de operación o nota del pago.")
       return
     }
 
@@ -66,6 +73,7 @@ export function DepositFlow({ reservation }: DepositFlowProps) {
       return
     }
 
+    setSealVisible(true)
     setSubmitted(true)
   }
 
@@ -146,13 +154,35 @@ export function DepositFlow({ reservation }: DepositFlowProps) {
               <div className="mt-5 rounded-lg border border-border bg-background p-4">
                 <div className="mb-3 flex items-center gap-2 text-sm font-medium text-foreground">
                   <LockKeyhole className="h-4 w-4 text-primary" />
-                  Datos de Bizum
+                  Depósito de reserva
+                </div>
+                <div className="mb-4 grid gap-2 sm:grid-cols-3">
+                  <PaymentOption
+                    active={paymentMethod === "bizum"}
+                    icon={Smartphone}
+                    label="Bizum"
+                    onClick={() => setPaymentMethod("bizum")}
+                  />
+                  <PaymentOption
+                    active={paymentMethod === "transfer"}
+                    icon={Building2}
+                    label="Transferencia"
+                    onClick={() => setPaymentMethod("transfer")}
+                  />
+                  <PaymentOption
+                    active={paymentMethod === "card"}
+                    icon={CreditCard}
+                    label="Tarjeta"
+                    onClick={() => setPaymentMethod("card")}
+                  />
                 </div>
                 <div className="grid grid-cols-[1fr_auto] gap-3 rounded-md border border-border bg-card p-3 text-sm">
                   <span className="text-muted-foreground">Estado</span>
                   <span className="font-medium text-foreground">Pendiente de confirmación</span>
-                  <span className="text-muted-foreground">Bizum</span>
-                  <span className="font-medium text-foreground">687416734</span>
+                  <span className="text-muted-foreground">{paymentMethod === "bizum" ? "Bizum" : paymentMethod === "transfer" ? "Transferencia" : "Tarjeta"}</span>
+                  <span className="text-right font-medium text-foreground">
+                    {paymentMethod === "bizum" ? "687416734" : paymentMethod === "transfer" ? "Solicitar IBAN por chat" : "Confirmación manual por chat"}
+                  </span>
                   <span className="text-muted-foreground">Concepto</span>
                   <span className="text-right font-medium text-foreground">{bizumConcept}</span>
                   <span className="text-muted-foreground">Política</span>
@@ -169,8 +199,12 @@ export function DepositFlow({ reservation }: DepositFlowProps) {
                   </Button>
                 </div>
                 <p className="mt-2 text-xs text-muted-foreground">
-                  Abre tu app bancaria, entra en Bizum, envía 100 EUR al 687416734 y usa el concepto indicado.
-                  Un Bizum personal no puede confirmar pagos automáticamente en la web.
+                  {paymentMethod === "bizum"
+                    ? "Abre tu app bancaria, entra en Bizum, envía 100 EUR al 687416734 y usa el concepto indicado."
+                    : paymentMethod === "transfer"
+                      ? "Pide el IBAN por el chat de la reserva. Cuando hagas la transferencia, deja aquí el justificante o número de operación."
+                      : "La tarjeta queda como opción supervisada: escribe por el chat y la casa te indicará cómo completar el depósito sin pasarela automática."}
+                  {" "}La casa verifica el pago manualmente antes de confirmarlo.
                 </p>
               </div>
             </div>
@@ -196,9 +230,22 @@ export function DepositFlow({ reservation }: DepositFlowProps) {
                   className="mt-1 h-4 w-4 accent-primary"
                 />
                 <span className="text-muted-foreground">
-                  He enviado la señal de 100 EUR por Bizum y entiendo que queda pendiente de confirmación bancaria.
+                  He enviado la señal de 100 EUR y entiendo que queda pendiente de confirmación bancaria.
                 </span>
               </label>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Referencia del pago</label>
+                <Input
+                  value={paymentReference}
+                  onChange={(event) => setPaymentReference(event.target.value)}
+                  placeholder="Número de operación, justificante o nota"
+                />
+                <Input type="file" accept="image/*,.pdf" className="bg-background" />
+                <p className="text-xs text-muted-foreground">
+                  La captura ayuda a los dueños a localizar el movimiento, pero la confirmación final la hacen manualmente.
+                </p>
+              </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">Nombre de quien firma</label>
@@ -217,10 +264,16 @@ export function DepositFlow({ reservation }: DepositFlowProps) {
 
               {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
-              <Button className="w-full" disabled={isSubmitting || !accepted || !bizumSent} onClick={handleSubmit}>
+              <Button className="w-full" disabled={isSubmitting || !accepted || !bizumSent || !paymentReference.trim()} onClick={handleSubmit}>
                 <FileSignature className="h-4 w-4" />
-                {isSubmitting ? "Registrando..." : "Firmar contrato y avisar del Bizum"}
+                {isSubmitting ? "Registrando..." : "Firmar contrato y avisar del depósito"}
               </Button>
+
+              {sealVisible ? (
+                <div className="mx-auto grid h-28 w-28 animate-in zoom-in-50 place-items-center rounded-full border-4 border-[#7d1f1f] bg-[#8f2f2f] text-center font-serif text-sm font-bold uppercase tracking-[0.12em] text-white shadow-xl">
+                  Reserva<br />sellada
+                </div>
+              ) : null}
 
               <p className="flex items-center gap-2 text-xs text-muted-foreground">
                 <ShieldCheck className="h-4 w-4 text-secondary" />
@@ -231,6 +284,31 @@ export function DepositFlow({ reservation }: DepositFlowProps) {
         )}
       </section>
     </div>
+  )
+}
+
+function PaymentOption({
+  active,
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  active: boolean
+  icon: typeof Smartphone
+  label: string
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-lg border p-3 text-left text-sm transition-all ${
+        active ? "border-primary bg-primary/10 text-primary shadow-sm" : "border-border bg-card text-muted-foreground hover:border-primary/40"
+      }`}
+    >
+      <Icon className="mb-2 h-4 w-4" />
+      <span className="font-medium">{label}</span>
+    </button>
   )
 }
 

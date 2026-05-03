@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server"
 import type { Reservation, Pricing } from "@/lib/types"
 import { sendTelegramAdminNotification } from "@/lib/admin-notifications"
+import { calculateReservationPrice } from "@/lib/reservation-pricing"
 import {
   createLocalChatMessage,
   createLocalReservation,
@@ -68,19 +69,17 @@ export async function calculatePrice(
   checkIn: Date,
   checkOut: Date
 ): Promise<{ total: number; nights: number; pricePerNight: number; needsOffer: boolean }> {
-  const nights = Math.ceil(
-    (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)
-  )
+  const price = calculateReservationPrice(checkIn, checkOut)
 
-  if (nights <= 0) {
+  if (price.nights <= 0) {
     return { total: 0, nights: 0, pricePerNight: 0, needsOffer: false }
   }
 
   return {
-    total: 0,
-    nights,
-    pricePerNight: 0,
-    needsOffer: true,
+    total: price.total,
+    nights: price.nights,
+    pricePerNight: price.pricePerNight,
+    needsOffer: false,
   }
 }
 
@@ -95,7 +94,16 @@ export async function createReservation(formData: {
 }): Promise<{ success: boolean; reservation?: Reservation; error?: string }> {
   const supabase = await createClient()
   const safeName = String(formData.guest_name || "").trim()
+  const safeEmail = String(formData.guest_email || "").trim()
   const generatedEmail = `web-${Date.now()}@elmacacodelabuelo.local`
+
+  if (!safeName || safeName.length < 2) {
+    return { success: false, error: "Escribe tu nombre completo." }
+  }
+
+  if (!safeEmail || !safeEmail.includes("@")) {
+    return { success: false, error: "Escribe un email válido para recibir el seguimiento de la reserva." }
+  }
 
   // Calculate total price
   const priceInfo = await calculatePrice(
@@ -108,7 +116,7 @@ export async function createReservation(formData: {
     .insert({
       ...formData,
       guest_name: safeName,
-      guest_email: formData.guest_email || generatedEmail,
+      guest_email: safeEmail || generatedEmail,
       guest_phone: formData.guest_phone || null,
       total_price: priceInfo.total,
       agreed_price: priceInfo.total,
@@ -124,7 +132,7 @@ export async function createReservation(formData: {
     const reservation = await createLocalReservation({
       ...formData,
       guest_name: safeName,
-      guest_email: formData.guest_email || generatedEmail,
+      guest_email: safeEmail || generatedEmail,
       guest_phone: formData.guest_phone || undefined,
       total_price: priceInfo.total,
     })
@@ -132,6 +140,7 @@ export async function createReservation(formData: {
     const introMessage = [
       "Nueva solicitud de estancia enviada desde la web.",
       `Nombre: ${safeName}`,
+      `Email: ${safeEmail}`,
       formData.guest_phone ? `Teléfono: ${formData.guest_phone}` : null,
       `Fechas: ${formData.check_in} - ${formData.check_out}`,
       `Huéspedes: ${formData.guests}`,
@@ -161,6 +170,7 @@ export async function createReservation(formData: {
   const introMessage = [
     "Nueva solicitud de estancia enviada desde la web.",
     `Nombre: ${safeName}`,
+    `Email: ${safeEmail}`,
     formData.guest_phone ? `Teléfono: ${formData.guest_phone}` : null,
     `Fechas: ${formData.check_in} - ${formData.check_out}`,
     `Huéspedes: ${formData.guests}`,

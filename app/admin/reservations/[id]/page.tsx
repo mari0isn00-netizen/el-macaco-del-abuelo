@@ -6,6 +6,7 @@ import { DeleteReservationButton } from "@/components/admin/delete-reservation-b
 import { CloseThreadButton } from "@/components/admin/close-thread-button"
 import { ReservationEditForm } from "@/components/admin/reservation-edit-form"
 import { AdminReservationTools } from "@/components/admin/admin-reservation-tools"
+import { ReservationTimeline } from "@/components/admin/reservation-timeline"
 import { ChatWindow } from "@/components/chat/chat-window"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Calendar, Users, Euro, CheckCircle, XCircle, MessageCircle, FileText } from "lucide-react"
@@ -122,6 +123,7 @@ export default async function AdminReservationPage({ params }: AdminReservationP
             </div>
 
             <ReservationEditForm reservation={reservation} />
+            <ReservationTimeline reservation={reservation} />
             <AdminReservationTools reservationId={reservation.id} />
 
             <div className="rounded-xl border border-border bg-card p-6">
