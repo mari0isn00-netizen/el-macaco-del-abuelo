@@ -10,7 +10,7 @@ import {
   getLocalUnreadCount,
   markLocalMessagesAsRead,
 } from "@/lib/local-store"
-import { getClientNotificationEmail, getClientTelegramChatId, isClosedThread } from "@/lib/chat-state"
+import { CLIENT_EMAIL_MARKER, getClientNotificationEmail, getClientTelegramChatId, isClosedThread } from "@/lib/chat-state"
 
 export async function getReservation(id: string): Promise<Reservation | null> {
   const supabase = await createClient()
@@ -66,6 +66,27 @@ export async function sendChatMessage(
 
   if (isClosedThread(currentMessages)) {
     return { success: false, error: "Este chat ya está cerrado. Para volver a escribir, abre una conversación nueva." }
+  }
+
+  if (senderType === "guest" && message.startsWith(CLIENT_EMAIL_MARKER)) {
+    const email = message.split(":").slice(1).join(":").trim()
+    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "")
+    const test = await sendClientEmailNotification({
+      email,
+      subject: "Avisos activados - El Macaco del Abuelo",
+      preview: "Los avisos por email quedan activados. Cuando los propietarios respondan, recibirás un correo con el enlace al chat.",
+      threadUrl: `${siteUrl || ""}/chat/${reservationId}`,
+    })
+
+    if (!test.sent) {
+      return {
+        success: false,
+        error:
+          test.reason === "missing_config"
+            ? "Falta configurar el envío de emails: RESEND_API_KEY y RESEND_FROM_EMAIL."
+            : "No hemos podido enviar el correo de prueba. Revisa el remitente o la configuración de Resend.",
+      }
+    }
   }
 
   const { data, error } = await supabase

@@ -36,7 +36,7 @@ export function EmailOptIn({
     setBusy(false)
 
     if (!result.success) {
-      setError(result.error || "No se pudieron activar los avisos.")
+      setError(result.error || "No se pudieron activar los avisos. Si falta configuración, revisa RESEND_API_KEY en Vercel.")
       return
     }
 
