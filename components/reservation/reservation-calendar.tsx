@@ -105,17 +105,15 @@ export function ReservationCalendar({ dateRange, onDateChange, blockedDates }: R
 
   return (
     <div className="relative overflow-hidden rounded-[18px] border border-[#ead9c4] bg-[#fff8ee] p-4 shadow-[0_18px_50px_rgba(79,47,31,0.10)] sm:p-5">
-      <div className="mb-4 flex items-center justify-between gap-3">
+      <div className="mb-4 grid min-h-[68px] grid-cols-[44px_1fr_44px] items-center gap-3">
         <Button type="button" variant="ghost" size="icon" onClick={() => setBaseMonth(new Date(baseMonth.getFullYear(), baseMonth.getMonth() - 1, 1))}>
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <div className="text-center">
+        <div className="min-w-0 text-center">
           <p className="font-serif text-2xl font-bold text-[#4f2f1f]">Disponibilidad</p>
-          {previewPrice && previewPrice.nights >= 2 ? (
-            <p className="mt-1 animate-in fade-in slide-in-from-bottom-1 text-sm font-medium text-primary">
-              {previewPrice.nights} noches · {previewPrice.total}€
-            </p>
-          ) : null}
+          <p className="mt-1 h-5 text-sm font-medium text-primary transition-opacity duration-200">
+            {previewPrice && previewPrice.nights >= 2 ? `${previewPrice.nights} noches · ${previewPrice.total}€` : ""}
+          </p>
         </div>
         <Button type="button" variant="ghost" size="icon" onClick={() => setBaseMonth(new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1, 1))}>
           <ChevronRight className="h-4 w-4" />
@@ -125,7 +123,7 @@ export function ReservationCalendar({ dateRange, onDateChange, blockedDates }: R
       <div className="grid gap-5 md:grid-cols-2">
         {months.map((month) => (
           <section key={keyOf(month)} className="rounded-[14px] bg-white/55 p-3">
-            <h3 className="mb-3 text-center font-serif text-lg font-semibold capitalize text-[#4f2f1f]">{monthFormatter.format(month)}</h3>
+            <h3 className="mb-3 h-7 truncate text-center font-serif text-lg font-semibold capitalize text-[#4f2f1f]">{monthFormatter.format(month)}</h3>
             <div className="mb-2 grid grid-cols-7 gap-1 text-center text-[11px] font-semibold text-muted-foreground">
               {weekdays.map((day) => (
                 <span key={day}>{day}</span>
@@ -149,12 +147,12 @@ export function ReservationCalendar({ dateRange, onDateChange, blockedDates }: R
                     onPointerLeave={() => setHoveredDate(null)}
                     disabled={blocked || outside}
                     className={cn(
-                      "relative aspect-square rounded-[10px] text-sm transition-all duration-200",
+                      "relative aspect-square rounded-[10px] text-sm transition-colors duration-200",
                       outside && "opacity-0",
-                      selectable && "bg-[#f7ead7] text-[#4f2f1f] hover:-translate-y-0.5 hover:bg-[#e8b36f]/35 hover:shadow-sm",
+                      selectable && "bg-[#f7ead7] text-[#4f2f1f] hover:bg-[#e8b36f]/35",
                       blocked && !outside && "cursor-not-allowed bg-transparent text-muted-foreground/45",
                       selectedMiddle && "bg-primary/20 text-primary",
-                      (selectedStart || selectedEnd) && "scale-[1.03] bg-primary text-primary-foreground shadow-md"
+                      (selectedStart || selectedEnd) && "bg-primary text-primary-foreground shadow-[inset_0_0_0_2px_rgba(255,255,255,0.55)]"
                     )}
                     aria-label={day.toLocaleDateString("es-ES")}
                   >
