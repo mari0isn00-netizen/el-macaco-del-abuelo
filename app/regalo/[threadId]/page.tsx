@@ -59,6 +59,7 @@ export default async function GiftPrivatePage({ params }: GiftPageProps) {
   const dedication = extractDedication(firstMessage)
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "")
   const giftUrl = siteUrl ? `${siteUrl}/regalo/${threadId}` : `/regalo/${threadId}`
+  const letterUrl = `/regalo/${threadId}/carta`
 
   return (
     <main className="min-h-screen bg-[#2f2114] px-4 py-8 text-[#fff7ea] sm:px-6 lg:px-8">
@@ -115,7 +116,7 @@ export default async function GiftPrivatePage({ params }: GiftPageProps) {
               </p>
             </div>
 
-            <GiftLetterActions giftUrl={giftUrl} />
+            <GiftLetterActions giftUrl={giftUrl} letterUrl={letterUrl} />
           </section>
 
           <section className="no-print overflow-hidden rounded-[12px] border border-white/10 bg-[#fff7ea] text-[#2f2114] shadow-[0_30px_100px_rgba(0,0,0,.28)]">
