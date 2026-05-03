@@ -1,51 +1,70 @@
 import Image from "next/image"
+import Link from "next/link"
+import { ArrowRight, Home, Trees } from "lucide-react"
 
 export function About() {
   return (
-    <section id="propiedad" className="bg-card py-20 md:py-32">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-4">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-lg">
-                <Image src="/images/emda-salon-dormitorio.webp" alt="Salón dormitorio del apartamento independiente" fill className="object-cover" />
-              </div>
-              <div className="relative aspect-square overflow-hidden rounded-lg">
-                <Image src="/images/emda-piscina-jacuzzi.webp" alt="Piscina con jacuzzi" fill className="object-cover" />
-              </div>
-            </div>
-            <div className="pt-8">
-              <div className="relative aspect-[3/4] overflow-hidden rounded-lg">
-                <Image src="/images/emda-entrada-apartamento.webp" alt="Entrada del apartamento bajo la pérgola" fill className="object-cover" />
-              </div>
-            </div>
-          </div>
-
+    <section id="propiedad" className="relative overflow-hidden bg-[#fff7ea] py-20 md:py-32">
+      <div className="absolute inset-0 opacity-[0.18] [background-image:radial-gradient(#8f6237_0.7px,transparent_0.7px)] [background-size:18px_18px]" />
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid items-center gap-14 lg:grid-cols-[1.04fr_0.96fr] lg:gap-20">
           <div>
-            <span className="text-sm font-medium uppercase tracking-wider text-secondary">Nuestra historia</span>
-            <h2 className="mt-4 text-balance font-serif text-3xl font-bold leading-tight text-foreground md:text-4xl lg:text-5xl">
-              De Arahal a Las Monjas, con una memoria de campo.
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#8f6237]/20 bg-[#f2e2c7]/70 px-4 py-2 text-sm font-semibold text-[#704624]">
+              <Trees className="h-4 w-4 text-[#6b7d3f]" />
+              La casa y la parcela
+            </div>
+            <h2 className="mt-5 text-balance font-serif text-4xl font-bold leading-tight text-[#2f2114] md:text-5xl lg:text-6xl">
+              Un refugio familiar en Carmona, con raíz en Arahal.
             </h2>
-            <div className="mt-6 space-y-4 leading-relaxed text-muted-foreground">
+            <div className="mt-7 space-y-5 text-lg leading-8 text-[#66482d]">
               <p>
-                El nombre El Macaco del Abuelo nace de una memoria familiar concreta: Amparo iba con Antonio,
+                El nombre El Macaco del Abuelo nace de una memoria concreta: Amparo iba con Antonio,
                 su padre, a recoger aceitunas en Arahal. Campo, olivar, familia y trabajo quedaron unidos a ese recuerdo.
               </p>
               <p>
-                El alojamiento no está en Arahal. Está en Las Monjas, parcela 121, Carmona, Sevilla: una parcela familiar
-                compartida con los dueños, con apartamento independiente, piscina, jacuzzi, jardín y espacio exterior para
-                descansar con calma.
+                El alojamiento está en Las Monjas, parcela 121, Carmona, Sevilla. Es una parcela familiar compartida
+                con los dueños, con apartamento independiente, piscina, jacuzzi, jardín y espacio exterior para bajar el ritmo.
               </p>
               <p>
-                Durante vuestra estancia, los dueños vivirán en la casa principal de la parcela. La idea no es una entrega
-                fría ni anónima, sino una convivencia cercana y respetuosa: habrá comunidad, supervisión discreta y ayuda
-                si necesitáis algo.
+                Durante vuestra estancia, los dueños viven en la casa principal. No salen salvo que los necesitéis
+                o queráis algo: cercanía, supervisión discreta y ayuda real sin invadir vuestro descanso.
               </p>
             </div>
 
-            <div className="mt-8 border-t border-border pt-8">
-              <p className="font-serif text-xl italic text-foreground">&ldquo;Un refugio familiar en Carmona, con raíz en Arahal.&rdquo;</p>
-              <p className="mt-2 text-sm text-muted-foreground">La familia del Macaco</p>
+            <div className="mt-9 flex flex-wrap gap-3">
+              <span className="rounded-full bg-[#f2e2c7] px-4 py-2 text-sm font-semibold text-[#5d4228]">Apartamento independiente</span>
+              <span className="rounded-full bg-[#f2e2c7] px-4 py-2 text-sm font-semibold text-[#5d4228]">Piscina y jacuzzi</span>
+              <span className="rounded-full bg-[#f2e2c7] px-4 py-2 text-sm font-semibold text-[#5d4228]">Dueños cerca si hace falta</span>
+            </div>
+
+            <Link href="/historia" className="mt-9 inline-flex items-center gap-2 font-semibold text-[#704624] transition hover:text-[#2f2114]">
+              Leer la historia completa
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="relative min-h-[520px]">
+            <div className="absolute left-0 top-0 h-72 w-[58%] -rotate-3 rounded-[8px] bg-[#fffaf0] p-3 shadow-[0_24px_70px_rgba(73,43,19,.2)]">
+              <div className="relative h-full overflow-hidden rounded-[5px]">
+                <Image src="/images/emda-salon-dormitorio.webp" alt="Salón dormitorio del apartamento independiente" fill sizes="(min-width: 1024px) 340px, 70vw" className="object-cover" />
+              </div>
+            </div>
+            <div className="absolute right-0 top-24 h-80 w-[58%] rotate-3 rounded-[8px] bg-[#fffaf0] p-3 shadow-[0_28px_80px_rgba(73,43,19,.24)]">
+              <div className="relative h-full overflow-hidden rounded-[5px]">
+                <Image src="/images/emda-piscina-jacuzzi.webp" alt="Piscina con jacuzzi" fill sizes="(min-width: 1024px) 360px, 70vw" className="object-cover" />
+              </div>
+            </div>
+            <div className="absolute bottom-0 left-14 h-64 w-[55%] -rotate-1 rounded-[8px] bg-[#fffaf0] p-3 shadow-[0_24px_70px_rgba(73,43,19,.2)]">
+              <div className="relative h-full overflow-hidden rounded-[5px]">
+                <Image src="/images/emda-entrada-apartamento.webp" alt="Entrada del apartamento bajo la pérgola" fill sizes="(min-width: 1024px) 320px, 70vw" className="object-cover" />
+              </div>
+            </div>
+            <div className="absolute bottom-12 right-3 max-w-[220px] rounded-[5px] bg-[#fff2bf] px-5 py-4 font-serif text-base italic leading-6 text-[#604221] shadow-lg">
+              Una casa preparada con calma, no un alojamiento de catálogo.
+            </div>
+            <div className="absolute left-4 top-80 hidden items-center gap-2 rounded-full bg-[#6b7d3f] px-4 py-2 text-sm font-bold text-[#fff7ea] shadow-lg sm:flex">
+              <Home className="h-4 w-4" />
+              Las Monjas
             </div>
           </div>
         </div>
