@@ -87,6 +87,7 @@ export async function calculatePrice(
 export async function createReservation(formData: {
   guest_name: string
   guest_email?: string
+  guest_phone?: string
   check_in: string
   check_out: string
   guests: number
@@ -108,7 +109,7 @@ export async function createReservation(formData: {
       ...formData,
       guest_name: safeName,
       guest_email: formData.guest_email || generatedEmail,
-      guest_phone: null,
+      guest_phone: formData.guest_phone || null,
       total_price: priceInfo.total,
       agreed_price: priceInfo.total,
       status: "pending",
@@ -124,12 +125,14 @@ export async function createReservation(formData: {
       ...formData,
       guest_name: safeName,
       guest_email: formData.guest_email || generatedEmail,
+      guest_phone: formData.guest_phone || undefined,
       total_price: priceInfo.total,
     })
 
     const introMessage = [
       "Nueva solicitud de estancia enviada desde la web.",
       `Nombre: ${safeName}`,
+      formData.guest_phone ? `Teléfono: ${formData.guest_phone}` : null,
       `Fechas: ${formData.check_in} - ${formData.check_out}`,
       `Huéspedes: ${formData.guests}`,
       formData.notes ? `Mensaje: ${formData.notes}` : null,
@@ -158,6 +161,7 @@ export async function createReservation(formData: {
   const introMessage = [
     "Nueva solicitud de estancia enviada desde la web.",
     `Nombre: ${safeName}`,
+    formData.guest_phone ? `Teléfono: ${formData.guest_phone}` : null,
     `Fechas: ${formData.check_in} - ${formData.check_out}`,
     `Huéspedes: ${formData.guests}`,
     formData.notes ? `Mensaje: ${formData.notes}` : null,

@@ -10,14 +10,16 @@ import {
 import { createClient } from "@/lib/supabase/server"
 import type { Reservation, ChatMessage, ConversationThread } from "@/lib/types"
 import {
+  createLocalChatMessage,
   getLocalChatMessages,
   getLocalReservation,
   getLocalReservations,
   getLocalThreads,
   getLocalUnreadCount,
-  deleteLocalThread,
   updateLocalReservationStatus,
+  updateLocalReservationDetails,
 } from "@/lib/local-store"
+import { CLOSED_THREAD_MARKER, isClosedThread } from "@/lib/chat-state"
 
 export async function adminLogin(
   prevState: { error?: string } | null,
@@ -163,21 +165,26 @@ export async function getAdminThreads(): Promise<ConversationThread[]> {
     reservationsById = new Map((reservations || []).map((reservation) => [reservation.id, reservation]))
   }
 
-  return threadIds.map((threadId) => {
+  const threads: ConversationThread[] = []
+
+  for (const threadId of threadIds) {
     const threadMessages = grouped.get(threadId) || []
+    if (isClosedThread(threadMessages)) continue
     const lastMessage = threadMessages[0]
     const firstGuestMessage = [...threadMessages].reverse().find((item) => item.sender_type === "guest")
     const unreadCount = threadMessages.filter((item) => item.sender_type === "guest" && !item.read).length
 
-    return {
+    threads.push({
       id: threadId,
       guest_name: firstGuestMessage?.sender_name || lastMessage?.sender_name || "Invitado",
       last_message: lastMessage?.message || "",
       last_message_at: lastMessage?.created_at || "",
       unread_count: unreadCount,
       reservation: reservationsById.get(threadId) || null,
-    }
-  }).sort((a, b) => new Date(b.last_message_at).getTime() - new Date(a.last_message_at).getTime())
+    })
+  }
+
+  return threads.sort((a, b) => new Date(b.last_message_at).getTime() - new Date(a.last_message_at).getTime())
 }
 
 export async function getReservationStats(): Promise<{
@@ -217,18 +224,68 @@ export async function getReservationStats(): Promise<{
 
 export async function closeWebThread(threadId: string): Promise<{ success: boolean; error?: string }> {
   const supabase = await createClient()
+  const text = `${CLOSED_THREAD_MARKER}\nLa casa ha cerrado esta conversación. Si necesitáis volver a escribir, abrid un nuevo hilo desde la web.`
 
-  const { error } = await supabase
-    .from("chat_messages")
-    .delete()
-    .eq("reservation_id", threadId)
+  const { error } = await supabase.from("chat_messages").insert({
+    reservation_id: threadId,
+    sender_type: "admin",
+    sender_name: "El Macaco del Abuelo",
+    message: text,
+    read: false,
+  })
 
   if (error) {
     console.error("Error closing web thread:", error)
-    const deleted = await deleteLocalThread(threadId)
-    return deleted ? { success: true } : { success: false, error: error.message }
+    await createLocalChatMessage({
+      reservation_id: threadId,
+      sender_type: "admin",
+      sender_name: "El Macaco del Abuelo",
+      message: text,
+      read: false,
+    })
   }
 
-  await deleteLocalThread(threadId)
+  return { success: true }
+}
+
+export async function updateReservationDetailsFromAdmin(
+  id: string,
+  formData: FormData
+): Promise<{ success: boolean; error?: string }> {
+  const guests = Number(formData.get("guests") || 1)
+  const totalPrice = Number(formData.get("total_price") || 0)
+  const agreedPrice = Number(formData.get("agreed_price") || totalPrice)
+  const status = String(formData.get("status") || "pending") as Reservation["status"]
+  const depositStatus = String(formData.get("deposit_status") || "pending") as Reservation["deposit_status"]
+
+  const update = {
+    guest_name: String(formData.get("guest_name") || "").trim(),
+    guest_email: String(formData.get("guest_email") || "").trim(),
+    guest_phone: String(formData.get("guest_phone") || "").trim(),
+    check_in: String(formData.get("check_in") || ""),
+    check_out: String(formData.get("check_out") || ""),
+    guests: Number.isFinite(guests) ? guests : 1,
+    total_price: Number.isFinite(totalPrice) ? totalPrice : 0,
+    agreed_price: Number.isFinite(agreedPrice) ? agreedPrice : 0,
+    status,
+    deposit_status: depositStatus,
+    notes: String(formData.get("notes") || "").trim(),
+    updated_at: new Date().toISOString(),
+  }
+
+  if (!update.guest_name || !update.check_in || !update.check_out) {
+    return { success: false, error: "Nombre, entrada y salida son obligatorios." }
+  }
+
+  const supabase = await createClient()
+  const { error } = await supabase.from("reservations").update(update).eq("id", id)
+
+  if (error) {
+    console.error("Error updating reservation details:", error)
+    const local = await updateLocalReservationDetails(id, update)
+    return local ? { success: true } : { success: false, error: error.message }
+  }
+
+  await updateLocalReservationDetails(id, update)
   return { success: true }
 }

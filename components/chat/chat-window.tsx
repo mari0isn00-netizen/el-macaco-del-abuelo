@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { getChatMessages, sendChatMessage, markMessagesAsRead } from "@/app/actions/chat"
+import { CLOSED_THREAD_MARKER } from "@/lib/chat-state"
 import type { ChatMessage } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -33,7 +34,9 @@ export function ChatWindow({
   const [newMessage, setNewMessage] = useState("")
   const [isSending, setIsSending] = useState(false)
   const [error, setError] = useState("")
-  const [threadClosed, setThreadClosed] = useState(initialMessages.length === 0 && closeWhenDeleted)
+  const [threadClosed, setThreadClosed] = useState(
+    (initialMessages.length === 0 && closeWhenDeleted) || initialMessages.some((message) => message.message.startsWith(CLOSED_THREAD_MARKER))
+  )
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const { disableNotifications, enableNotifications, notificationState } = useChatUpdates({
     threadId: reservationId,
@@ -52,7 +55,7 @@ export function ChatWindow({
 
     const interval = window.setInterval(async () => {
       const latest = await getChatMessages(reservationId).catch(() => null)
-      if (latest && latest.length === 0) {
+      if (latest && (latest.length === 0 || latest.some((message) => message.message.startsWith(CLOSED_THREAD_MARKER)))) {
         setThreadClosed(true)
       }
     }, 4000)

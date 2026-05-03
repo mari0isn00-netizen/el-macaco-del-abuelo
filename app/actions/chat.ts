@@ -10,6 +10,7 @@ import {
   getLocalUnreadCount,
   markLocalMessagesAsRead,
 } from "@/lib/local-store"
+import { isClosedThread } from "@/lib/chat-state"
 
 export async function getReservation(id: string): Promise<Reservation | null> {
   const supabase = await createClient()
@@ -61,6 +62,11 @@ export async function sendChatMessage(
   senderName: string
 ): Promise<{ success: boolean; message?: ChatMessage; error?: string }> {
   const supabase = await createClient()
+  const currentMessages = await getChatMessages(reservationId)
+
+  if (isClosedThread(currentMessages)) {
+    return { success: false, error: "Este chat ya está cerrado. Para volver a escribir, abre una conversación nueva." }
+  }
 
   const { data, error } = await supabase
     .from("chat_messages")

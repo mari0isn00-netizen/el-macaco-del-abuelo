@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import { createClient } from "@/lib/supabase/client"
-import { sendChatMessage, markMessagesAsRead } from "@/app/actions/chat"
+import { getChatMessages, sendChatMessage, markMessagesAsRead } from "@/app/actions/chat"
+import { CLOSED_THREAD_MARKER } from "@/lib/chat-state"
 import type { ChatMessage } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -45,6 +46,8 @@ export function SmartChat({
   const [newMessage, setNewMessage] = useState("")
   const [isSending, setIsSending] = useState(false)
   const [showQuickActions, setShowQuickActions] = useState(messages.length === 0 && senderType === "guest")
+  const [threadClosed, setThreadClosed] = useState(messages.some((message) => message.message.startsWith(CLOSED_THREAD_MARKER)))
+  const [attentionMessage, setAttentionMessage] = useState("")
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const { disableNotifications, enableNotifications, notificationState } = useChatUpdates({
@@ -65,6 +68,22 @@ export function SmartChat({
   useEffect(() => {
     markMessagesAsRead(reservationId, senderType)
   }, [reservationId, senderType, messages])
+
+  useEffect(() => {
+    if (messages.some((message) => message.message.startsWith(CLOSED_THREAD_MARKER))) {
+      setThreadClosed(true)
+    }
+  }, [messages])
+
+  useEffect(() => {
+    const interval = window.setInterval(async () => {
+      const latest = await getChatMessages(reservationId).catch(() => null)
+      if (latest?.some((message) => message.message.startsWith(CLOSED_THREAD_MARKER))) {
+        setThreadClosed(true)
+      }
+    }, 4000)
+    return () => window.clearInterval(interval)
+  }, [reservationId])
 
   useEffect(() => {
     if (messages.length === 0 && senderType === "guest") {
@@ -114,7 +133,7 @@ Puedes escribir por aquí sobre fechas, normas o cualquier detalle de la estanci
   }, [reservationId])
 
   const submitMessage = async (messageText: string) => {
-    if (!messageText.trim() || isSending) return
+    if (!messageText.trim() || isSending || threadClosed) return
 
     setIsSending(true)
     setShowQuickActions(false)
@@ -137,6 +156,7 @@ Puedes escribir por aquí sobre fechas, normas o cualquier detalle de la estanci
       const result = await sendChatMessage(reservationId, cleanMessage, senderType, senderName)
 
       if (!result.success) {
+        setAttentionMessage(result.error || "No se pudo enviar el mensaje.")
         setNewMessage(cleanMessage)
         setMessages((prev) => prev.filter((message) => message.id !== tempMessage.id))
       } else if (result.message) {
@@ -144,6 +164,7 @@ Puedes escribir por aquí sobre fechas, normas o cualquier detalle de la estanci
         setMessages((prev) => prev.map((message) => (message.id === tempMessage.id ? sentMessage : message)))
       }
     } catch {
+      setAttentionMessage("No se pudo enviar el mensaje.")
       setNewMessage(cleanMessage)
       setMessages((prev) => prev.filter((message) => message.id !== tempMessage.id))
     } finally {
@@ -203,7 +224,9 @@ Puedes escribir por aquí sobre fechas, normas o cualquier detalle de la estanci
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="font-semibold text-foreground">Canal de estancia</h3>
-          <p className="text-xs text-muted-foreground">Este hilo lo ven los propietarios desde su bandeja web.</p>
+          <p className="text-xs text-muted-foreground">
+            {threadClosed ? "Este hilo está cerrado." : "Este hilo lo ven los propietarios desde su bandeja web."}
+          </p>
         </div>
         {notificationState === "on" ? (
           <Button type="button" variant="outline" size="sm" onClick={disableNotifications}>
@@ -219,6 +242,20 @@ Puedes escribir por aquí sobre fechas, normas o cualquier detalle de la estanci
           </Button>
         ) : null}
       </div>
+
+      {notificationState !== "on" && senderType === "guest" && !threadClosed ? (
+        <button
+          type="button"
+          onClick={enableNotifications}
+          className="mx-3 mt-3 rounded-[10px] border border-primary/20 bg-primary/10 p-3 text-left text-sm text-primary sm:mx-4"
+        >
+          <strong>Activar avisos de respuesta.</strong> Así la página te avisa cuando contesten los propietarios.
+        </button>
+      ) : null}
+
+      {attentionMessage ? (
+        <div className="mx-3 mt-3 rounded-[10px] bg-amber-50 p-3 text-sm text-amber-800 sm:mx-4">{attentionMessage}</div>
+      ) : null}
 
       <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-3 sm:p-4">
         {groupedMessages.map((group, groupIndex) => (
@@ -295,28 +332,34 @@ Puedes escribir por aquí sobre fechas, normas o cualquier detalle de la estanci
         </div>
       )}
 
-      <OfferPanel reservationId={reservationId} senderType={senderType} senderName={senderName} messages={messages} />
+      {!threadClosed ? <OfferPanel reservationId={reservationId} senderType={senderType} senderName={senderName} messages={messages} /> : null}
 
       <div className="safe-area-bottom border-t border-border bg-card p-3 sm:p-4">
-        <form onSubmit={handleSend} className="flex items-center gap-2">
-          <Input
-            ref={inputRef}
-            value={newMessage}
-            onChange={(event) => setNewMessage(event.target.value)}
-            placeholder="Escribe a los propietarios"
-            className="flex-1 rounded-full bg-background px-4"
-            disabled={isSending}
-          />
-          <Button
-            type="submit"
-            size="icon"
-            className="h-10 w-10 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
-            disabled={!newMessage.trim() || isSending}
-          >
-            <Send className="h-4 w-4" />
-            <span className="sr-only">Enviar</span>
-          </Button>
-        </form>
+        {threadClosed ? (
+          <div className="rounded-[10px] bg-muted p-3 text-center text-sm text-muted-foreground">
+            Chat cerrado. Para volver a escribir, abre una conversación nueva.
+          </div>
+        ) : (
+          <form onSubmit={handleSend} className="flex items-center gap-2">
+            <Input
+              ref={inputRef}
+              value={newMessage}
+              onChange={(event) => setNewMessage(event.target.value)}
+              placeholder="Escribe a los propietarios"
+              className="flex-1 rounded-full bg-background px-4"
+              disabled={isSending}
+            />
+            <Button
+              type="submit"
+              size="icon"
+              className="h-10 w-10 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+              disabled={!newMessage.trim() || isSending}
+            >
+              <Send className="h-4 w-4" />
+              <span className="sr-only">Enviar</span>
+            </Button>
+          </form>
+        )}
       </div>
     </div>
   )

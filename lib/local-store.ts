@@ -92,6 +92,7 @@ export async function getLocalPricing(): Promise<Pricing[]> {
 export async function createLocalReservation(input: {
   guest_name: string
   guest_email?: string
+  guest_phone?: string
   check_in: string
   check_out: string
   guests: number
@@ -104,7 +105,7 @@ export async function createLocalReservation(input: {
     id: crypto.randomUUID(),
     guest_name: input.guest_name,
     guest_email: input.guest_email || `web-${Date.now()}@elmacacodelabuelo.local`,
-    guest_phone: undefined,
+    guest_phone: input.guest_phone || undefined,
     check_in: input.check_in,
     check_out: input.check_out,
     guests: input.guests,
@@ -119,6 +120,19 @@ export async function createLocalReservation(input: {
   }
 
   store.reservations.push(reservation)
+  await writeStore(store)
+  return reservation
+}
+
+export async function updateLocalReservationDetails(
+  id: string,
+  input: Partial<Pick<Reservation, "guest_name" | "guest_email" | "guest_phone" | "check_in" | "check_out" | "guests" | "total_price" | "agreed_price" | "notes" | "status" | "deposit_status">>
+): Promise<Reservation | null> {
+  const store = await readStore()
+  const reservation = store.reservations.find((item) => item.id === id)
+  if (!reservation) return null
+
+  Object.assign(reservation, input, { updated_at: new Date().toISOString() })
   await writeStore(store)
   return reservation
 }

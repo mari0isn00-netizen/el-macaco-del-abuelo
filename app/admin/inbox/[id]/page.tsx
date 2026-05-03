@@ -110,6 +110,7 @@ export default async function AdminInboxThreadPage({ params }: AdminInboxThreadP
                 senderType="admin"
                 senderName="El Macaco del Abuelo"
                 showOfferPanel={Boolean(reservation)}
+                closeWhenDeleted
               />
             </div>
           </div>

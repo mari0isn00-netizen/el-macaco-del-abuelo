@@ -46,9 +46,13 @@ export function useChatUpdates({
 }: UseChatUpdatesInput) {
   const [notificationState, setNotificationState] = useState<NotificationState>("off")
   const seenIdsRef = useRef<Set<string>>(new Set(messages.map((message) => message.id)))
+  const originalTitleRef = useRef<string>("")
 
   useEffect(() => {
     setNotificationState(getNotificationState(threadId))
+    if (typeof document !== "undefined" && !originalTitleRef.current) {
+      originalTitleRef.current = document.title
+    }
   }, [threadId])
 
   useEffect(() => {
@@ -62,6 +66,14 @@ export function useChatUpdates({
 
       const reply = newMessages.find((message) => message.sender_type !== senderType)
       if (!reply) return
+
+      if (typeof document !== "undefined") {
+        document.title = "Nueva respuesta - El Macaco"
+      }
+
+      if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+        navigator.vibrate?.([120, 60, 120])
+      }
 
       new Notification("Nueva respuesta de El Macaco del Abuelo", {
         body: reply.message.slice(0, 120),
@@ -89,7 +101,10 @@ export function useChatUpdates({
     const intervalId = window.setInterval(refreshMessages, pollMs)
     const onFocus = () => refreshMessages()
     const onVisibilityChange = () => {
-      if (!document.hidden) refreshMessages()
+      if (!document.hidden) {
+        if (originalTitleRef.current) document.title = originalTitleRef.current
+        refreshMessages()
+      }
     }
 
     window.addEventListener("focus", onFocus)

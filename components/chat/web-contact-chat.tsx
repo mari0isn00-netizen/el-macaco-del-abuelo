@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { createWebConversation, getChatMessages, markMessagesAsRead, sendChatMessage } from "@/app/actions/chat"
+import { CLOSED_THREAD_MARKER } from "@/lib/chat-state"
 import type { ChatMessage } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -25,8 +26,8 @@ export function WebContactChat() {
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
   const [error, setError] = useState("")
+  const [threadClosed, setThreadClosed] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-
   const supabase = useMemo(() => createClient(), [])
   const { disableNotifications, enableNotifications, notificationState } = useChatUpdates({
     threadId,
@@ -49,14 +50,13 @@ export function WebContactChat() {
     setThreadId(savedThread)
     getChatMessages(savedThread)
       .then((data) => {
+        const closed = data.some((message) => message.message.startsWith(CLOSED_THREAD_MARKER))
+        setThreadClosed(closed)
+        setMessages(data)
         if (data.length === 0) {
           window.localStorage.removeItem(THREAD_STORAGE_KEY)
           setThreadId(null)
-          setMessages([])
-          return
         }
-
-        setMessages(data)
         return markMessagesAsRead(savedThread, "guest")
       })
       .finally(() => setLoading(false))
@@ -77,6 +77,7 @@ export function WebContactChat() {
         },
         (payload) => {
           const message = payload.new as ChatMessage
+          if (message.message.startsWith(CLOSED_THREAD_MARKER)) setThreadClosed(true)
           setMessages((prev) => (prev.some((item) => item.id === message.id) ? prev : [...prev, message]))
         }
       )
@@ -106,13 +107,12 @@ export function WebContactChat() {
         return
       }
 
-      const nextThreadId = response.threadId
-      window.localStorage.setItem(THREAD_STORAGE_KEY, nextThreadId)
+      window.localStorage.setItem(THREAD_STORAGE_KEY, response.threadId)
       window.localStorage.setItem(NAME_STORAGE_KEY, draftName)
       setGuestName(draftName)
-      setThreadId(nextThreadId)
-      const nextMessages = await getChatMessages(nextThreadId)
-      setMessages(nextMessages)
+      setThreadId(response.threadId)
+      setThreadClosed(false)
+      setMessages(await getChatMessages(response.threadId))
       setDraftMessage("")
     } finally {
       setSending(false)
@@ -121,7 +121,7 @@ export function WebContactChat() {
   }
 
   const handleSend = async () => {
-    if (!threadId || !newMessage.trim() || sending) return
+    if (!threadId || !newMessage.trim() || sending || threadClosed) return
     setSending(true)
     setError("")
     const content = newMessage.trim()
@@ -129,23 +129,9 @@ export function WebContactChat() {
 
     try {
       const currentMessages = await getChatMessages(threadId)
-      if (currentMessages.length === 0) {
-        window.localStorage.removeItem(THREAD_STORAGE_KEY)
-        const response = await createWebConversation({
-          guest_name: guestName || "Invitado",
-          message: content,
-        })
-
-        if (!response.success || !response.threadId) {
-          setError(response.error || "No se pudo abrir una conversación nueva.")
-          setNewMessage(content)
-          return
-        }
-
-        window.localStorage.setItem(THREAD_STORAGE_KEY, response.threadId)
-        const nextMessages = await getChatMessages(response.threadId)
-        setThreadId(response.threadId)
-        setMessages(nextMessages)
+      if (currentMessages.length === 0 || currentMessages.some((message) => message.message.startsWith(CLOSED_THREAD_MARKER))) {
+        setThreadClosed(true)
+        setError("Este chat se ha cerrado. Abre una conversación nueva para volver a escribir.")
         return
       }
 
@@ -154,8 +140,7 @@ export function WebContactChat() {
         setError(response.error || "No se pudo enviar el mensaje.")
         setNewMessage(content)
       } else if (response.message) {
-        const sentMessage = response.message
-        setMessages((prev) => (prev.some((item) => item.id === sentMessage.id) ? prev : [...prev, sentMessage]))
+        setMessages((prev) => (prev.some((item) => item.id === response.message?.id) ? prev : [...prev, response.message!]))
       }
     } finally {
       setSending(false)
@@ -207,7 +192,7 @@ export function WebContactChat() {
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
         <div className="min-w-0">
           <h2 className="text-lg font-semibold text-foreground">Conversación con los propietarios</h2>
-          <p className="text-sm text-muted-foreground">Tu hilo sigue guardado en este navegador. Seguimos por aquí.</p>
+          <p className="text-sm text-muted-foreground">{threadClosed ? "Este hilo está cerrado." : "Tu hilo sigue guardado en este navegador."}</p>
         </div>
         {notificationState === "on" ? (
           <Button type="button" variant="outline" size="sm" onClick={disableNotifications}>
@@ -224,6 +209,16 @@ export function WebContactChat() {
         ) : null}
       </div>
 
+      {notificationState !== "on" && !threadClosed ? (
+        <button
+          type="button"
+          onClick={enableNotifications}
+          className="mx-4 mt-4 rounded-[10px] border border-primary/20 bg-primary/10 p-3 text-left text-sm text-primary"
+        >
+          <strong>Activar avisos de respuesta.</strong> Te avisaremos en esta página cuando contesten los propietarios.
+        </button>
+      ) : null}
+
       <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-3 sm:p-4">
         {messages.map((message) => {
           const isOwn = message.sender_type === "guest"
@@ -236,9 +231,7 @@ export function WebContactChat() {
                 )}
               >
                 {!isOwn ? <div className="mb-1 text-xs font-semibold uppercase tracking-wide opacity-70">{message.sender_name}</div> : null}
-                <div>
-                  <MessageText text={message.message} />
-                </div>
+                <MessageText text={message.message} />
               </div>
             </div>
           )
@@ -247,22 +240,28 @@ export function WebContactChat() {
       </div>
 
       <div className="border-t border-border p-3 sm:p-4">
-        <div className="flex items-center gap-2">
-          <Input
-            value={newMessage}
-            onChange={(event) => setNewMessage(event.target.value)}
-            placeholder="Escribe un mensaje para los propietarios"
-            onKeyDown={(event) => {
-              if (event.key === "Enter" && !event.shiftKey) {
-                event.preventDefault()
-                handleSend()
-              }
-            }}
-          />
-          <Button size="icon" onClick={handleSend} disabled={!newMessage.trim() || sending}>
-            <Send className="h-4 w-4" />
-          </Button>
-        </div>
+        {threadClosed ? (
+          <div className="rounded-[10px] bg-muted p-3 text-center text-sm text-muted-foreground">
+            Chat cerrado. Abre una conversación nueva para volver a escribir.
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Input
+              value={newMessage}
+              onChange={(event) => setNewMessage(event.target.value)}
+              placeholder="Escribe un mensaje para los propietarios"
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && !event.shiftKey) {
+                  event.preventDefault()
+                  handleSend()
+                }
+              }}
+            />
+            <Button size="icon" onClick={handleSend} disabled={!newMessage.trim() || sending}>
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
         {error ? <p className="mt-2 text-sm text-destructive">{error}</p> : null}
       </div>
     </div>

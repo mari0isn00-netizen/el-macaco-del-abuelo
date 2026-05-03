@@ -3,6 +3,8 @@ import Link from "next/link"
 import { checkAdminAuth, getReservationWithMessages, updateReservationStatus } from "@/app/actions/admin"
 import { confirmDepositPayment } from "@/app/actions/reservations"
 import { DeleteReservationButton } from "@/components/admin/delete-reservation-button"
+import { CloseThreadButton } from "@/components/admin/close-thread-button"
+import { ReservationEditForm } from "@/components/admin/reservation-edit-form"
 import { ChatWindow } from "@/components/chat/chat-window"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Calendar, Users, Euro, CheckCircle, XCircle, MessageCircle, FileText } from "lucide-react"
@@ -118,6 +120,8 @@ export default async function AdminReservationPage({ params }: AdminReservationP
               </form>
             </div>
 
+            <ReservationEditForm reservation={reservation} />
+
             <div className="rounded-xl border border-border bg-card p-6">
               <h2 className="mb-4 font-semibold text-foreground">Huésped</h2>
               <div className="space-y-3">
@@ -187,6 +191,9 @@ export default async function AdminReservationPage({ params }: AdminReservationP
                 Borra la reserva y sus mensajes asociados. Úsalo para solicitudes duplicadas, pruebas o reservas que ya no deban aparecer.
               </p>
               <DeleteReservationButton reservationId={id} redirectTo="/admin" className="w-full" size="default" />
+              <div className="mt-3">
+                <CloseThreadButton threadId={id} />
+              </div>
             </div>
 
             {reservation.notes && (
@@ -217,7 +224,7 @@ export default async function AdminReservationPage({ params }: AdminReservationP
               <div className="border-b border-border p-4">
                 <h2 className="font-semibold text-foreground">Chat con {reservation.guest_name}</h2>
               </div>
-              <ChatWindow reservationId={id} initialMessages={messages} senderType="admin" senderName="El Macaco del Abuelo" />
+              <ChatWindow reservationId={id} initialMessages={messages} senderType="admin" senderName="El Macaco del Abuelo" closeWhenDeleted />
             </div>
           </div>
         </div>

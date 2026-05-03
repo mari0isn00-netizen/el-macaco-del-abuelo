@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { CheckCircle, AlertCircle } from "lucide-react"
+import { AlertCircle, CheckCircle } from "lucide-react"
 
 interface ReservationFormProps {
   dateRange: DateRange
@@ -20,31 +20,24 @@ interface ReservationFormProps {
 export function ReservationForm({ dateRange, guests, onGuestsChange }: ReservationFormProps) {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [result, setResult] = useState<{
-    success: boolean
-    message: string
-    reservationId?: string
-  } | null>(null)
+  const [result, setResult] = useState<{ success: boolean; message: string; reservationId?: string } | null>(null)
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     if (!dateRange.from || !dateRange.to) {
-      setResult({
-        success: false,
-        message: "Selecciona las fechas de entrada y salida antes de enviar la solicitud.",
-      })
+      setResult({ success: false, message: "Selecciona las fechas de entrada y salida antes de enviar la solicitud." })
       return
     }
 
     setIsSubmitting(true)
     setResult(null)
-
     const formData = new FormData(event.currentTarget)
 
     try {
       const response = await createReservation({
         guest_name: formData.get("name") as string,
+        guest_phone: (formData.get("phone") as string) || undefined,
         check_in: dateRange.from.toISOString().split("T")[0],
         check_out: dateRange.to.toISOString().split("T")[0],
         guests,
@@ -59,9 +52,7 @@ export function ReservationForm({ dateRange, guests, onGuestsChange }: Reservati
           message: "Solicitud creada. Se ha desbloqueado tu área de cliente para seguir la estancia.",
           reservationId: response.reservation.id,
         })
-        setTimeout(() => {
-          router.push(`/cliente/${response.reservation?.id}`)
-        }, 1200)
+        setTimeout(() => router.push(`/cliente/${response.reservation?.id}`), 1200)
       } else {
         setResult({
           success: false,
@@ -69,10 +60,7 @@ export function ReservationForm({ dateRange, guests, onGuestsChange }: Reservati
         })
       }
     } catch {
-      setResult({
-        success: false,
-        message: "No hemos podido guardar la solicitud ahora mismo. Prueba otra vez en un momento.",
-      })
+      setResult({ success: false, message: "No hemos podido guardar la solicitud ahora mismo. Prueba otra vez en un momento." })
     } finally {
       setIsSubmitting(false)
     }
@@ -90,20 +78,12 @@ export function ReservationForm({ dateRange, guests, onGuestsChange }: Reservati
         </p>
       </div>
 
-      {result && (
-        <div
-          className={`mx-6 mt-6 flex items-start gap-3 rounded-lg p-4 ${
-            result.success ? "bg-secondary/20 text-secondary" : "bg-destructive/10 text-destructive"
-          }`}
-        >
-          {result.success ? (
-            <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0" />
-          ) : (
-            <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0" />
-          )}
+      {result ? (
+        <div className={`mx-6 mt-6 flex items-start gap-3 rounded-lg p-4 ${result.success ? "bg-secondary/20 text-secondary" : "bg-destructive/10 text-destructive"}`}>
+          {result.success ? <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0" /> : <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0" />}
           <p className="text-sm">{result.message}</p>
         </div>
-      )}
+      ) : null}
 
       <form onSubmit={handleSubmit} className="space-y-4 p-6">
         <div className="space-y-2">
@@ -128,6 +108,12 @@ export function ReservationForm({ dateRange, guests, onGuestsChange }: Reservati
         </div>
 
         <div className="space-y-2">
+          <Label htmlFor="phone">Teléfono para avisos</Label>
+          <Input id="phone" name="phone" inputMode="tel" placeholder="Para que los propietarios puedan avisaros" className="bg-background" />
+          <p className="text-xs text-muted-foreground">Queda en la ficha para los dueños. Los avisos web se activan en el chat.</p>
+        </div>
+
+        <div className="space-y-2">
           <Label htmlFor="notes">Mensaje para la casa (opcional)</Label>
           <Textarea
             id="notes"
@@ -138,11 +124,7 @@ export function ReservationForm({ dateRange, guests, onGuestsChange }: Reservati
           />
         </div>
 
-        <Button
-          type="submit"
-          className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
-          disabled={!isFormValid || isSubmitting}
-        >
+        <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={!isFormValid || isSubmitting}>
           {isSubmitting ? "Enviando solicitud..." : "Enviar solicitud"}
         </Button>
 
