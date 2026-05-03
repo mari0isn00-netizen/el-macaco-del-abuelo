@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils"
 import { useChatUpdates } from "@/components/chat/use-chat-updates"
 import { OfferPanel } from "@/components/chat/offer-panel"
 import { MessageText } from "@/components/chat/message-text"
-import { TelegramOptIn } from "@/components/chat/telegram-opt-in"
+import { EmailOptIn } from "@/components/chat/email-opt-in"
 
 interface SmartChatProps {
   reservationId: string
@@ -254,9 +254,7 @@ Puedes escribir por aquí sobre fechas, normas o cualquier detalle de la estanci
         </button>
       ) : null}
 
-      {senderType === "guest" && !threadClosed ? (
-        <TelegramOptIn threadId={reservationId} senderName={senderName} messages={messages} />
-      ) : null}
+      {senderType === "guest" && !threadClosed ? <EmailOptIn threadId={reservationId} senderName={senderName} messages={messages} /> : null}
 
       {attentionMessage ? (
         <div className="mx-3 mt-3 rounded-[10px] bg-amber-50 p-3 text-sm text-amber-800 sm:mx-4">{attentionMessage}</div>

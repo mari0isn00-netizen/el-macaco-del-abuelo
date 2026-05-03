@@ -2,7 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server"
 import type { ChatMessage, Reservation } from "@/lib/types"
-import { sendTelegramAdminNotification, sendTelegramClientNotification } from "@/lib/admin-notifications"
+import { sendClientEmailNotification, sendTelegramAdminNotification, sendTelegramClientNotification } from "@/lib/admin-notifications"
 import {
   createLocalChatMessage,
   getLocalChatMessages,
@@ -10,7 +10,7 @@ import {
   getLocalUnreadCount,
   markLocalMessagesAsRead,
 } from "@/lib/local-store"
-import { getClientTelegramChatId, isClosedThread } from "@/lib/chat-state"
+import { getClientNotificationEmail, getClientTelegramChatId, isClosedThread } from "@/lib/chat-state"
 
 export async function getReservation(id: string): Promise<Reservation | null> {
   const supabase = await createClient()
@@ -97,12 +97,21 @@ export async function sendChatMessage(
       }).catch(() => null)
     } else {
       const clientChatId = getClientTelegramChatId(currentMessages)
+      const clientEmail = getClientNotificationEmail(currentMessages)
       const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "")
       if (clientChatId) {
         await sendTelegramClientNotification({
           chatId: clientChatId,
           title: "Nueva respuesta de los propietarios",
           preview: message.slice(0, 240),
+          threadUrl: `${siteUrl || ""}/chat/${reservationId}`,
+        }).catch(() => null)
+      }
+      if (clientEmail) {
+        await sendClientEmailNotification({
+          email: clientEmail,
+          subject: "Nueva respuesta de El Macaco del Abuelo",
+          preview: message.slice(0, 500),
           threadUrl: `${siteUrl || ""}/chat/${reservationId}`,
         }).catch(() => null)
       }
@@ -120,12 +129,21 @@ export async function sendChatMessage(
     }).catch(() => null)
   } else {
     const clientChatId = getClientTelegramChatId(currentMessages)
+    const clientEmail = getClientNotificationEmail(currentMessages)
     const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "")
     if (clientChatId) {
       await sendTelegramClientNotification({
         chatId: clientChatId,
         title: "Nueva respuesta de los propietarios",
         preview: message.slice(0, 240),
+        threadUrl: `${siteUrl || ""}/chat/${reservationId}`,
+      }).catch(() => null)
+    }
+    if (clientEmail) {
+      await sendClientEmailNotification({
+        email: clientEmail,
+        subject: "Nueva respuesta de El Macaco del Abuelo",
+        preview: message.slice(0, 500),
         threadUrl: `${siteUrl || ""}/chat/${reservationId}`,
       }).catch(() => null)
     }

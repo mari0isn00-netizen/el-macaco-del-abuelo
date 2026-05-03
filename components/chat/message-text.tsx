@@ -1,5 +1,5 @@
 import { CheckCircle2, FileSignature, HandCoins, Info, XCircle } from "lucide-react"
-import { CLIENT_TELEGRAM_MARKER } from "@/lib/chat-state"
+import { CLIENT_EMAIL_MARKER, CLIENT_TELEGRAM_MARKER } from "@/lib/chat-state"
 
 const urlPattern = /(https?:\/\/[^\s]+|\/pago\/[a-zA-Z0-9-]+)/g
 const exactUrlPattern = /^(https?:\/\/[^\s]+|\/pago\/[a-zA-Z0-9-]+)$/
@@ -64,6 +64,9 @@ function LinkedText({ text }: { text: string }) {
 export function MessageText({ text }: { text: string }) {
   if (text.startsWith(CLIENT_TELEGRAM_MARKER)) {
     return <span className="text-xs italic opacity-70">Avisos por Telegram activados.</span>
+  }
+  if (text.startsWith(CLIENT_EMAIL_MARKER)) {
+    return <span className="text-xs italic opacity-70">Avisos por email activados.</span>
   }
 
   const action = actionStyles.find((item) => text.startsWith(item.marker))
