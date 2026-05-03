@@ -13,6 +13,7 @@ import { Footer } from "@/components/landing/footer"
 import { IntroAnimation } from "@/components/landing/intro-animation"
 import { MobileNav } from "@/components/landing/mobile-nav"
 import { FloatingChat } from "@/components/chat/floating-chat"
+import { Reveal } from "@/components/ui/reveal"
 
 export default function HomePage() {
   const [showIntro, setShowIntro] = useState(true)
@@ -44,12 +45,24 @@ export default function HomePage() {
       <Header />
       <main className="pb-20 md:pb-0">
         <Hero />
-        <StoryTeaser />
-        <About />
-        <Amenities />
-        <Gallery />
-        <Location />
-        <Contact />
+        <Reveal>
+          <StoryTeaser />
+        </Reveal>
+        <Reveal>
+          <About />
+        </Reveal>
+        <Reveal>
+          <Amenities />
+        </Reveal>
+        <Reveal>
+          <Gallery />
+        </Reveal>
+        <Reveal>
+          <Location />
+        </Reveal>
+        <Reveal>
+          <Contact />
+        </Reveal>
       </main>
       <Footer />
       <MobileNav />

@@ -5,7 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ConvinceMode } from "@/components/landing/convince-mode"
-import { Bath, Bed, MapPin, Sun, Users } from "lucide-react"
+import { Bath, Bed, Gift, MapPin, Sun, Users } from "lucide-react"
 
 const atmospheres = {
   dawn: {
@@ -115,6 +115,12 @@ export function Hero() {
                 Ver galería
               </Button>
             </a>
+            <Link href="/regalo">
+              <Button size="lg" variant="outline" className="border-current/20 bg-white/10 px-8 text-lg backdrop-blur hover:bg-white/20">
+                <Gift className="h-5 w-5" />
+                Modo regalo
+              </Button>
+            </Link>
           </div>
 
           <ConvinceMode />

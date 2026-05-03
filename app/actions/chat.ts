@@ -161,6 +161,83 @@ export async function createWebConversation(input: {
   return { success: true, threadId }
 }
 
+export async function createGiftConversation(input: {
+  giverName: string
+  giverContact: string
+  recipientName: string
+  occasion?: string
+  preferredWindow?: string
+  personalMessage: string
+}): Promise<{ success: boolean; threadId?: string; giftUrl?: string; error?: string }> {
+  const giverName = String(input.giverName || "").trim()
+  const giverContact = String(input.giverContact || "").trim()
+  const recipientName = String(input.recipientName || "").trim()
+  const personalMessage = String(input.personalMessage || "").trim()
+
+  if (giverName.length < 2) {
+    return { success: false, error: "Escribe tu nombre para preparar el regalo." }
+  }
+
+  if (giverContact.length < 5) {
+    return { success: false, error: "Deja un teléfono o email para poder coordinar el regalo." }
+  }
+
+  if (recipientName.length < 2) {
+    return { success: false, error: "Escribe el nombre de la persona que recibirá el regalo." }
+  }
+
+  if (personalMessage.length < 12) {
+    return { success: false, error: "Escribe una dedicatoria un poco más completa para la carta." }
+  }
+
+  const threadId = crypto.randomUUID()
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "")
+  const giftUrl = siteUrl ? `${siteUrl}/regalo/${threadId}` : `/regalo/${threadId}`
+  const message = [
+    "MODO REGALO ACTIVADO",
+    `Regala: ${giverName}`,
+    `Contacto de quien regala: ${giverContact}`,
+    `Persona que recibirá la escapada: ${recipientName}`,
+    input.occasion ? `Motivo: ${input.occasion}` : null,
+    input.preferredWindow ? `Fechas orientativas: ${input.preferredWindow}` : "Fechas orientativas: las elegirá la persona regalada según disponibilidad.",
+    "Dedicatoria para la carta:",
+    personalMessage,
+    `Enlace privado para compartir: ${giftUrl}`,
+    "Siguiente paso: la casa revisa disponibilidad, precio y forma de formalizarlo por este mismo hilo.",
+  ]
+    .filter(Boolean)
+    .join("\n")
+
+  const supabase = await createClient()
+  const { error } = await supabase.from("chat_messages").insert({
+    reservation_id: threadId,
+    sender_type: "guest",
+    sender_name: giverName,
+    message,
+    read: false,
+  })
+
+  if (error) {
+    console.error("Error creating gift conversation:", error)
+    await createLocalChatMessage({
+      reservation_id: threadId,
+      sender_type: "guest",
+      sender_name: giverName,
+      message,
+      read: false,
+    })
+  }
+
+  await sendTelegramAdminNotification({
+    threadId,
+    guestName: giverName,
+    preview: `MODO REGALO: ${giverName} quiere regalar una escapada a ${recipientName}. ${personalMessage}`.slice(0, 240),
+    kind: "new_thread",
+  }).catch(() => null)
+
+  return { success: true, threadId, giftUrl }
+}
+
 export async function markMessagesAsRead(
   reservationId: string,
   senderType: "guest" | "admin"

@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { Menu, X } from "lucide-react"
+import { Gift, Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const navLinks = [
   { href: "/#inicio", label: "Inicio" },
   { href: "/historia", label: "Historia" },
+  { href: "/regalo", label: "Regalo" },
   { href: "/#propiedad", label: "La casa" },
   { href: "/#comodidades", label: "Comodidades" },
   { href: "/#galeria", label: "Galería" },
@@ -44,7 +45,7 @@ export function Header() {
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-6 md:flex">
+          <nav className="hidden items-center gap-5 md:flex">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -64,7 +65,13 @@ export function Header() {
             ) : null}
           </nav>
 
-          <div className="hidden items-center gap-4 md:flex">
+          <div className="hidden items-center gap-3 md:flex">
+            <Link href="/regalo">
+              <Button variant="outline">
+                <Gift className="h-4 w-4" />
+                Regalo
+              </Button>
+            </Link>
             <Link href="/reservar">
               <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                 Pedir estancia

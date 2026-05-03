@@ -156,7 +156,7 @@ export function ChatWindow({
   return (
     <div className="flex h-full min-h-0 w-full flex-col">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-card px-4 py-3">
-        <p className="text-sm text-muted-foreground">Se actualiza automaticamente cada pocos segundos.</p>
+        <p className="text-sm text-muted-foreground">Se actualiza automáticamente cada pocos segundos.</p>
         {notificationState === "on" ? (
           <Button type="button" variant="outline" size="sm" onClick={disableNotifications}>
             <BellOff className="h-4 w-4" />

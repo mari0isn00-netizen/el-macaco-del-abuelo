@@ -1,14 +1,14 @@
 "use client"
 
 import Link from "next/link"
-import { Home, Calendar, MessageCircle, Info, UserRound } from "lucide-react"
+import { Home, Calendar, MessageCircle, Gift, UserRound } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 
 const navItems = [
   { href: "/", icon: Home, label: "Inicio" },
-  { href: "/historia", icon: Info, label: "Historia" },
+  { href: "/regalo", icon: Gift, label: "Regalo" },
   { href: "/reservar", icon: Calendar, label: "Reservar" },
   { href: "/contactar", icon: MessageCircle, label: "Chat" },
 ]
