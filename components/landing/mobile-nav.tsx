@@ -8,7 +8,7 @@ import { useEffect, useState } from "react"
 
 const navItems = [
   { href: "/", icon: Home, label: "Inicio" },
-  { href: "/#historia", icon: Info, label: "Historia" },
+  { href: "/historia", icon: Info, label: "Historia" },
   { href: "/reservar", icon: Calendar, label: "Reservar" },
   { href: "/contactar", icon: MessageCircle, label: "Chat" },
 ]
