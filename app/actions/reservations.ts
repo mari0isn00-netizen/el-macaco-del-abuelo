@@ -488,6 +488,7 @@ export async function sendReservationDecision(input: {
 
 export async function deleteReservation(id: string): Promise<{ success: boolean; error?: string }> {
   const supabase = await createClient()
+  await supabase.from("chat_messages").delete().eq("reservation_id", id)
   const { error } = await supabase.from("reservations").delete().eq("id", id)
 
   if (error) {
@@ -496,7 +497,6 @@ export async function deleteReservation(id: string): Promise<{ success: boolean;
     return deleted ? { success: true } : { success: false, error: error.message }
   }
 
-  await supabase.from("chat_messages").delete().eq("reservation_id", id)
   await deleteLocalReservation(id)
   return { success: true }
 }

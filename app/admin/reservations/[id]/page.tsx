@@ -1,10 +1,11 @@
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { checkAdminAuth, getReservationWithMessages, updateReservationStatus } from "@/app/actions/admin"
-import { confirmDepositPayment, deleteReservation } from "@/app/actions/reservations"
+import { confirmDepositPayment } from "@/app/actions/reservations"
+import { DeleteReservationButton } from "@/components/admin/delete-reservation-button"
 import { ChatWindow } from "@/components/chat/chat-window"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Calendar, Users, Euro, CheckCircle, XCircle, MessageCircle, FileText, Trash2 } from "lucide-react"
+import { ArrowLeft, Calendar, Users, Euro, CheckCircle, XCircle, MessageCircle, FileText } from "lucide-react"
 import type { Reservation } from "@/lib/types"
 
 interface AdminReservationPageProps {
@@ -62,12 +63,6 @@ export default async function AdminReservationPage({ params }: AdminReservationP
       senderName: "El Macaco del Abuelo",
     })
     redirect(`/admin/reservations/${id}`)
-  }
-
-  async function handleDeleteReservation() {
-    "use server"
-    await deleteReservation(id)
-    redirect("/admin")
   }
 
   return (
@@ -191,12 +186,7 @@ export default async function AdminReservationPage({ params }: AdminReservationP
               <p className="mb-4 text-sm text-red-800">
                 Borra la reserva y sus mensajes asociados. Úsalo para solicitudes duplicadas, pruebas o reservas que ya no deban aparecer.
               </p>
-              <form action={handleDeleteReservation}>
-                <Button type="submit" variant="destructive" className="w-full">
-                  <Trash2 className="h-4 w-4" />
-                  Borrar reserva
-                </Button>
-              </form>
+              <DeleteReservationButton reservationId={id} redirectTo="/admin" className="w-full" size="default" />
             </div>
 
             {reservation.notes && (

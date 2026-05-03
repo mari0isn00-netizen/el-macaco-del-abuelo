@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link"
 import { getAdminThreads } from "@/app/actions/admin"
 import type { ConversationThread } from "@/lib/types"
+import { CloseThreadButton } from "@/components/admin/close-thread-button"
+import { DeleteReservationButton } from "@/components/admin/delete-reservation-button"
 import { Button } from "@/components/ui/button"
 import { Bell, BellOff, Calendar, Circle, MessageCircle } from "lucide-react"
 
@@ -152,7 +154,7 @@ export function AdminInboxClient({ initialThreads }: AdminInboxClientProps) {
         ) : (
           <div className="divide-y divide-border">
             {threads.map((thread) => (
-              <Link key={thread.id} href={`/admin/inbox/${thread.id}`} className="block px-6 py-5 transition-colors hover:bg-muted/30">
+              <div key={thread.id} className="px-6 py-5 transition-colors hover:bg-muted/30">
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-3">
@@ -176,7 +178,7 @@ export function AdminInboxClient({ initialThreads }: AdminInboxClientProps) {
                     <p className="mt-2 truncate text-sm text-muted-foreground">{thread.last_message}</p>
                   </div>
 
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                     {thread.reservation ? (
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
@@ -184,9 +186,17 @@ export function AdminInboxClient({ initialThreads }: AdminInboxClientProps) {
                       </div>
                     ) : null}
                     <span>{formatDateTime(thread.last_message_at)}</span>
+                    <Link href={`/admin/inbox/${thread.id}`} className="font-medium text-primary hover:text-primary/80">
+                      Abrir
+                    </Link>
+                    {thread.reservation ? (
+                      <DeleteReservationButton reservationId={thread.reservation.id} redirectTo="/admin/inbox" />
+                    ) : (
+                      <CloseThreadButton threadId={thread.id} compact />
+                    )}
                   </div>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         )}

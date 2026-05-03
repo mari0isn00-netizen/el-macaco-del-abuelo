@@ -8,9 +8,10 @@ import {
   adminLogout,
   getAdminThreads,
 } from "@/app/actions/admin"
-import { confirmDepositPayment, deleteReservation } from "@/app/actions/reservations"
+import { confirmDepositPayment } from "@/app/actions/reservations"
+import { DeleteReservationButton } from "@/components/admin/delete-reservation-button"
 import { Button } from "@/components/ui/button"
-import { Calendar, MessageCircle, Euro, Clock, CheckCircle, LogOut, ExternalLink, ArrowRight, Trash2 } from "lucide-react"
+import { Calendar, MessageCircle, Euro, Clock, CheckCircle, LogOut, ExternalLink, ArrowRight } from "lucide-react"
 
 export default async function AdminDashboardPage() {
   const isAuthenticated = await checkAdminAuth()
@@ -55,15 +56,6 @@ export default async function AdminDashboardPage() {
         reservationId,
         senderName: "El Macaco del Abuelo",
       })
-    }
-    redirect("/admin")
-  }
-
-  async function deleteReservationFromList(formData: FormData) {
-    "use server"
-    const reservationId = String(formData.get("reservationId") || "")
-    if (reservationId) {
-      await deleteReservation(reservationId)
     }
     redirect("/admin")
   }
@@ -243,13 +235,7 @@ export default async function AdminDashboardPage() {
                                 </Button>
                               </form>
                             ) : null}
-                            <form action={deleteReservationFromList}>
-                              <input type="hidden" name="reservationId" value={reservation.id} />
-                              <Button type="submit" size="sm" variant="destructive">
-                                <Trash2 className="h-4 w-4" />
-                                Borrar
-                              </Button>
-                            </form>
+                            <DeleteReservationButton reservationId={reservation.id} redirectTo="/admin" />
                           </div>
                         </td>
                       </tr>

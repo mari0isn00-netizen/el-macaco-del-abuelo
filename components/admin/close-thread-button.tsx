@@ -7,9 +7,10 @@ import { ArchiveX } from "lucide-react"
 
 interface CloseThreadButtonProps {
   threadId: string
+  compact?: boolean
 }
 
-export function CloseThreadButton({ threadId }: CloseThreadButtonProps) {
+export function CloseThreadButton({ threadId, compact = false }: CloseThreadButtonProps) {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState("")
 
@@ -31,12 +32,19 @@ export function CloseThreadButton({ threadId }: CloseThreadButtonProps) {
   }
 
   return (
-    <div className="space-y-2">
-      <Button type="button" variant="destructive" className="w-full" onClick={closeThread} disabled={busy}>
+    <div className="space-y-1">
+      <Button
+        type="button"
+        variant="destructive"
+        size={compact ? "sm" : "default"}
+        className={compact ? "" : "w-full"}
+        onClick={closeThread}
+        disabled={busy}
+      >
         <ArchiveX className="h-4 w-4" />
-        {busy ? "Cerrando..." : "Cerrar conversación"}
+        {busy ? "Cerrando..." : compact ? "Cerrar" : "Cerrar conversación"}
       </Button>
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {error ? <p className="text-xs text-destructive">{error}</p> : null}
     </div>
   )
 }
