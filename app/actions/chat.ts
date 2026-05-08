@@ -1,5 +1,6 @@
 "use server"
 
+import { headers } from "next/headers"
 import { createClient } from "@/lib/supabase/server"
 import type { ChatMessage, Reservation } from "@/lib/types"
 import { sendClientEmailNotification, sendTelegramAdminNotification, sendTelegramClientNotification } from "@/lib/admin-notifications"
@@ -11,6 +12,29 @@ import {
   markLocalMessagesAsRead,
 } from "@/lib/local-store"
 import { CLIENT_EMAIL_MARKER, getClientNotificationEmail, getClientTelegramChatId, isClosedThread } from "@/lib/chat-state"
+
+async function getPublicSiteUrl() {
+  const configuredUrl = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "")
+  if (configuredUrl.startsWith("http")) return configuredUrl
+
+  const requestHeaders = await headers()
+  const host = requestHeaders.get("x-forwarded-host") || requestHeaders.get("host")
+  if (host) {
+    const protocol = requestHeaders.get("x-forwarded-proto") || (host.includes("localhost") || host.startsWith("127.") ? "http" : "https")
+    return `${protocol}://${host}`.replace(/\/$/, "")
+  }
+
+  const vercelUrl = process.env.VERCEL_URL
+  if (vercelUrl) return `https://${vercelUrl}`.replace(/\/$/, "")
+
+  return "http://127.0.0.1:3000"
+}
+
+function isDeliverableEmail(email?: string | null) {
+  const value = String(email || "").trim().toLowerCase()
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return false
+  return !value.endsWith(".local")
+}
 
 export async function getReservation(id: string): Promise<Reservation | null> {
   const supabase = await createClient()
@@ -55,12 +79,69 @@ export async function getChatMessages(reservationId: string): Promise<ChatMessag
   return data || []
 }
 
+async function getClientEmailForThread(reservationId: string, messages: ChatMessage[]) {
+  const optedInEmail = getClientNotificationEmail(messages)
+  if (isDeliverableEmail(optedInEmail)) return optedInEmail
+
+  const reservation = await getReservation(reservationId)
+  if (isDeliverableEmail(reservation?.guest_email)) return reservation?.guest_email || null
+
+  return null
+}
+
+async function sendClientReplyNotifications(input: {
+  reservationId: string
+  messages: ChatMessage[]
+  preview: string
+}) {
+  const threadUrl = `${await getPublicSiteUrl()}/chat/${input.reservationId}`
+  const clientChatId = getClientTelegramChatId(input.messages)
+  const clientEmail = await getClientEmailForThread(input.reservationId, input.messages)
+  const warnings: string[] = []
+
+  if (clientChatId) {
+    const telegram = await sendTelegramClientNotification({
+      chatId: clientChatId,
+      title: "Nueva respuesta de los propietarios",
+      preview: input.preview.slice(0, 240),
+      threadUrl,
+    }).catch((error) => ({ sent: false as const, reason: "exception" as const, detail: String(error) }))
+
+    if (!telegram.sent) {
+      console.error("Client Telegram notification failed:", telegram)
+      warnings.push("Telegram no ha podido avisar al cliente.")
+    }
+  }
+
+  if (clientEmail) {
+    const email = await sendClientEmailNotification({
+      email: clientEmail,
+      subject: "Nueva respuesta de El Macaco del Abuelo",
+      preview: input.preview.slice(0, 500),
+      threadUrl,
+    }).catch((error) => ({ sent: false as const, reason: "exception" as const, detail: String(error) }))
+
+    if (!email.sent) {
+      console.error("Client email notification failed:", email)
+      warnings.push(
+        email.reason === "missing_config"
+          ? "Email no enviado: falta RESEND_API_KEY o RESEND_FROM_EMAIL."
+          : "Email no enviado: Resend ha rechazado el envío. Revisa que RESEND_FROM_EMAIL sea un remitente verificado."
+      )
+    }
+  } else {
+    warnings.push("No hay email válido del cliente para avisarle.")
+  }
+
+  return warnings
+}
+
 export async function sendChatMessage(
   reservationId: string,
   message: string,
   senderType: "guest" | "admin",
   senderName: string
-): Promise<{ success: boolean; message?: ChatMessage; error?: string }> {
+): Promise<{ success: boolean; message?: ChatMessage; error?: string; notificationWarning?: string }> {
   const supabase = await createClient()
   const currentMessages = await getChatMessages(reservationId)
 
@@ -70,12 +151,11 @@ export async function sendChatMessage(
 
   if (senderType === "guest" && message.startsWith(CLIENT_EMAIL_MARKER)) {
     const email = message.split(":").slice(1).join(":").trim()
-    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "")
     const test = await sendClientEmailNotification({
       email,
       subject: "Avisos activados - El Macaco del Abuelo",
       preview: "Los avisos por email quedan activados. Cuando los propietarios respondan, recibirás un correo con el enlace al chat.",
-      threadUrl: `${siteUrl || ""}/chat/${reservationId}`,
+      threadUrl: `${await getPublicSiteUrl()}/chat/${reservationId}`,
     })
 
     if (!test.sent) {
@@ -117,24 +197,14 @@ export async function sendChatMessage(
         kind: "new_message",
       }).catch(() => null)
     } else {
-      const clientChatId = getClientTelegramChatId(currentMessages)
-      const clientEmail = getClientNotificationEmail(currentMessages)
-      const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "")
-      if (clientChatId) {
-        await sendTelegramClientNotification({
-          chatId: clientChatId,
-          title: "Nueva respuesta de los propietarios",
-          preview: message.slice(0, 240),
-          threadUrl: `${siteUrl || ""}/chat/${reservationId}`,
-        }).catch(() => null)
-      }
-      if (clientEmail) {
-        await sendClientEmailNotification({
-          email: clientEmail,
-          subject: "Nueva respuesta de El Macaco del Abuelo",
-          preview: message.slice(0, 500),
-          threadUrl: `${siteUrl || ""}/chat/${reservationId}`,
-        }).catch(() => null)
+      const warnings = await sendClientReplyNotifications({
+        reservationId,
+        messages: currentMessages,
+        preview: message,
+      }).catch((notificationError) => console.error("Client notification failed:", notificationError))
+
+      if (warnings?.length) {
+        return { success: true, message: localMessage, notificationWarning: warnings.join(" ") }
       }
     }
 
@@ -149,24 +219,14 @@ export async function sendChatMessage(
       kind: "new_message",
     }).catch(() => null)
   } else {
-    const clientChatId = getClientTelegramChatId(currentMessages)
-    const clientEmail = getClientNotificationEmail(currentMessages)
-    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "")
-    if (clientChatId) {
-      await sendTelegramClientNotification({
-        chatId: clientChatId,
-        title: "Nueva respuesta de los propietarios",
-        preview: message.slice(0, 240),
-        threadUrl: `${siteUrl || ""}/chat/${reservationId}`,
-      }).catch(() => null)
-    }
-    if (clientEmail) {
-      await sendClientEmailNotification({
-        email: clientEmail,
-        subject: "Nueva respuesta de El Macaco del Abuelo",
-        preview: message.slice(0, 500),
-        threadUrl: `${siteUrl || ""}/chat/${reservationId}`,
-      }).catch(() => null)
+    const warnings = await sendClientReplyNotifications({
+      reservationId,
+      messages: currentMessages,
+      preview: message,
+    })
+
+    if (warnings.length) {
+      return { success: true, message: data, notificationWarning: warnings.join(" ") }
     }
   }
 

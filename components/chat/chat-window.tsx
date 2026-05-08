@@ -127,6 +127,9 @@ export function ChatWindow({
       } else if (result.message) {
         const sentMessage = result.message
         setMessages((prev) => (prev.some((msg) => msg.id === sentMessage.id) ? prev : [...prev, sentMessage]))
+        if (result.notificationWarning && senderType === "admin") {
+          setError(result.notificationWarning)
+        }
       }
     } catch (error) {
       console.error("Error sending message:", error)

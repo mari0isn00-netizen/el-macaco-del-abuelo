@@ -145,7 +145,14 @@ export async function sendClientEmailNotification(input: {
   })
 
   if (!response.ok) {
-    return { sent: false, reason: "provider_error" as const, detail: await response.text() }
+    const detail = await response.text()
+    console.error("Resend email failed:", {
+      status: response.status,
+      from,
+      toDomain: input.email.split("@")[1] || "",
+      detail,
+    })
+    return { sent: false, reason: "provider_error" as const, detail }
   }
 
   return { sent: true as const }

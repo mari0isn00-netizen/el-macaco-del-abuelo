@@ -30,12 +30,12 @@ export function AdminReservationTools({ reservationId }: { reservationId: string
   const [busy, setBusy] = useState("")
   const [status, setStatus] = useState("")
 
-  async function run(label: string, action: () => Promise<{ success: boolean; error?: string }>) {
+  async function run(label: string, action: () => Promise<{ success: boolean; error?: string; notificationWarning?: string }>) {
     setBusy(label)
     setStatus("")
     const result = await action()
     setBusy("")
-    setStatus(result.success ? "Acción realizada." : result.error || "No se pudo realizar la acción.")
+    setStatus(result.success ? result.notificationWarning || "Acción realizada." : result.error || "No se pudo realizar la acción.")
   }
 
   return (

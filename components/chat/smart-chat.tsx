@@ -164,6 +164,9 @@ Puedes escribir por aquí sobre fechas, normas o cualquier detalle de la estanci
       } else if (result.message) {
         const sentMessage = result.message
         setMessages((prev) => prev.map((message) => (message.id === tempMessage.id ? sentMessage : message)))
+        if (result.notificationWarning && senderType === "admin") {
+          setAttentionMessage(result.notificationWarning)
+        }
       }
     } catch {
       setAttentionMessage("No se pudo enviar el mensaje.")
