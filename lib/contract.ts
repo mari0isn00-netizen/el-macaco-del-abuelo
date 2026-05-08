@@ -43,6 +43,7 @@ export function buildContractText(reservation: Reservation): string {
     "3. Precio e inclusiones",
     "El precio lo establece la casa tras revisar la solicitud, duración, disponibilidad y condiciones de uso. El importe final debe quedar escrito en el chat web antes de formalizar la reserva.",
     "El precio incluye el uso del apartamento independiente, piscina, jacuzzi, jardín, mobiliario disponible, menaje básico y comunicación directa por el chat web. La parcela es compartida con los propietarios, que viven en la casa principal.",
+    "La limpieza no está incluida en el importe de la estancia salvo que la casa lo confirme expresamente por escrito en el chat web o en una condición particular de la reserva.",
     "No incluye servicios no descritos expresamente ni actividades, visitas o eventos no autorizados.",
     "",
     "4. Señal y formalización",

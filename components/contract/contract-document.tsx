@@ -72,6 +72,10 @@ export function ContractDocument({ reservation, previewSignature }: ContractDocu
             con los propietarios, que viven en la casa principal. No incluye servicios no descritos expresamente ni
             actividades, visitas o eventos no autorizados.
           </p>
+          <p className="mt-2 text-sm leading-7">
+            La limpieza no está incluida en el importe de la estancia salvo confirmación expresa por escrito en el chat web
+            o en una condición particular de la reserva.
+          </p>
         </section>
 
         <section>

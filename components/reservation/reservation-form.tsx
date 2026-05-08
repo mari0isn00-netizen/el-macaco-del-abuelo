@@ -118,9 +118,9 @@ export function ReservationForm({ dateRange, guests, onGuestsChange }: Reservati
               <Line label="Salida" value={dateRange.to.toLocaleDateString("es-ES")} />
               <Line label="Noches" value={String(price.nights)} />
               <div className="border-t border-[#ead9c4] pt-3">
-                <Line label="Precio base" value={`${price.base}€`} />
-                <Line label="Limpieza" value={price.cleaning > 0 ? `${price.cleaning}€` : "Incluida"} />
-                <Line label="Total" value={`${price.total}€`} strong />
+                <Line label="Estancia" value={`${price.base}€`} />
+                <Line label="Limpieza" value="No incluida" />
+                <Line label="Total estancia" value={`${price.total}€`} strong />
               </div>
             </div>
           ) : (

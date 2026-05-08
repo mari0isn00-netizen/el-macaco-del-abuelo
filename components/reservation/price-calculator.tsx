@@ -48,9 +48,9 @@ export function PriceCalculator({ dateRange, guests }: PriceCalculatorProps) {
             {price.nights} noches · {guests} huéspedes · semana base {price.weekPrice}€
           </p>
           <div className="mt-4 space-y-2 border-t border-[#ead9c4] pt-4 text-sm">
-            <Line label="Precio base" value={`${price.base}€`} />
-            <Line label="Limpieza" value={price.cleaning > 0 ? `${price.cleaning}€` : "Incluida"} />
-            <Line label="Total estimado" value={`${price.total}€`} />
+            <Line label="Estancia" value={`${price.base}€`} />
+            <Line label="Limpieza" value="No incluida" />
+            <Line label="Total estancia" value={`${price.total}€`} />
           </div>
         </>
       ) : (
