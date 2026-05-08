@@ -29,7 +29,7 @@ export function buildContractText(reservation: Reservation): string {
     "CONTRATO DE ESTANCIA FAMILIAR - EL MACACO DEL ABUELO",
     "",
     "1. Partes e identificación",
-    "La casa: El Macaco del Abuelo, apartamento independiente dentro de una parcela familiar compartida con los dueños en Urbanización Las Monjas, parcela 121, Carmona, Sevilla.",
+    "La casa: El Macaco del Abuelo, apartamento independiente dentro de una parcela familiar compartida con los dueños en Urbanización Las Monjas, Carmona, Sevilla. La dirección exacta se comunica por privado en el seguimiento de la reserva.",
     `Huésped principal: ${reservation.guest_name}.`,
     reservation.contract_acceptance_dni ? `DNI/NIE registrado: ${reservation.contract_acceptance_dni}.` : "DNI/NIE: pendiente de registro en la firma.",
     "",

@@ -1,9 +1,9 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Heart, MessageCircle, Sparkles, X } from "lucide-react"
+import { ArrowLeft, Heart, MessageCircle, Sparkles, X } from "lucide-react"
 
 const lastBreakOptions = ["Hace semanas", "No me acuerdo", "Necesito parar ya"]
 const companionOptions = ["En pareja", "Con familia", "Con alguien que quiero cuidar", "Solo/a"]
@@ -41,69 +41,89 @@ export function ConvinceMode() {
   const [need, setNeed] = useState(needOptions[0])
 
   const argument = useMemo(() => buildArgument(lastBreak, companion, need), [companion, lastBreak, need])
-  const close = () => setOpen(false)
+
+  useEffect(() => {
+    if (!open) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false)
+    }
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
+  }, [open])
 
   return (
     <>
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="mt-4 text-sm text-current/65 underline decoration-current/20 underline-offset-4 transition-colors hover:text-current"
+        className="mt-4 inline-flex items-center gap-2 rounded-full border border-current/15 bg-white/15 px-4 py-2 text-sm font-semibold text-current/75 backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:bg-white/25 hover:text-current"
       >
+        <Sparkles className="h-4 w-4" />
         No sé si ir
       </button>
 
       {open ? (
-        <div className="fixed inset-0 z-[80] overflow-y-auto bg-[#201812]/95 text-white backdrop-blur">
-          <button
-            type="button"
-            onClick={close}
-            className="fixed left-4 top-4 rounded-full border border-white/20 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/20"
-          >
-            Volver a la web
-          </button>
-          <button
-            type="button"
-            onClick={close}
-            className="fixed right-4 top-4 rounded-full border border-white/20 bg-white/10 p-3 text-white transition-colors hover:bg-white/20"
-            aria-label="Cerrar"
-          >
-            <X className="h-5 w-5" />
-          </button>
+        <div className="fixed inset-0 z-[80] overflow-y-auto bg-[#201812]/70 p-4 text-[#fff8ea] backdrop-blur-md animate-in fade-in-0 duration-300">
+          <div className="mx-auto flex min-h-full max-w-6xl items-center py-10">
+            <section className="relative w-full overflow-hidden rounded-[18px] border border-[#f3d4ad]/22 bg-[#fff7ea] text-[#2f2114] shadow-[0_30px_120px_rgba(0,0,0,.38)] animate-in slide-in-from-bottom-6 zoom-in-95 duration-500">
+              <div className="absolute inset-0 opacity-[0.16] [background-image:radial-gradient(#8f6237_0.7px,transparent_0.7px)] [background-size:18px_18px]" />
+              <div className="relative grid gap-0 lg:grid-cols-[0.88fr_1.12fr]">
+                <div className="bg-[#2f2114] p-6 text-[#fff8ea] sm:p-8 lg:p-10">
+                  <button
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/18"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    Volver
+                  </button>
+                  <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs uppercase tracking-[0.22em] text-white/70">
+                    <Sparkles className="h-4 w-4" />
+                    Modo convénceme
+                  </p>
+                  <h2 className="mt-6 font-serif text-4xl font-bold leading-tight md:text-6xl">No reserves todavía. Escúchate primero.</h2>
+                  <p className="mt-5 text-base leading-7 text-white/78">
+                    Tres respuestas pequeñas bastan para saber si lo que necesitas es agua, silencio, conversación o simplemente parar.
+                  </p>
+                </div>
 
-          <div className="mx-auto flex min-h-screen max-w-5xl flex-col justify-center px-4 py-20 sm:px-6 lg:px-8">
-            <div className="max-w-3xl">
-              <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs uppercase tracking-[0.22em] text-white/70">
-                <Sparkles className="h-4 w-4" />
-                Modo convénceme
-              </p>
-              <h2 className="font-serif text-4xl font-bold leading-tight md:text-6xl">No reserves todavía. Contesta esto.</h2>
-            </div>
+                <div className="relative p-5 sm:p-8 lg:p-10">
+                  <button
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    className="absolute right-4 top-4 rounded-full border border-[#704624]/15 bg-white/70 p-2 text-[#704624] transition hover:bg-white"
+                    aria-label="Cerrar"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
 
-            <div className="mt-10 grid gap-6 lg:grid-cols-3">
-              <QuestionBlock title="¿Cuándo fue la última vez que desconectaste de verdad?" options={lastBreakOptions} value={lastBreak} onChange={setLastBreak} />
-              <QuestionBlock title="¿Con quién irías?" options={companionOptions} value={companion} onChange={setCompanion} />
-              <QuestionBlock title="¿Qué necesitas ahora mismo?" options={needOptions} value={need} onChange={setNeed} />
-            </div>
+                  <div className="grid gap-5 lg:grid-cols-3">
+                    <QuestionBlock title="¿Cuándo desconectaste de verdad?" options={lastBreakOptions} value={lastBreak} onChange={setLastBreak} />
+                    <QuestionBlock title="¿Con quién irías?" options={companionOptions} value={companion} onChange={setCompanion} />
+                    <QuestionBlock title="¿Qué necesitas ahora mismo?" options={needOptions} value={need} onChange={setNeed} />
+                  </div>
 
-            <div className="mt-10 border-l border-white/25 pl-5">
-              <div className="mb-3 flex items-center gap-2 text-white/70">
-                <Heart className="h-4 w-4" />
-                <span className="text-sm uppercase tracking-[0.18em]">Tu respuesta</span>
+                  <div className="mt-8 rounded-[14px] border border-[#8f6237]/18 bg-[#fff2bf]/70 p-5">
+                    <div className="mb-3 flex items-center gap-2 text-[#704624]">
+                      <Heart className="h-4 w-4" />
+                      <span className="text-xs font-bold uppercase tracking-[0.18em]">Tu respuesta</span>
+                    </div>
+                    <p className="font-serif text-xl leading-8 text-[#3b2717] md:text-2xl">{argument}</p>
+                    <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                      <Button asChild size="lg" className="bg-[#704624] text-[#fff7ea] hover:bg-[#3b2717]">
+                        <Link href="/reservar">Ver disponibilidad</Link>
+                      </Button>
+                      <Button asChild size="lg" variant="outline" className="border-[#704624]/25 bg-white/60 text-[#704624] hover:bg-white">
+                        <Link href="/contactar">
+                          <MessageCircle className="h-4 w-4" />
+                          Preguntar antes
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <p className="max-w-4xl font-serif text-2xl leading-relaxed text-white md:text-3xl">{argument}</p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90">
-                  <Link href="/reservar">Ver disponibilidad</Link>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="border-white/40 bg-white/10 text-white hover:bg-white/20">
-                  <Link href="/contactar">
-                    <MessageCircle className="h-4 w-4" />
-                    Preguntar antes
-                  </Link>
-                </Button>
-              </div>
-            </div>
+            </section>
           </div>
         </div>
       ) : null}
@@ -124,15 +144,15 @@ function QuestionBlock({
 }) {
   return (
     <div>
-      <h3 className="min-h-14 text-lg font-semibold leading-7 text-white">{title}</h3>
+      <h3 className="min-h-12 text-base font-semibold leading-6 text-[#2f2114]">{title}</h3>
       <div className="mt-4 flex flex-col gap-2">
         {options.map((option) => (
           <button
             key={option}
             type="button"
             onClick={() => onChange(option)}
-            className={`rounded-lg border px-4 py-3 text-left text-sm transition-colors ${
-              value === option ? "border-white bg-white text-primary" : "border-white/20 bg-white/5 text-white/80 hover:bg-white/10"
+            className={`rounded-[10px] border px-4 py-3 text-left text-sm transition duration-300 hover:-translate-y-0.5 ${
+              value === option ? "border-[#704624] bg-[#704624] text-[#fff7ea] shadow-md" : "border-[#8f6237]/18 bg-white/65 text-[#66482d] hover:bg-white"
             }`}
           >
             {option}

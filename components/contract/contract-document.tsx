@@ -18,8 +18,8 @@ export function ContractDocument({ reservation, previewSignature }: ContractDocu
         <p className="text-xs uppercase tracking-[0.32em] text-[#8a5a33]">El Macaco del Abuelo</p>
         <h1 className="mt-3 font-serif text-3xl font-bold sm:text-4xl">Contrato de estancia familiar</h1>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-[#6d5a49]">
-          Alojamiento independiente dentro de una parcela compartida con los dueños en Urbanización Las Monjas, parcela 121,
-          Carmona, Sevilla. Este documento recoge las condiciones esenciales antes de formalizar la reserva.
+          Alojamiento independiente dentro de una parcela compartida con los dueños en Urbanización Las Monjas,
+          Carmona, Sevilla. La dirección exacta se comunica por privado en el seguimiento de la reserva.
         </p>
       </div>
 

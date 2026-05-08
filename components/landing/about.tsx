@@ -22,7 +22,7 @@ export function About() {
                 su padre, a recoger aceitunas en Arahal. Campo, olivar, familia y trabajo quedaron unidos a ese recuerdo.
               </p>
               <p>
-                El alojamiento está en Urbanización Las Monjas, parcela 121, Carmona, Sevilla. Es una parcela familiar compartida
+                El alojamiento está en Urbanización Las Monjas, Carmona, Sevilla. Es una parcela familiar compartida
                 con los dueños, con apartamento independiente, piscina, jacuzzi, jardín y espacio exterior para bajar el ritmo.
               </p>
               <p>

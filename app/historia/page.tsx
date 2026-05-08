@@ -22,7 +22,7 @@ const chapters = [
     note: "El viejo macaco",
     text: [
       "Amparo iba con Antonio, su padre, a coger aceitunas.",
-      "Antonio usaba su viejo macaco para recogerlas. De ahí nace el nombre: una palabra de campo convertida en recuerdo familiar.",
+      "Antonio usaba su viejo macaco, una bolsa de lino o lona de trabajo, para recogerlas. De ahí nace el nombre: una palabra de campo convertida en recuerdo familiar.",
     ],
   },
   {

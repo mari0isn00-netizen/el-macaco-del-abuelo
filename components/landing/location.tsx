@@ -2,8 +2,6 @@ import Link from "next/link"
 import { Car, Clock, ExternalLink, MapPin, Plane } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-const mapsUrl = "https://maps.app.goo.gl/4mM3XHJwqo9bBHNC9"
-
 const nearbyPlaces = [
   { name: "Carmona centro", distance: "12 min aprox.", icon: Car },
   { name: "Sevilla centro", distance: "35-40 min aprox.", icon: Car },
@@ -23,7 +21,7 @@ export function Location() {
               En Urbanización Las Monjas, Carmona.
             </h2>
             <p className="mt-6 text-lg leading-8 text-[#66482d]">
-              El alojamiento está en Urbanización Las Monjas, parcela 121, Carmona, Sevilla. El origen emocional
+              El alojamiento está en Urbanización Las Monjas, Carmona, Sevilla. El origen emocional
               del nombre viene de Arahal, pero la estancia se vive aquí: una parcela familiar compartida con los dueños,
               tranquila y bien comunicada.
             </p>
@@ -32,12 +30,12 @@ export function Location() {
               <div className="flex items-start gap-4">
                 <MapPin className="mt-1 h-6 w-6 flex-shrink-0 text-[#704624]" />
                 <div>
-                  <p className="font-serif text-xl font-bold text-[#2f2114]">Urbanización Las Monjas, parcela 121</p>
+                  <p className="font-serif text-xl font-bold text-[#2f2114]">Urbanización Las Monjas</p>
                   <p className="text-[#66482d]">Carmona, Sevilla, Andalucía</p>
                   <Button asChild className="mt-4 rounded-full bg-[#704624] text-[#fff7ea] hover:bg-[#3b2717]" size="sm">
-                    <Link href={mapsUrl} target="_blank" rel="noreferrer">
+                    <Link href="/contactar">
                       <ExternalLink className="h-4 w-4" />
-                      Abrir en Google Maps
+                      Pedir indicaciones exactas
                     </Link>
                   </Button>
                 </div>
@@ -70,7 +68,7 @@ export function Location() {
           <div className="relative">
             <div className="absolute -left-4 -top-4 h-full w-full rounded-[10px] bg-[#f2e2c7]" />
             <div className="relative aspect-square overflow-hidden rounded-[10px] border-[10px] border-[#fffaf0] bg-[#f2e2c7] shadow-[0_28px_90px_rgba(73,43,19,.18)] lg:aspect-[4/3]">
-              <Link href={mapsUrl} target="_blank" rel="noreferrer" className="absolute inset-0 z-10" aria-label="Abrir ubicación en Google Maps" />
+              <Link href="/contactar" className="absolute inset-0 z-10" aria-label="Pedir indicaciones exactas" />
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12694.891234567!2d-5.6378!3d37.4711!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd11d5b0c5f0e7d1%3A0x1234567890abcdef!2sCarmona%2C%20Sevilla!5e0!3m2!1ses!2ses!4v1699999999999!5m2!1ses!2ses"
                 width="100%"
@@ -86,7 +84,7 @@ export function Location() {
                 <p className="text-xs text-[#66482d]">Urbanización Las Monjas, Carmona</p>
               </div>
               <div className="absolute bottom-4 right-4 rounded-full bg-[#704624] px-4 py-2 text-sm font-semibold text-[#fff7ea] shadow-lg">
-                Abrir ruta
+                Ruta por privado
               </div>
             </div>
           </div>
