@@ -46,7 +46,7 @@ export function StoryTeaser() {
             Mejor como un cuaderno abierto que como una sección más.
           </h2>
           <p className="mt-6 text-lg leading-8 text-[#69523e]">
-            El nombre nace en Arahal, con Amparo y Antonio, su padre, y continúa hoy en Las Monjas,
+            El nombre nace en Arahal, con Amparo y Antonio, su padre, y continúa hoy en Urbanización Las Monjas,
             Carmona. Ahora la historia tiene una página propia, más cálida, más artesanal y con los
             capítulos unidos como recuerdos de la misma familia.
           </p>

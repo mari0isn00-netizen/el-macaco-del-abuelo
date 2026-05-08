@@ -10,7 +10,7 @@ export function Footer() {
           <div className="md:col-span-2">
             <h3 className="mb-4 font-serif text-2xl font-bold">El Macaco del Abuelo</h3>
             <p className="max-w-md leading-relaxed text-background/70">
-              Un refugio familiar en Las Monjas, Carmona, con origen emocional en Arahal y una reserva gestionada
+              Un refugio familiar en Urbanización Las Monjas, Carmona, con origen emocional en Arahal y una reserva gestionada
               desde su propia casa digital.
             </p>
           </div>
@@ -28,7 +28,7 @@ export function Footer() {
           <div>
             <h4 className="mb-4 font-semibold text-background/90">Seguir por aqui</h4>
             <ul className="space-y-2 text-background/70">
-              <li>Las Monjas, Carmona, Sevilla</li>
+              <li>Urbanización Las Monjas, Carmona, Sevilla</li>
               <li><Link href="/contactar" className="transition-colors hover:text-background">Abrir chat web</Link></li>
               <li><Link href="/reservar" className="transition-colors hover:text-background">Pedir estancia</Link></li>
             </ul>
@@ -46,4 +46,3 @@ export function Footer() {
     </footer>
   )
 }
-

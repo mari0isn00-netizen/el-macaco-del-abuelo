@@ -14,7 +14,7 @@ type FaqItem = {
 const faqs: FaqItem[] = [
   {
     question: "¿Dónde está el alojamiento?",
-    answer: "Está en Las Monjas, Carmona, Sevilla. La dirección completa se comparte en la reserva confirmada y en el contrato.",
+    answer: "Está en Urbanización Las Monjas, Carmona, Sevilla. La dirección completa se comparte en la reserva confirmada y en el contrato.",
     keywords: ["donde", "ubicacion", "dirección", "direccion", "carmona", "monjas"],
   },
   {

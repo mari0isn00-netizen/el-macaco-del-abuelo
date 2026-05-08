@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button"
 const mapsUrl = "https://maps.app.goo.gl/4mM3XHJwqo9bBHNC9"
 
 const nearbyPlaces = [
-  { name: "Carmona centro", distance: "10 min", icon: Car },
-  { name: "Sevilla centro", distance: "35 min", icon: Car },
-  { name: "Aeropuerto de Sevilla", distance: "40 min", icon: Plane },
-  { name: "Arahal", distance: "25 min", icon: Car },
+  { name: "Carmona centro", distance: "12 min aprox.", icon: Car },
+  { name: "Sevilla centro", distance: "35-40 min aprox.", icon: Car },
+  { name: "Aeropuerto de Sevilla", distance: "25-30 min aprox.", icon: Plane },
+  { name: "Arahal", distance: "20-25 min aprox.", icon: Car },
 ]
 
 export function Location() {
@@ -20,10 +20,10 @@ export function Location() {
           <div>
             <span className="text-sm font-semibold uppercase tracking-[0.28em] text-[#704624]">Ubicación</span>
             <h2 className="mt-4 text-balance font-serif text-4xl font-bold leading-tight text-[#2f2114] md:text-5xl lg:text-6xl">
-              En Las Monjas, Carmona.
+              En Urbanización Las Monjas, Carmona.
             </h2>
             <p className="mt-6 text-lg leading-8 text-[#66482d]">
-              El alojamiento está en Las Monjas, parcela 121, Carmona, Sevilla. El origen emocional
+              El alojamiento está en Urbanización Las Monjas, parcela 121, Carmona, Sevilla. El origen emocional
               del nombre viene de Arahal, pero la estancia se vive aquí: una parcela familiar compartida con los dueños,
               tranquila y bien comunicada.
             </p>
@@ -32,7 +32,7 @@ export function Location() {
               <div className="flex items-start gap-4">
                 <MapPin className="mt-1 h-6 w-6 flex-shrink-0 text-[#704624]" />
                 <div>
-                  <p className="font-serif text-xl font-bold text-[#2f2114]">Las Monjas, parcela 121</p>
+                  <p className="font-serif text-xl font-bold text-[#2f2114]">Urbanización Las Monjas, parcela 121</p>
                   <p className="text-[#66482d]">Carmona, Sevilla, Andalucía</p>
                   <Button asChild className="mt-4 rounded-full bg-[#704624] text-[#fff7ea] hover:bg-[#3b2717]" size="sm">
                     <Link href={mapsUrl} target="_blank" rel="noreferrer">
@@ -83,7 +83,7 @@ export function Location() {
               />
               <div className="absolute left-4 top-4 rounded-[7px] bg-[#fff7ea]/95 px-4 py-2 shadow-lg backdrop-blur-sm">
                 <p className="text-sm font-bold text-[#2f2114]">El Macaco del Abuelo</p>
-                <p className="text-xs text-[#66482d]">Las Monjas, Carmona</p>
+                <p className="text-xs text-[#66482d]">Urbanización Las Monjas, Carmona</p>
               </div>
               <div className="absolute bottom-4 right-4 rounded-full bg-[#704624] px-4 py-2 text-sm font-semibold text-[#fff7ea] shadow-lg">
                 Abrir ruta

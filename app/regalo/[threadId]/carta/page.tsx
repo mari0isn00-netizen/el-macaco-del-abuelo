@@ -73,7 +73,7 @@ export default async function GiftLetterPage({ params }: GiftLetterPageProps) {
               <p className="mt-10 text-sm uppercase tracking-[0.32em] text-[#704624]">El Macaco del Abuelo</p>
               <h1 className="mt-5 font-serif text-6xl font-bold leading-[0.92] md:text-8xl">{recipientName}</h1>
               <p className="mt-7 max-w-xl text-xl leading-9 text-[#66482d]">
-                {giverName} te regala una escapada al refugio de Las Monjas, Carmona.
+                {giverName} te regala una escapada al refugio de Urbanización Las Monjas, Carmona.
               </p>
               <div className="mt-10 rounded-[10px] bg-[#fff2bf] p-7 font-serif text-3xl italic leading-[1.35] text-[#604221] shadow-sm">
                 "{dedication}"
@@ -123,7 +123,7 @@ export default async function GiftLetterPage({ params }: GiftLetterPageProps) {
                 Unos días para parar, hablar y vivir la casa con calma.
               </h2>
               <div className="mt-8 grid gap-4 text-[#66482d]">
-                <Info label="Lugar" value="Las Monjas, Carmona, Sevilla" />
+                <Info label="Lugar" value="Urbanización Las Monjas, Carmona, Sevilla" />
                 <Info label="Motivo" value={occasion} />
                 <Info label="Fechas orientativas" value={preferredWindow} />
                 <Info label="Siguiente paso" value="Coordinar disponibilidad, precio y detalles por el chat privado del regalo." />
@@ -132,7 +132,7 @@ export default async function GiftLetterPage({ params }: GiftLetterPageProps) {
                 <div className="flex items-start gap-3">
                   <MapPin className="mt-1 h-5 w-5 text-[#6b7d3f]" />
                   <p className="text-sm leading-6 text-[#66482d]">
-                    El origen del nombre viene de Arahal. La estancia se vive en Las Monjas, Carmona, en una parcela familiar compartida con los dueños.
+                    El origen del nombre viene de Arahal. La estancia se vive en Urbanización Las Monjas, Carmona, en una parcela familiar compartida con los dueños.
                   </p>
                 </div>
               </div>

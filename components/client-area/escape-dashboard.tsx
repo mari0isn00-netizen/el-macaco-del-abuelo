@@ -163,7 +163,7 @@ export function EscapeDashboard({ reservation, messages }: EscapeDashboardProps)
               </div>
               <div>
                 <h2 className="font-serif text-2xl font-bold text-foreground">Cómo llegar</h2>
-                <p className="text-sm text-muted-foreground">Las Monjas, Carmona, Sevilla</p>
+                <p className="text-sm text-muted-foreground">Urbanización Las Monjas, Carmona, Sevilla</p>
               </div>
             </div>
             <Button asChild className="mt-5 w-full">

@@ -9,7 +9,7 @@ const amenities = [
   { icon: Wind, title: "Aire acondicionado", description: "Confort interior para los meses de más calor en Carmona." },
   { icon: UtensilsCrossed, title: "Cocina resuelta", description: "Frigorífico, microondas y lo necesario para organizar la estancia." },
   { icon: Sun, title: "Zona exterior", description: "Espacio para alargar la tarde y vivir la parcela con calma." },
-  { icon: Car, title: "Llegada cómoda", description: "Acceso sencillo y ubicación clara en Las Monjas, Carmona." },
+  { icon: Car, title: "Llegada cómoda", description: "Acceso sencillo y ubicación clara en Urbanización Las Monjas, Carmona." },
   { icon: Shirt, title: "Base preparada", description: "Ropa de cama, baño completo y una llegada lista para quedarse." },
 ]
 

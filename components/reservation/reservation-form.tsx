@@ -98,10 +98,10 @@ export function ReservationForm({ dateRange, guests, onGuestsChange }: Reservati
           <Input name="phone" inputMode="tel" placeholder="Teléfono" className="h-12 bg-white/80 text-base" />
           <Input
             value={guests}
-            onChange={(event) => onGuestsChange(Math.max(1, Math.min(8, Number(event.target.value) || 1)))}
+            onChange={(event) => onGuestsChange(Math.max(1, Math.min(4, Number(event.target.value) || 1)))}
             type="number"
             min={1}
-            max={8}
+            max={4}
             placeholder="Huéspedes"
             className="h-12 bg-white/80 text-base"
           />

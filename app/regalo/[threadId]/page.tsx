@@ -80,7 +80,7 @@ export default async function GiftPrivatePage({ params }: GiftPageProps) {
                 <p className="mt-7 text-sm uppercase tracking-[0.28em] text-[#704624]">El Macaco del Abuelo</p>
                 <h1 className="mt-4 font-serif text-5xl font-bold leading-none md:text-6xl">{recipientName}</h1>
                 <p className="mt-5 text-lg leading-8 text-[#66482d]">
-                  {giverName} quiere regalarte unos días en el refugio de Las Monjas, Carmona.
+                  {giverName} quiere regalarte unos días en el refugio de Urbanización Las Monjas, Carmona.
                 </p>
               </div>
               <div className="relative min-h-[220px]">

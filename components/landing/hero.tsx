@@ -10,9 +10,9 @@ import { Bath, Bed, Gift, MapPin, Sun, Users } from "lucide-react"
 const atmospheres = {
   dawn: {
     image: "/images/emda-entrada-apartamento.webp",
-    label: "Amanecer en Las Monjas",
+    label: "Amanecer en Urbanización Las Monjas",
     line: "Luz fría, parcela en calma y ese primer silencio antes de que Carmona despierte.",
-    overlay: "from-[#dce9ee]/90 via-[#f3e2c8]/55 to-[#5b3b26]/10",
+    overlay: "from-[#fff8ea]/96 via-[#f3e2c8]/72 to-[#5b3b26]/20",
     text: "text-[#2f2a22]",
     muted: "text-[#5b5146]",
     glow: "bg-sky-100/45",
@@ -21,7 +21,7 @@ const atmospheres = {
     image: "/images/emda-piscina-jardin.webp",
     label: "Luz mediterránea",
     line: "A esta hora todo es agua, sombra, piel caliente y ganas de bajar el ritmo.",
-    overlay: "from-[#fff4d8]/92 via-[#f6d89a]/48 to-[#9d5d2d]/5",
+    overlay: "from-[#fff8ea]/96 via-[#f6d89a]/68 to-[#9d5d2d]/16",
     text: "text-[#302318]",
     muted: "text-[#6f4b2d]",
     glow: "bg-amber-100/45",
@@ -30,7 +30,7 @@ const atmospheres = {
     image: "/images/emda-piscina-atardecer.webp",
     label: "Tarde de piscina",
     line: "La hora buena: la luz se vuelve dorada y la parcela empieza a pedir conversación larga.",
-    overlay: "from-background/92 via-background/58 to-background/10",
+    overlay: "from-background/96 via-background/70 to-background/18",
     text: "text-foreground",
     muted: "text-muted-foreground",
     glow: "bg-secondary/20",
@@ -78,10 +78,10 @@ export function Hero() {
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-20 sm:px-6 md:py-32 lg:px-8">
-        <div className={`max-w-2xl ${atmosphere.text}`}>
+        <div className={`max-w-2xl drop-shadow-[0_2px_10px_rgba(255,248,234,0.45)] ${atmosphere.text}`}>
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-current/20 bg-white/18 px-4 py-2 backdrop-blur">
             <MapPin className="h-4 w-4" />
-            <span className="text-sm font-medium">Las Monjas, Carmona, Sevilla</span>
+            <span className="text-sm font-medium">Urbanización Las Monjas, Carmona, Sevilla</span>
           </div>
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-current/15 bg-white/12 px-4 py-2 backdrop-blur">
             <Sun className="h-4 w-4" />
@@ -99,7 +99,7 @@ export function Hero() {
           <p className="mb-8 max-w-xl font-serif text-xl italic leading-relaxed">{atmosphere.line}</p>
 
           <div className="mb-10 flex flex-wrap gap-6">
-            <HeroFact icon={Users} label="Capacidad" value="Hasta 4 huéspedes" mutedClass={atmosphere.muted} />
+            <HeroFact icon={Users} label="Capacidad" value="2-4 huéspedes, bajo consulta" mutedClass={atmosphere.muted} />
             <HeroFact icon={Bed} label="Estancia" value="Apartamento independiente" mutedClass={atmosphere.muted} />
             <HeroFact icon={Bath} label="Exterior" value="Piscina y jacuzzi" mutedClass={atmosphere.muted} />
           </div>

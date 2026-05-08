@@ -11,7 +11,7 @@ import { CheckCircle2, FileSignature, HandCoins, MessageSquareText, Send } from 
 const templates = [
   {
     label: "Parcela compartida",
-    text: "Os recordamos que la parcela es compartida con los dueños, que viven en la casa principal. No salen salvo que necesitéis algo o queráis consultarnos cualquier detalle.",
+    text: "Os recordamos que la parcela es compartida con los dueños, que viven en la casa principal. Es una convivencia tranquila: pueden entrar y salir con normalidad, y estamos cerca si necesitáis algo o queréis consultarnos cualquier detalle.",
   },
   {
     label: "Preparar llegada",

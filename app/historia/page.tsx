@@ -5,35 +5,35 @@ import { ArrowLeft, CalendarDays, MapPin, Sprout } from "lucide-react"
 const chapters = [
   {
     eyebrow: "Capítulo 1",
-    title: "Arahal",
+    title: "Septiembre en Arahal",
     image: "/images/emda-detalle-mesa.webp",
     alt: "Detalle cuidado del refugio",
-    note: "Donde empieza el recuerdo",
+    note: "Cuando acaba el verano",
     text: [
-      "El origen emocional de El Macaco del Abuelo está en Arahal, entre campo, olivar y días de aceituna.",
-      "No nace como una marca turística. Nace de una memoria familiar que se ha mantenido viva con el paso del tiempo.",
+      "La historia empieza en los días de cogida de aceituna, en septiembre, cuando el verano va acabando y el campo cambia de ritmo.",
+      "El origen emocional de El Macaco del Abuelo está en Arahal, entre olivar, familia y memoria cotidiana.",
     ],
   },
   {
     eyebrow: "Capítulo 2",
     title: "Antonio y Amparo",
-    image: "/images/emda-rincon-jardin.webp",
-    alt: "Zona exterior de la piscina",
-    note: "Campo, familia y aceitunas",
+    image: "/images/emda-entrada-apartamento.webp",
+    alt: "Entrada del apartamento independiente",
+    note: "El viejo macaco",
     text: [
-      "Amparo iba con Antonio, su padre, a recoger aceitunas.",
-      "De ese gesto sencillo sale el nombre: El Macaco del Abuelo. Campo, familia y una forma muy andaluza de recordar.",
+      "Amparo iba con Antonio, su padre, a coger aceitunas.",
+      "Antonio usaba su viejo macaco para recogerlas. De ahí nace el nombre: una palabra de campo convertida en recuerdo familiar.",
     ],
   },
   {
     eyebrow: "Capítulo 3",
-    title: "Las Monjas",
-    image: "/images/emda-entrada-apartamento.webp",
-    alt: "Entrada del apartamento independiente",
+    title: "Urbanización Las Monjas",
+    image: "/images/emda-piscina-jardin.webp",
+    alt: "Piscina del refugio",
     note: "Carmona, Sevilla",
     text: [
-      "El refugio actual está en Las Monjas, Carmona, Sevilla.",
-      "La parcela se comparte con los dueños, que viven en la casa principal durante la estancia. No salen salvo que los necesitéis o queráis algo.",
+      "El refugio actual está en Urbanización Las Monjas, Carmona, Sevilla.",
+      "La parcela se comparte con los dueños, que viven en la casa principal. Es una convivencia cercana y tranquila: pueden entrar y salir con normalidad, y también están disponibles si necesitáis algo.",
     ],
   },
   {
@@ -86,7 +86,7 @@ export default function HistoriaPage() {
             La historia se lee como un cuaderno abierto.
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-[#6a4a2d]">
-            Arahal, Antonio y Amparo, Las Monjas y el refugio de hoy unidos en una sola pieza.
+            Arahal, Antonio y Amparo, Urbanización Las Monjas y el refugio de hoy unidos en una sola pieza.
             Cada capítulo tiene su lugar, pero todo respira como la misma casa.
           </p>
           <div className="mt-8 flex flex-wrap gap-3 text-sm font-semibold text-[#5d4228]">
@@ -155,7 +155,7 @@ export default function HistoriaPage() {
           <MapPin className="mx-auto h-6 w-6 text-[#6b7d3f]" />
           <h2 className="mt-4 font-serif text-3xl font-bold text-[#2f2114] md:text-4xl">De Arahal a Carmona, sin perder la raíz.</h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-[#66482d]">
-            El origen está en Arahal. El descanso, hoy, está en Las Monjas, Carmona, Sevilla.
+            El origen está en Arahal. El descanso, hoy, está en Urbanización Las Monjas, Carmona, Sevilla.
           </p>
         </div>
       </section>

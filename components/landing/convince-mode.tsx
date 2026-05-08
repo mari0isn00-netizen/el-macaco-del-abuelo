@@ -41,6 +41,7 @@ export function ConvinceMode() {
   const [need, setNeed] = useState(needOptions[0])
 
   const argument = useMemo(() => buildArgument(lastBreak, companion, need), [companion, lastBreak, need])
+  const close = () => setOpen(false)
 
   return (
     <>
@@ -56,7 +57,14 @@ export function ConvinceMode() {
         <div className="fixed inset-0 z-[80] overflow-y-auto bg-[#201812]/95 text-white backdrop-blur">
           <button
             type="button"
-            onClick={() => setOpen(false)}
+            onClick={close}
+            className="fixed left-4 top-4 rounded-full border border-white/20 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/20"
+          >
+            Volver a la web
+          </button>
+          <button
+            type="button"
+            onClick={close}
             className="fixed right-4 top-4 rounded-full border border-white/20 bg-white/10 p-3 text-white transition-colors hover:bg-white/20"
             aria-label="Cerrar"
           >

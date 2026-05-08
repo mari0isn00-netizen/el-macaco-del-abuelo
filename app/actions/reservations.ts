@@ -1,5 +1,6 @@
 ﻿"use server"
 
+import { headers } from "next/headers"
 import { createClient } from "@/lib/supabase/server"
 import type { Reservation, Pricing } from "@/lib/types"
 import { sendTelegramAdminNotification } from "@/lib/admin-notifications"
@@ -16,6 +17,23 @@ import {
   submitLocalContractAndDeposit,
   updateLocalReservationStatus,
 } from "@/lib/local-store"
+
+async function getPublicSiteUrl() {
+  const configuredUrl = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "")
+  if (configuredUrl.startsWith("http")) return configuredUrl
+
+  const requestHeaders = await headers()
+  const host = requestHeaders.get("x-forwarded-host") || requestHeaders.get("host")
+  if (host) {
+    const protocol = requestHeaders.get("x-forwarded-proto") || (host.includes("localhost") || host.startsWith("127.") ? "http" : "https")
+    return `${protocol}://${host}`.replace(/\/$/, "")
+  }
+
+  const vercelUrl = process.env.VERCEL_URL
+  if (vercelUrl) return `https://${vercelUrl}`.replace(/\/$/, "")
+
+  return "http://127.0.0.1:3000"
+}
 
 export async function getReservations(): Promise<Reservation[]> {
   const supabase = await createClient()
@@ -405,8 +423,8 @@ export async function requestContractAndPayment(input: {
   senderName: string
   note?: string
 }): Promise<{ success: boolean; error?: string }> {
-  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "")
-  const contractUrl = siteUrl ? `${siteUrl}/pago/${input.reservationId}` : `/pago/${input.reservationId}`
+  const siteUrl = await getPublicSiteUrl()
+  const contractUrl = `${siteUrl}/pago/${input.reservationId}`
   const text = [
     "CONTRATO Y SEÑAL DISPONIBLES",
     "Ya podéis revisar el contrato completo, indicar DNI/NIE, dibujar la firma y registrar la señal de reserva.",
