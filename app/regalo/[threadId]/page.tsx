@@ -36,7 +36,7 @@ export default async function GiftPrivatePage({ params }: GiftPageProps) {
             <ArrowLeft className="h-4 w-4" />
             Volver al refugio
           </Link>
-          <section className="mt-10 rounded-[12px] border border-[#f3d4ad]/18 bg-[#fff7ea] p-8 text-center text-[#2f2114] shadow-[0_30px_100px_rgba(0,0,0,.28)]">
+          <section className="mt-10 rounded-[12px] border border-[#f3d4ad]/18 bg-[#fff7ea] p-8 text-center text-[#2f2114] shadow-xl">
             <Gift className="mx-auto h-10 w-10 text-[#704624]" />
             <h1 className="mt-5 font-serif text-4xl font-bold">Este regalo ya no está activo</h1>
             <p className="mx-auto mt-4 max-w-xl leading-7 text-[#66482d]">
@@ -70,7 +70,7 @@ export default async function GiftPrivatePage({ params }: GiftPageProps) {
         </Link>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-          <section className="print-letter rounded-[12px] border border-[#f3d4ad]/18 bg-[#fff7ea] p-6 text-[#2f2114] shadow-[0_30px_100px_rgba(0,0,0,.28)] md:p-8">
+          <section className="print-letter rounded-[12px] border border-[#f3d4ad]/18 bg-[#fff7ea] p-6 text-[#2f2114] shadow-xl md:p-8">
             <div className="grid gap-4 sm:grid-cols-[1fr_0.8fr]">
               <div>
                 <div className="inline-flex items-center gap-2 rounded-full bg-[#f2e2c7] px-4 py-2 text-sm font-semibold text-[#704624]">
@@ -119,7 +119,7 @@ export default async function GiftPrivatePage({ params }: GiftPageProps) {
             <GiftLetterActions giftUrl={giftUrl} letterUrl={letterUrl} />
           </section>
 
-          <section className="no-print overflow-hidden rounded-[12px] border border-white/10 bg-[#fff7ea] text-[#2f2114] shadow-[0_30px_100px_rgba(0,0,0,.28)]">
+          <section className="no-print overflow-hidden rounded-[12px] border border-white/10 bg-[#fff7ea] text-[#2f2114] shadow-xl">
             <div className="flex items-center gap-3 border-b border-[#8f6237]/14 bg-[#f2e2c7] px-5 py-4">
               <MessageCircle className="h-5 w-5 text-[#704624]" />
               <div>

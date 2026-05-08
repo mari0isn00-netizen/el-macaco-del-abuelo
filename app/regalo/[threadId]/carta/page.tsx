@@ -61,7 +61,7 @@ export default async function GiftLetterPage({ params }: GiftLetterPageProps) {
         </div>
       </div>
 
-      <article className="print-letter mx-auto max-w-5xl overflow-hidden rounded-[16px] border border-[#8f6237]/20 bg-[#fff7ea] shadow-[0_35px_120px_rgba(73,43,19,.24)]">
+      <article className="print-letter mx-auto max-w-5xl overflow-hidden rounded-[16px] border border-[#8f6237]/20 bg-[#fff7ea] shadow-xl">
         <section className="relative min-h-[660px] overflow-hidden p-8 md:p-12">
           <div className="absolute inset-0 opacity-[0.22] [background-image:radial-gradient(#8f6237_0.7px,transparent_0.7px)] [background-size:18px_18px]" />
           <div className="relative grid min-h-[570px] items-center gap-10 md:grid-cols-[1.05fr_0.95fr]">
@@ -81,12 +81,12 @@ export default async function GiftLetterPage({ params }: GiftLetterPageProps) {
             </div>
 
             <div className="relative min-h-[520px]">
-              <div className="absolute left-0 top-0 h-72 w-56 -rotate-6 rounded-[8px] bg-white p-3 shadow-2xl">
+              <div className="absolute left-0 top-0 h-72 w-56 -rotate-6 rounded-[8px] bg-white p-3 shadow-lg">
                 <div className="relative h-full overflow-hidden rounded-[5px]">
                   <Image src="/images/emda-detalle-mesa.webp" alt="Detalle de bienvenida en el apartamento" fill priority sizes="280px" className="object-cover sepia-[0.12]" />
                 </div>
               </div>
-              <div className="absolute bottom-8 right-0 h-80 w-64 rotate-3 rounded-[8px] bg-white p-3 shadow-2xl">
+              <div className="absolute bottom-8 right-0 h-80 w-64 rotate-3 rounded-[8px] bg-white p-3 shadow-lg">
                 <div className="relative h-full overflow-hidden rounded-[5px]">
                   <Image src="/images/emda-piscina-atardecer.webp" alt="Piscina del refugio al atardecer" fill priority sizes="320px" className="object-cover" />
                 </div>

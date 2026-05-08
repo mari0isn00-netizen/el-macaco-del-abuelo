@@ -32,11 +32,11 @@ export function Amenities() {
           {amenities.map((amenity, index) => (
             <div
               key={amenity.title}
-              className={`group rounded-[8px] border border-[#8f6237]/16 bg-[#fff7ea]/82 p-6 shadow-[0_14px_45px_rgba(73,43,19,.1)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_70px_rgba(73,43,19,.16)] ${
+              className={`group rounded-[8px] border border-[#8f6237]/16 bg-[#fff7ea]/82 p-6 shadow-md transition-colors duration-150 ${
                 index % 3 === 1 ? "lg:translate-y-5" : ""
               }`}
             >
-              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-[#704624]/10 text-[#704624] transition group-hover:bg-[#704624] group-hover:text-[#fff7ea]">
+              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-[#704624]/10 text-[#704624] transition-colors duration-150 group-hover:bg-[#704624] group-hover:text-[#fff7ea]">
                 <amenity.icon className="h-6 w-6" />
               </div>
               <h3 className="font-serif text-2xl font-bold text-[#2f2114]">{amenity.title}</h3>
@@ -45,7 +45,7 @@ export function Amenities() {
           ))}
         </div>
 
-        <div className="mx-auto mt-20 max-w-4xl rounded-[10px] border border-[#8f6237]/18 bg-[#fff7ea]/86 p-6 shadow-[0_22px_80px_rgba(73,43,19,.14)] md:p-8">
+        <div className="mx-auto mt-20 max-w-4xl rounded-[10px] border border-[#8f6237]/18 bg-[#fff7ea]/86 p-6 shadow-lg md:p-8">
           <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
             <div className="flex items-start gap-4">
               <div className="rounded-full bg-[#6b7d3f]/12 p-3 text-[#6b7d3f]">

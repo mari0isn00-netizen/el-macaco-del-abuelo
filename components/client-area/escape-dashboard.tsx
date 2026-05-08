@@ -52,7 +52,7 @@ export function EscapeDashboard({ reservation, messages }: EscapeDashboardProps)
         </div>
         <div className="relative mx-auto grid min-h-[430px] max-w-7xl items-end gap-8 px-4 py-10 text-white sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
           <div className="pb-4">
-            <p className="mb-4 inline-flex rounded-full bg-white/15 px-4 py-2 text-xs uppercase tracking-[0.22em] backdrop-blur">
+            <p className="mb-4 inline-flex rounded-full bg-white/15 px-4 py-2 text-xs uppercase tracking-[0.22em]">
               Área de cliente
             </p>
             <h1 className="max-w-3xl font-serif text-5xl font-bold leading-tight md:text-7xl">Seguimiento directo con la casa.</h1>
@@ -78,7 +78,7 @@ export function EscapeDashboard({ reservation, messages }: EscapeDashboardProps)
             </div>
           </div>
 
-          <div className="rounded-2xl border border-white/20 bg-white/15 p-5 shadow-2xl backdrop-blur-md sm:p-6">
+          <div className="rounded-2xl border border-white/20 bg-white/15 p-5 shadow-lg sm:p-6">
             <p className="text-sm uppercase tracking-[0.22em] text-white/70">Estado de la reserva</p>
             <p className="mt-4 font-serif text-4xl font-bold">{statusText(reservation, hasPrice, hasContract)}</p>
             <div className="mt-5 rounded-xl bg-black/20 p-4 text-sm leading-6 text-white/80">

@@ -39,7 +39,7 @@ export function PriceCalculator({ dateRange, guests }: PriceCalculatorProps) {
   }, [price?.total])
 
   return (
-    <div className="rounded-[18px] border border-[#ead9c4] bg-[#fff8ee] p-5 shadow-[0_18px_50px_rgba(79,47,31,0.10)]">
+    <div className="rounded-[18px] border border-[#ead9c4] bg-[#fff8ee] p-5 shadow-sm">
       <p className="text-xs uppercase tracking-[0.2em] text-primary">Precio vivo</p>
       {price && dateRange.from && dateRange.to ? (
         <>

@@ -28,7 +28,7 @@ export function Contact() {
                 { icon: CalendarDays, title: "Solicitud conectada", text: "Fechas y mensajes quedan juntos." },
                 { icon: ShieldCheck, title: "Seguimiento claro", text: "Contrato y reserva sin perder el hilo." },
               ].map((item) => (
-                <div key={item.title} className="rounded-[8px] border border-white/10 bg-white/8 p-5 backdrop-blur-sm">
+                <div key={item.title} className="rounded-[8px] border border-white/10 bg-white/8 p-5">
                   <item.icon className="mb-3 h-5 w-5 text-[#f3d4ad]" />
                   <p className="font-serif text-xl font-bold">{item.title}</p>
                   <p className="mt-2 text-sm leading-6 text-[#d8c5ad]">{item.text}</p>
@@ -37,7 +37,7 @@ export function Contact() {
             </div>
           </div>
 
-          <div className="rounded-[10px] border border-[#f3d4ad]/18 bg-[#fff7ea] p-7 text-[#2f2114] shadow-[0_30px_90px_rgba(0,0,0,.26)] md:p-8">
+          <div className="rounded-[10px] border border-[#f3d4ad]/18 bg-[#fff7ea] p-7 text-[#2f2114] shadow-xl md:p-8">
             <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#704624]">Abrir conversación</p>
             <h3 className="mt-3 font-serif text-3xl font-bold">Contadnos qué necesitáis</h3>
             <p className="mt-4 leading-7 text-[#66482d]">

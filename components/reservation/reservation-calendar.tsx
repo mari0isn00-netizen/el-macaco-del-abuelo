@@ -104,7 +104,7 @@ export function ReservationCalendar({ dateRange, onDateChange, blockedDates }: R
   const months = [baseMonth, new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1, 1)]
 
   return (
-    <div className="relative overflow-hidden rounded-[18px] border border-[#ead9c4] bg-[#fff8ee] p-4 shadow-[0_18px_50px_rgba(79,47,31,0.10)] sm:p-5">
+    <div className="relative overflow-hidden rounded-[18px] border border-[#ead9c4] bg-[#fff8ee] p-4 shadow-sm sm:p-5">
       <div className="mb-4 grid min-h-[68px] grid-cols-[44px_1fr_44px] items-center gap-3">
         <Button type="button" variant="ghost" size="icon" onClick={() => setBaseMonth(new Date(baseMonth.getFullYear(), baseMonth.getMonth() - 1, 1))}>
           <ChevronLeft className="h-4 w-4" />

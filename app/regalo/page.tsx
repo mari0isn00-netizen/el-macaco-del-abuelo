@@ -47,12 +47,12 @@ export default function RegaloPage() {
 
             <Reveal delay={120}>
               <div className="relative min-h-[520px]">
-                <div className="absolute left-0 top-4 h-80 w-[62%] -rotate-5 rounded-[8px] bg-[#fffaf0] p-3 shadow-[0_24px_70px_rgba(73,43,19,.22)]">
+                <div className="absolute left-0 top-4 h-80 w-[62%] -rotate-5 rounded-[8px] bg-[#fffaf0] p-3 shadow-lg">
                   <div className="relative h-full overflow-hidden rounded-[5px]">
                     <Image src="/images/emda-detalle-mesa.webp" alt="Mesa preparada en El Macaco del Abuelo" fill priority sizes="(min-width: 1024px) 360px, 80vw" className="object-cover sepia-[0.12]" />
                   </div>
                 </div>
-                <div className="absolute bottom-2 right-0 h-80 w-[64%] rotate-3 rounded-[8px] bg-[#fffaf0] p-3 shadow-[0_30px_90px_rgba(73,43,19,.26)]">
+                <div className="absolute bottom-2 right-0 h-80 w-[64%] rotate-3 rounded-[8px] bg-[#fffaf0] p-3 shadow-lg">
                   <div className="relative h-full overflow-hidden rounded-[5px]">
                     <Image src="/images/emda-piscina-atardecer.webp" alt="Piscina al atardecer" fill priority sizes="(min-width: 1024px) 380px, 80vw" className="object-cover" />
                   </div>
@@ -68,7 +68,7 @@ export default function RegaloPage() {
         <section className="relative px-4 pb-20 sm:px-6 md:pb-28 lg:px-8">
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.86fr_1.14fr]">
             <Reveal>
-              <div className="rounded-[10px] border border-[#8f6237]/18 bg-[#fff7ea]/74 p-7 shadow-[0_22px_80px_rgba(73,43,19,.12)]">
+              <div className="rounded-[10px] border border-[#8f6237]/18 bg-[#fff7ea]/74 p-7 shadow-lg">
                 <h2 className="font-serif text-3xl font-bold text-[#2f2114]">Cómo funciona</h2>
                 <div className="mt-6 space-y-5 text-[#66482d]">
                   <Step number="01" title="Preparas la carta" text="Dejas dedicatoria, contacto y una fecha orientativa si la tienes." />

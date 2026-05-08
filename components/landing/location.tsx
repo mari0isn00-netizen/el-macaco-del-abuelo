@@ -67,7 +67,7 @@ export function Location() {
 
           <div className="relative">
             <div className="absolute -left-4 -top-4 h-full w-full rounded-[10px] bg-[#f2e2c7]" />
-            <div className="relative aspect-square overflow-hidden rounded-[10px] border-[10px] border-[#fffaf0] bg-[#f2e2c7] shadow-[0_28px_90px_rgba(73,43,19,.18)] lg:aspect-[4/3]">
+            <div className="relative aspect-square overflow-hidden rounded-[10px] border-[10px] border-[#fffaf0] bg-[#f2e2c7] shadow-lg lg:aspect-[4/3]">
               <Link href="/contactar" className="absolute inset-0 z-10" aria-label="Pedir indicaciones exactas" />
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12694.891234567!2d-5.6378!3d37.4711!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd11d5b0c5f0e7d1%3A0x1234567890abcdef!2sCarmona%2C%20Sevilla!5e0!3m2!1ses!2ses!4v1699999999999!5m2!1ses!2ses"
@@ -79,7 +79,7 @@ export function Location() {
                 referrerPolicy="no-referrer-when-downgrade"
                 title="Ubicación de El Macaco del Abuelo"
               />
-              <div className="absolute left-4 top-4 rounded-[7px] bg-[#fff7ea]/95 px-4 py-2 shadow-lg backdrop-blur-sm">
+              <div className="absolute left-4 top-4 rounded-[7px] bg-[#fff7ea] px-4 py-2 shadow-md">
                 <p className="text-sm font-bold text-[#2f2114]">El Macaco del Abuelo</p>
                 <p className="text-xs text-[#66482d]">Urbanización Las Monjas, Carmona</p>
               </div>

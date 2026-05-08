@@ -58,7 +58,7 @@ export default function ReservarPage() {
             </div>
             <div className="relative mt-8 grid max-w-3xl gap-3 sm:grid-cols-3">
               {["Calendario vivo", "Contrato con firma dibujada", "Señal supervisada por la casa"].map((item) => (
-                <div key={item} className="rounded-lg border border-white/20 bg-white/12 p-4 text-sm font-medium text-white backdrop-blur">
+                <div key={item} className="rounded-lg border border-white/20 bg-white/12 p-4 text-sm font-medium text-white">
                   {item}
                 </div>
               ))}

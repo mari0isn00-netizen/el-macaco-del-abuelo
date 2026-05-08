@@ -89,7 +89,7 @@ export function DepositFlow({ reservation }: DepositFlowProps) {
         <div className="relative min-h-[260px] bg-[url('/images/emda-entrada-apartamento.webp')] bg-cover bg-center">
           <div className="absolute inset-0 bg-black/35" />
           <div className="relative flex min-h-[260px] flex-col justify-end p-6 text-white sm:p-8">
-            <p className="mb-3 inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs uppercase tracking-[0.18em] backdrop-blur">
+            <p className="mb-3 inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs uppercase tracking-[0.18em]">
               <Sparkles className="h-3.5 w-3.5" />
               Contrato de estancia
             </p>
@@ -270,7 +270,7 @@ export function DepositFlow({ reservation }: DepositFlowProps) {
               </Button>
 
               {sealVisible ? (
-                <div className="mx-auto grid h-28 w-28 animate-in zoom-in-50 place-items-center rounded-full border-4 border-[#7d1f1f] bg-[#8f2f2f] text-center font-serif text-sm font-bold uppercase tracking-[0.12em] text-white shadow-xl">
+                <div className="mx-auto grid h-28 w-28 place-items-center rounded-full border-4 border-[#7d1f1f] bg-[#8f2f2f] text-center font-serif text-sm font-bold uppercase tracking-[0.12em] text-white shadow-lg">
                   Reserva<br />sellada
                 </div>
               ) : null}
@@ -302,7 +302,7 @@ function PaymentOption({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-lg border p-3 text-left text-sm transition-all ${
+      className={`rounded-lg border p-3 text-left text-sm transition-colors duration-150 ${
         active ? "border-primary bg-primary/10 text-primary shadow-sm" : "border-border bg-card text-muted-foreground hover:border-primary/40"
       }`}
     >

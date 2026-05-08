@@ -44,17 +44,17 @@ export function About() {
           </div>
 
           <div className="relative min-h-[520px]">
-            <div className="absolute left-0 top-0 h-72 w-[58%] -rotate-3 rounded-[8px] bg-[#fffaf0] p-3 shadow-[0_24px_70px_rgba(73,43,19,.2)]">
+            <div className="absolute left-0 top-0 h-72 w-[58%] -rotate-3 rounded-[8px] bg-[#fffaf0] p-3 shadow-lg">
               <div className="relative h-full overflow-hidden rounded-[5px]">
                 <Image src="/images/emda-salon-dormitorio.webp" alt="Salón dormitorio del apartamento independiente" fill sizes="(min-width: 1024px) 340px, 70vw" className="object-cover" />
               </div>
             </div>
-            <div className="absolute right-0 top-24 h-80 w-[58%] rotate-3 rounded-[8px] bg-[#fffaf0] p-3 shadow-[0_28px_80px_rgba(73,43,19,.24)]">
+            <div className="absolute right-0 top-24 h-80 w-[58%] rotate-3 rounded-[8px] bg-[#fffaf0] p-3 shadow-lg">
               <div className="relative h-full overflow-hidden rounded-[5px]">
                 <Image src="/images/emda-piscina-jacuzzi.webp" alt="Piscina con jacuzzi" fill sizes="(min-width: 1024px) 360px, 70vw" className="object-cover" />
               </div>
             </div>
-            <div className="absolute bottom-0 left-14 h-64 w-[55%] -rotate-1 rounded-[8px] bg-[#fffaf0] p-3 shadow-[0_24px_70px_rgba(73,43,19,.2)]">
+            <div className="absolute bottom-0 left-14 h-64 w-[55%] -rotate-1 rounded-[8px] bg-[#fffaf0] p-3 shadow-lg">
               <div className="relative h-full overflow-hidden rounded-[5px]">
                 <Image src="/images/emda-entrada-apartamento.webp" alt="Entrada del apartamento bajo la pérgola" fill sizes="(min-width: 1024px) 320px, 70vw" className="object-cover" />
               </div>

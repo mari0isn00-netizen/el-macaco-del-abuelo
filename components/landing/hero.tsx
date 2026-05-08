@@ -70,20 +70,20 @@ export function Hero() {
   return (
     <section id="inicio" className="relative flex min-h-screen items-center overflow-hidden pt-16 md:pt-20">
       <div className="absolute inset-0 z-0">
-        <Image src={atmosphere.image} alt={atmosphere.label} fill className="object-cover transition-opacity duration-700" priority />
+        <Image src={atmosphere.image} alt={atmosphere.label} fill className="object-cover" priority />
         <div className={`absolute inset-0 bg-gradient-to-r ${atmosphere.overlay}`} />
-        <div className={`absolute left-[-8rem] top-24 h-72 w-72 rounded-full blur-3xl ${atmosphere.glow}`} />
-        {atmosphereKey === "dawn" ? <div className="absolute inset-x-0 bottom-0 h-1/2 bg-white/18 blur-2xl" /> : null}
+        <div className={`absolute left-[-8rem] top-24 h-72 w-72 rounded-full opacity-40 ${atmosphere.glow}`} />
+        {atmosphereKey === "dawn" ? <div className="absolute inset-x-0 bottom-0 h-1/2 bg-white/12" /> : null}
         {atmosphereKey === "night" ? <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_46%,rgba(255,191,122,.25),transparent_28%)]" /> : null}
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-20 sm:px-6 md:py-32 lg:px-8">
-        <div className={`max-w-2xl drop-shadow-[0_2px_10px_rgba(255,248,234,0.45)] ${atmosphere.text}`}>
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-current/20 bg-white/18 px-4 py-2 backdrop-blur">
+        <div className={`max-w-2xl ${atmosphere.text}`}>
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-current/20 bg-white/18 px-4 py-2">
             <MapPin className="h-4 w-4" />
             <span className="text-sm font-medium">Urbanización Las Monjas, Carmona, Sevilla</span>
           </div>
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-current/15 bg-white/12 px-4 py-2 backdrop-blur">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-current/15 bg-white/12 px-4 py-2">
             <Sun className="h-4 w-4" />
             <span className="text-sm font-medium">{atmosphere.label}</span>
           </div>
@@ -111,12 +111,12 @@ export function Hero() {
               </Button>
             </Link>
             <a href="#galeria">
-              <Button size="lg" variant="outline" className="border-current/20 bg-white/10 px-8 text-lg backdrop-blur hover:bg-white/20">
+              <Button size="lg" variant="outline" className="border-current/20 bg-white/10 px-8 text-lg hover:bg-white/20">
                 Ver galería
               </Button>
             </a>
             <Link href="/regalo">
-              <Button size="lg" variant="outline" className="border-current/20 bg-white/10 px-8 text-lg backdrop-blur hover:bg-white/20">
+              <Button size="lg" variant="outline" className="border-current/20 bg-white/10 px-8 text-lg hover:bg-white/20">
                 <Gift className="h-5 w-5" />
                 Modo regalo
               </Button>
@@ -127,7 +127,7 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 animate-bounce">
+      <div className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2">
         <div className="flex h-10 w-6 items-start justify-center rounded-full border-2 border-current/30 p-2">
           <div className="h-2 w-1 rounded-full bg-current/50" />
         </div>
@@ -149,7 +149,7 @@ function HeroFact({
 }) {
   return (
     <div className="flex items-center gap-2">
-      <div className="rounded-lg bg-white/20 p-2 backdrop-blur">
+      <div className="rounded-lg bg-white/20 p-2">
         <Icon className="h-5 w-5 text-primary" />
       </div>
       <div>

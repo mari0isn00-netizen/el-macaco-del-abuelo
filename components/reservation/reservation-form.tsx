@@ -71,7 +71,7 @@ export function ReservationForm({ dateRange, guests, onGuestsChange }: Reservati
   }
 
   return (
-    <div className="overflow-hidden rounded-[18px] border border-[#ead9c4] bg-[#fff8ee] shadow-[0_18px_50px_rgba(79,47,31,0.10)]">
+    <div className="overflow-hidden rounded-[18px] border border-[#ead9c4] bg-[#fff8ee] shadow-sm">
       <div className="border-b border-[#ead9c4] p-5">
         <div className="flex items-center gap-3">
           <div className="rounded-xl bg-primary/10 p-3 text-primary">

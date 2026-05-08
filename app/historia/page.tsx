@@ -55,7 +55,7 @@ export default function HistoriaPage() {
       <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.32] [background-image:radial-gradient(#8f6237_0.6px,transparent_0.6px)] [background-size:18px_18px]" />
       <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_15%_10%,rgba(143,91,48,.22),transparent_28%),radial-gradient(circle_at_85%_20%,rgba(88,112,63,.18),transparent_30%),linear-gradient(90deg,rgba(112,70,35,.08)_1px,transparent_1px)] [background-size:auto,auto,84px_84px]" />
 
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-[#7a4d2b]/15 bg-[#f4e7d1]/88 backdrop-blur-xl">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-[#7a4d2b]/15 bg-[#f4e7d1]">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-[#704624] transition hover:text-[#2a1a0d]">
             <ArrowLeft className="h-4 w-4" />
@@ -97,12 +97,12 @@ export default function HistoriaPage() {
         </div>
 
         <div className="relative min-h-[500px]">
-          <div className="absolute left-0 top-8 h-72 w-56 -rotate-6 rounded-[7px] bg-[#fffaf0] p-3 shadow-[0_24px_70px_rgba(73,43,19,.24)]">
+          <div className="absolute left-0 top-8 h-72 w-56 -rotate-6 rounded-[7px] bg-[#fffaf0] p-3 shadow-lg">
             <div className="relative h-full overflow-hidden rounded-[5px]">
               <Image src="/images/emda-detalle-mesa.webp" alt="Detalle del refugio" fill priority sizes="280px" className="object-cover sepia-[0.16]" />
             </div>
           </div>
-          <div className="absolute right-0 top-24 h-80 w-64 rotate-3 rounded-[7px] bg-[#fffaf0] p-3 shadow-[0_28px_80px_rgba(73,43,19,.28)]">
+          <div className="absolute right-0 top-24 h-80 w-64 rotate-3 rounded-[7px] bg-[#fffaf0] p-3 shadow-lg">
             <div className="relative h-full overflow-hidden rounded-[5px]">
               <Image src="/images/emda-piscina-atardecer.webp" alt="Piscina del refugio al atardecer" fill priority sizes="320px" className="object-cover" />
             </div>
@@ -125,7 +125,7 @@ export default function HistoriaPage() {
               <div className="absolute left-1/2 top-1/2 hidden h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-[#f2e2c7] bg-[#8f6237] shadow-[0_0_0_8px_rgba(255,247,234,.72)] md:block" />
 
               <div className="relative mx-auto w-full max-w-lg">
-                <div className={`rounded-[8px] bg-[#fffaf0] p-3 shadow-[0_24px_70px_rgba(73,43,19,.22)] ${index % 2 === 0 ? "-rotate-2" : "rotate-2"}`}>
+                <div className={`rounded-[8px] bg-[#fffaf0] p-3 shadow-lg ${index % 2 === 0 ? "-rotate-2" : "rotate-2"}`}>
                   <div className="relative aspect-[4/3] overflow-hidden rounded-[5px]">
                     <Image src={chapter.image} alt={chapter.alt} fill sizes="(min-width: 768px) 40vw, 92vw" className="object-cover" />
                   </div>
@@ -137,7 +137,7 @@ export default function HistoriaPage() {
               </div>
 
               <div className="relative mx-auto max-w-xl">
-                <div className="rounded-[8px] border border-[#8f6237]/16 bg-[#fff7ea]/78 p-6 shadow-[0_20px_60px_rgba(73,43,19,.14)] backdrop-blur-sm md:p-8">
+                <div className="rounded-[8px] border border-[#8f6237]/16 bg-[#fff7ea]/78 p-6 shadow-lg md:p-8">
                   <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#9a6130]">{chapter.eyebrow}</p>
                   <h2 className="mt-3 font-serif text-4xl font-bold leading-tight text-[#2f2114] md:text-6xl">{chapter.title}</h2>
                   <div className="mt-6 space-y-4 text-lg leading-8 text-[#66482d]">
@@ -151,7 +151,7 @@ export default function HistoriaPage() {
           ))}
         </div>
 
-        <div className="mx-auto mt-20 max-w-3xl rounded-[10px] border border-[#8f6237]/18 bg-[#fff7ea]/82 p-8 text-center shadow-[0_22px_80px_rgba(73,43,19,.16)]">
+        <div className="mx-auto mt-20 max-w-3xl rounded-[10px] border border-[#8f6237]/18 bg-[#fff7ea]/82 p-8 text-center shadow-lg">
           <MapPin className="mx-auto h-6 w-6 text-[#6b7d3f]" />
           <h2 className="mt-4 font-serif text-3xl font-bold text-[#2f2114] md:text-4xl">De Arahal a Carmona, sin perder la raíz.</h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-[#66482d]">

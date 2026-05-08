@@ -80,7 +80,7 @@ export function ArrivalPreview({ dateRange }: ArrivalPreviewProps) {
         <img src={season.image} alt="" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(37,28,18,.82),rgba(37,28,18,.48),rgba(37,28,18,.18))]" />
         <div className="relative flex min-h-[280px] flex-col justify-end p-5 text-white sm:p-7">
-          <p className="mb-3 inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs uppercase tracking-[0.2em] backdrop-blur">
+          <p className="mb-3 inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs uppercase tracking-[0.2em]">
             <Sparkles className="h-3.5 w-3.5" />
             Cómo estará el refugio
           </p>

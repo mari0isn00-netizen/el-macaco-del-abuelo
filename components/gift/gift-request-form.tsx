@@ -49,7 +49,7 @@ export function GiftRequestForm() {
 
   if (giftUrl) {
     return (
-      <div className="rounded-[10px] border border-[#8f6237]/18 bg-[#fff7ea]/90 p-7 shadow-[0_26px_80px_rgba(73,43,19,.16)]">
+      <div className="rounded-[10px] border border-[#8f6237]/18 bg-[#fff7ea]/90 p-7 shadow-lg">
         <CheckCircle className="h-9 w-9 text-[#6b7d3f]" />
         <h2 className="mt-5 font-serif text-3xl font-bold text-[#2f2114]">Regalo preparado</h2>
         <p className="mt-3 leading-7 text-[#66482d]">
@@ -75,7 +75,7 @@ export function GiftRequestForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-[10px] border border-[#8f6237]/18 bg-[#fff7ea]/90 p-6 shadow-[0_26px_80px_rgba(73,43,19,.16)] md:p-8">
+    <form onSubmit={handleSubmit} className="rounded-[10px] border border-[#8f6237]/18 bg-[#fff7ea]/90 p-6 shadow-lg md:p-8">
       <div className="mb-6 flex items-center gap-3">
         <div className="rounded-full bg-[#704624]/10 p-3 text-[#704624]">
           <Gift className="h-6 w-6" />

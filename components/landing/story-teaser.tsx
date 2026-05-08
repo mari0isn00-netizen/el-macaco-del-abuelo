@@ -10,7 +10,7 @@ export function StoryTeaser() {
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 md:grid-cols-[0.95fr_1.05fr] lg:px-8">
         <div className="relative min-h-[390px]">
-          <div className="absolute left-2 top-4 h-64 w-48 -rotate-6 rounded-[7px] bg-[#fffaf0] p-2 shadow-[0_24px_70px_rgba(73,43,19,.22)] md:h-80 md:w-60">
+          <div className="absolute left-2 top-4 h-64 w-48 -rotate-6 rounded-[7px] bg-[#fffaf0] p-2 shadow-lg md:h-80 md:w-60">
             <div className="relative h-full w-full overflow-hidden rounded-[5px]">
               <Image
                 src="/images/emda-detalle-mesa.webp"
@@ -21,7 +21,7 @@ export function StoryTeaser() {
               />
             </div>
           </div>
-          <div className="absolute bottom-4 right-3 h-64 w-52 rotate-3 rounded-[7px] bg-[#fffaf0] p-2 shadow-[0_28px_80px_rgba(73,43,19,.26)] md:h-80 md:w-64">
+          <div className="absolute bottom-4 right-3 h-64 w-52 rotate-3 rounded-[7px] bg-[#fffaf0] p-2 shadow-lg md:h-80 md:w-64">
             <div className="relative h-full w-full overflow-hidden rounded-[5px]">
               <Image
                 src="/images/emda-piscina-atardecer.webp"

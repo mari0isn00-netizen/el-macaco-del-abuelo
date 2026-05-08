@@ -23,18 +23,18 @@ export function IntroAnimation({ onComplete }: IntroAnimationProps) {
 
     // Animation phases
     const timers = [
-      setTimeout(() => setPhase(1), 300),   // Show esparto line
-      setTimeout(() => setPhase(2), 1000),  // Show first text
-      setTimeout(() => setPhase(3), 1800),  // Show second text
-      setTimeout(() => setPhase(4), 2600),  // Show third text
-      setTimeout(() => setPhase(5), 3400),  // Show title
+      setTimeout(() => setPhase(1), 120),
+      setTimeout(() => setPhase(2), 420),
+      setTimeout(() => setPhase(3), 760),
+      setTimeout(() => setPhase(4), 1100),
+      setTimeout(() => setPhase(5), 1440),
       setTimeout(() => {
         setIsExiting(true)
         setTimeout(() => {
           localStorage.setItem("macaco-intro-seen", "true")
           onComplete()
-        }, 600)
-      }, 4500),
+        }, 220)
+      }, 2300),
     ]
 
     return () => timers.forEach(clearTimeout)
@@ -49,7 +49,7 @@ export function IntroAnimation({ onComplete }: IntroAnimationProps) {
   return (
     <div
       className={cn(
-        "fixed inset-0 z-50 flex flex-col items-center justify-center bg-background transition-opacity duration-500",
+        "fixed inset-0 z-50 flex flex-col items-center justify-center bg-background transition-opacity duration-200",
         isExiting && "opacity-0"
       )}
     >
@@ -66,7 +66,7 @@ export function IntroAnimation({ onComplete }: IntroAnimationProps) {
         <svg
           viewBox="0 0 200 40"
           className={cn(
-            "w-48 h-10 transition-all duration-1000",
+            "w-48 h-10 transition-opacity duration-200",
             phase >= 1 ? "opacity-100" : "opacity-0"
           )}
         >
@@ -77,13 +77,13 @@ export function IntroAnimation({ onComplete }: IntroAnimationProps) {
             stroke="currentColor"
             strokeWidth="2"
             className={cn(
-              "text-primary transition-all duration-1000",
+              "text-primary",
               phase >= 1 ? "stroke-dashoffset-0" : ""
             )}
             style={{
               strokeDasharray: 300,
               strokeDashoffset: phase >= 1 ? 0 : 300,
-              transition: "stroke-dashoffset 1s ease-out"
+              transition: "stroke-dashoffset 260ms ease-out"
             }}
           />
           <path
@@ -95,7 +95,7 @@ export function IntroAnimation({ onComplete }: IntroAnimationProps) {
             style={{
               strokeDasharray: 300,
               strokeDashoffset: phase >= 1 ? 0 : 300,
-              transition: "stroke-dashoffset 1.2s ease-out 0.2s"
+              transition: "stroke-dashoffset 280ms ease-out 80ms"
             }}
           />
         </svg>
@@ -105,24 +105,24 @@ export function IntroAnimation({ onComplete }: IntroAnimationProps) {
       <div className="text-center space-y-4 min-h-[180px] flex flex-col items-center justify-center">
         <p
           className={cn(
-            "text-lg md:text-xl text-muted-foreground italic transition-all duration-700",
-            phase >= 2 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            "text-lg md:text-xl text-muted-foreground italic transition-opacity duration-200",
+            phase >= 2 ? "opacity-100" : "opacity-0"
           )}
         >
           Antes fue una cesta.
         </p>
         <p
           className={cn(
-            "text-lg md:text-xl text-muted-foreground italic transition-all duration-700",
-            phase >= 3 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            "text-lg md:text-xl text-muted-foreground italic transition-opacity duration-200",
+            phase >= 3 ? "opacity-100" : "opacity-0"
           )}
         >
           Luego una parcela.
         </p>
         <p
           className={cn(
-            "text-lg md:text-xl text-muted-foreground italic transition-all duration-700",
-            phase >= 4 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            "text-lg md:text-xl text-muted-foreground italic transition-opacity duration-200",
+            phase >= 4 ? "opacity-100" : "opacity-0"
           )}
         >
           Ahora, un refugio.
@@ -131,8 +131,8 @@ export function IntroAnimation({ onComplete }: IntroAnimationProps) {
         {/* Title */}
         <h1
           className={cn(
-            "text-3xl md:text-5xl font-serif font-bold text-foreground mt-8 transition-all duration-700",
-            phase >= 5 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            "text-3xl md:text-5xl font-serif font-bold text-foreground mt-8 transition-opacity duration-200",
+            phase >= 5 ? "opacity-100" : "opacity-0"
           )}
         >
           El Macaco del Abuelo
@@ -141,12 +141,12 @@ export function IntroAnimation({ onComplete }: IntroAnimationProps) {
 
       {/* Decorative elements */}
       <div className={cn(
-        "absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-2 transition-opacity duration-500",
+        "absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-2 transition-opacity duration-200",
         phase >= 5 ? "opacity-100" : "opacity-0"
       )}>
-        <div className="w-1 h-1 rounded-full bg-primary animate-pulse" />
-        <div className="w-1 h-1 rounded-full bg-primary animate-pulse delay-75" />
-        <div className="w-1 h-1 rounded-full bg-primary animate-pulse delay-150" />
+        <div className="w-1 h-1 rounded-full bg-primary" />
+        <div className="w-1 h-1 rounded-full bg-primary" />
+        <div className="w-1 h-1 rounded-full bg-primary" />
       </div>
     </div>
   )

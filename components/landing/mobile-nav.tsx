@@ -42,7 +42,7 @@ export function MobileNav() {
     : navItems
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-card/95 backdrop-blur-lg border-t border-border safe-area-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card md:hidden safe-area-bottom">
       <div className="grid grid-flow-col auto-cols-fr items-center px-1 py-1.5">
         {visibleNavItems.map((item) => {
           const isActive = pathname === item.href || 
@@ -53,16 +53,13 @@ export function MobileNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex min-w-0 flex-col items-center gap-1 rounded-lg px-1 py-2 transition-all duration-200 active:scale-95",
+                "flex min-w-0 flex-col items-center gap-1 rounded-lg px-1 py-2 transition-colors duration-150",
                 isActive 
                   ? "text-primary" 
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <item.icon className={cn(
-                "h-5 w-5 transition-transform",
-                isActive && "scale-110"
-              )} />
+              <item.icon className="h-5 w-5" />
               <span className="max-w-full truncate text-[11px] font-medium">{item.label}</span>
             </Link>
           )

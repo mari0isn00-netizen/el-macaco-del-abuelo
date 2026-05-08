@@ -66,10 +66,10 @@ export function Gallery() {
                 alt={image.alt}
                 fill
                 sizes={index === 0 ? "(min-width: 768px) 50vw, 100vw" : "(min-width: 768px) 25vw, 50vw"}
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                className="object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-              <div className="absolute bottom-4 left-4 pr-4 text-white opacity-0 transition-opacity group-hover:opacity-100">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent opacity-0 transition-opacity duration-150 group-hover:opacity-100" />
+              <div className="absolute bottom-4 left-4 pr-4 text-white opacity-0 transition-opacity duration-150 group-hover:opacity-100">
                 <p className="text-sm font-medium">{image.category}</p>
                 <p className="text-lg font-serif">{image.alt}</p>
               </div>

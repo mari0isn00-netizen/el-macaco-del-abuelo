@@ -56,16 +56,16 @@ export function ConvinceMode() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="mt-4 inline-flex items-center gap-2 rounded-full border border-current/15 bg-white/15 px-4 py-2 text-sm font-semibold text-current/75 backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:bg-white/25 hover:text-current"
+        className="mt-4 inline-flex items-center gap-2 rounded-full border border-current/15 bg-white/15 px-4 py-2 text-sm font-semibold text-current/75 transition-colors duration-150 hover:bg-white/25 hover:text-current"
       >
         <Sparkles className="h-4 w-4" />
         No sé si ir
       </button>
 
       {open ? (
-        <div className="fixed inset-0 z-[80] overflow-y-auto bg-[#201812]/70 p-4 text-[#fff8ea] backdrop-blur-md animate-in fade-in-0 duration-300">
+        <div className="fixed inset-0 z-[80] overflow-y-auto bg-[#201812]/86 p-4 text-[#fff8ea]">
           <div className="mx-auto flex min-h-full max-w-6xl items-center py-10">
-            <section className="relative w-full overflow-hidden rounded-[18px] border border-[#f3d4ad]/22 bg-[#fff7ea] text-[#2f2114] shadow-[0_30px_120px_rgba(0,0,0,.38)] animate-in slide-in-from-bottom-6 zoom-in-95 duration-500">
+            <section className="relative w-full overflow-hidden rounded-[18px] border border-[#f3d4ad]/22 bg-[#fff7ea] text-[#2f2114] shadow-xl">
               <div className="absolute inset-0 opacity-[0.16] [background-image:radial-gradient(#8f6237_0.7px,transparent_0.7px)] [background-size:18px_18px]" />
               <div className="relative grid gap-0 lg:grid-cols-[0.88fr_1.12fr]">
                 <div className="bg-[#2f2114] p-6 text-[#fff8ea] sm:p-8 lg:p-10">
@@ -151,8 +151,8 @@ function QuestionBlock({
             key={option}
             type="button"
             onClick={() => onChange(option)}
-            className={`rounded-[10px] border px-4 py-3 text-left text-sm transition duration-300 hover:-translate-y-0.5 ${
-              value === option ? "border-[#704624] bg-[#704624] text-[#fff7ea] shadow-md" : "border-[#8f6237]/18 bg-white/65 text-[#66482d] hover:bg-white"
+            className={`rounded-[10px] border px-4 py-3 text-left text-sm transition-colors duration-150 ${
+              value === option ? "border-[#704624] bg-[#704624] text-[#fff7ea]" : "border-[#8f6237]/18 bg-white/65 text-[#66482d] hover:bg-white"
             }`}
           >
             {option}
